@@ -1,0 +1,15 @@
+
+
+<div class="card">
+  <p-splitter [panelSizes]="[25, 75]" class="mb-8 min-w-96">
+    <ng-template #panel>
+      <div class="flex justify-center h-full p-2">
+        <app-list-action class="w-full"></app-list-action>
+      </div>
+    </ng-template>
+    <ng-template #panel>
+      <!-- <div class="flex items-center justify-center h-full"></div> -->
+        <router-outlet></router-outlet>
+    </ng-template>
+  </p-splitter>
+</div>

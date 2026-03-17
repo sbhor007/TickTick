@@ -1,0 +1,64 @@
+<div class="w-full flex flex-col h-full overflow-y-auto text-sm text-gray-300">
+  <!-- SMART VIEWS -->
+  <div class="">
+    <ul class="">
+      @for (item of smartView; track $index) {
+        <li
+          class="group sidebar-item py-3 hover:bg-[#1c1c1f] rounded-xl text-mg cursor-pointer px-4 flex justify-between"
+        >
+          <span> <i [class]="item.icon"></i> {{ item.name }} </span>
+
+          <i
+            class="pi pi-ellipsis-h opacity-0 group-hover:opacity-100 transition"
+          ></i>
+        </li>
+      }
+    </ul>
+
+    
+  </div>
+  <!-- LISTS -->
+  <div class="px-3 mt-6">
+    <div class="flex items-center justify-between mb-2">
+      <h3 class="text-xs font-semibold text-gray-500">LISTS</h3>
+
+
+      <button
+        pButton
+        class="pi pi-plus p-button-text p-button-sm !p-1 opacity-70 hover:opacity-100"
+      ></button>
+    </div>
+<!-- TODO: need to dynamic -->
+    <ul class="space-y-1">
+      <li class="sidebar-item flex justify-between hover:bg-[#1c1c1f] py-3 px-4 rounded-xl">
+        <div class="flex items-center gap-2 ">👋 Welcome</div>
+        <span class="badge">11</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="px-3 mt-6">
+    <h4 class="text-xs font-semibold text-gray-500 mb-2">FILTERS</h4>
+    <div class="bg-[#1c1c1f] px-4 py-3 rounded-md text-xs text-gray-400">
+      Filter by date, tag...
+    </div>
+  </div>
+
+  <!-- TAGS -->
+  <div class="px-3 mt-6">
+    <h4 class="text-xs font-semibold text-gray-500 mb-2">TAGS</h4>
+    <div class="flex flex-wrap gap-2">
+      <span class="tag">#work</span>
+      <span class="tag">#personal</span>
+    </div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="px-3 pb-3 border-t border-gray-800 pt-3">
+    <ul class="space-y-1 flex flex-col">
+      <li class="pi pi-check-circle sidebar-item hover:bg-[#1c1c1f] py-3 px-4 rounded-xl"> Completed</li>
+      <li class="pi pi-trash sidebar-item hover:bg-[#1c1c1f] py-3 px-4 rounded-xl"> Trash</li>
+    </ul>
+  </div>
+</div>
