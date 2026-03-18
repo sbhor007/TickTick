@@ -1,8 +1,8 @@
-import { Comment } from "./comment";
+import { Comment } from './comment';
 
 export interface SubTask {
-    id:string,
-    title:string,
-    subtasks:SubTask[],
-    comment:Comment[]
+  id: string;
+  title: string;
+  subtasks: SubTask[];
+  comment: Comment[];
 }
