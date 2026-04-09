@@ -1,1 +1,38 @@
-<p>smart-view works!</p>
+<ul>
+    
+  @for (s of smartView(); track s.id) {
+    <li
+      class="group py-3 hover:bg-[#1c1c1f] rounded-xl cursor-pointer px-4 flex items-center justify-between relative"
+      (click)="navigate(s.id,s.name)"
+      (contextmenu)="contextMenuAction($event,s.id,s.entityType)"
+    >
+    <p-menu
+    #contextMenuOptions
+    [model]="contextMenu"
+    [popup]="true"
+    appendTo="body"
+  />
+      <!-- Name + icon -->
+      <span class="flex items-center">
+        <i
+          [ngClass]="[s.icon, 'mr-2 text-sm text-gray-400']"
+        ></i>
+        {{ s.name }}
+      </span>
+
+      <!-- Count + ••• trigger -->
+      <div class="ml-auto relative w-6 text-right">
+        <span
+          class="text-xs text-gray-500 transition-opacity group-hover:opacity-0"
+        >
+          {{ s.tasks?.length ?? 0 }}
+        </span>
+        <i
+          class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
+          (click)="contextMenuAction($event,s.id,s.entityType)"
+        ></i>
+      </div>      
+    </li>
+  }
+  <div class="w-full border bg-gray-50/10"></div>
+</ul>

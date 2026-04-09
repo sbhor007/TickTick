@@ -24,6 +24,66 @@ export class ContextMenuBarService {
       { label: 'Edit', icon: 'edit', action: 'edit' },
       { label: 'Ungroup', icon: 'group_off', action: 'ungroup' },
     ],
+    [EntityType.ALL]: [
+      { label: 'Hide', icon: 'visibility_off', action: 'hide' },
+      { label: 'Show', icon: 'visibility', action: 'show' },
+    ],
+
+    [EntityType.TODAY]: [
+      { label: 'Show', icon: 'visibility', action: 'show' },
+      {
+        label: 'Show if Not empty',
+        icon: 'visibility',
+        action: 'showIfNotEmpty',
+      },
+      { label: 'Hide', icon: 'visibility_off', action: 'hide' },
+    ],
+
+    [EntityType.TOMORROW]: [
+      { label: 'Show', icon: 'visibility', action: 'show' },
+      {
+        label: 'Show if Not empty',
+        icon: 'visibility',
+        action: 'showIfNotEmpty',
+      },
+      { label: 'Hide', icon: 'visibility_off', action: 'hide' },
+    ],
+
+    [EntityType.NEXT_SEVEN_DAYS]: [
+      { label: 'Show', icon: 'visibility', action: 'show' },
+      {
+        label: 'Show if Not empty',
+        icon: 'visibility',
+        action: 'showIfNotEmpty',
+      },
+      { label: 'Hide', icon: 'visibility_off', action: 'hide' },
+    ],
+
+    [EntityType.ASSIGNED_TO_ME]: [
+      { label: 'Show', icon: 'visibility', action: 'show' },
+      {
+        label: 'Show if Not empty',
+        icon: 'visibility',
+        action: 'showIfNotEmpty',
+      },
+      { label: 'Hide', icon: 'visibility_off', action: 'hide' },
+    ],
+
+    [EntityType.INBOX]: [
+      { label: 'Edit', icon: 'edit', action: 'edit' },
+      { label: 'Show', icon: 'visibility', action: 'show' },
+      {
+        label: 'Show if Not empty',
+        icon: 'visibility',
+        action: 'showIfNotEmpty',
+      },
+      { label: 'Hide', icon: 'visibility_off', action: 'hide' },
+    ],
+
+    [EntityType.SUMMARY]: [
+      { label: 'Show', icon: 'visibility', action: 'show' },
+      { label: 'Hide', icon: 'visibility_off', action: 'hide' },
+    ],
   }
 
   getContextMenu(

@@ -17,8 +17,7 @@ import { FolderProjectService } from '../../../services/folder-project.service';
 import { Menu, MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { ContextMenuBarService } from '../../../config/context-menu-bar.service';
-import { Folder } from '../../../models/folder';
-import { every, tap } from 'rxjs';
+
 
 @Component({
   selector: 'app-list',
