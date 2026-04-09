@@ -7,5 +7,6 @@ export enum EntityType {
   NEXT_SEVEN_DAYS = 'NEXT_SEVEN_DAYS',
   ASSIGNED_TO_ME = 'ASSIGNED_TO_ME',
   INBOX = 'INBOX',
-  SUMMARY = 'SUMMARY'
+  SUMMARY = 'SUMMARY',
+  TAG = 'TAG',
 }

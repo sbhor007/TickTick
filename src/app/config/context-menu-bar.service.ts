@@ -84,6 +84,7 @@ export class ContextMenuBarService {
       { label: 'Show', icon: 'visibility', action: 'show' },
       { label: 'Hide', icon: 'visibility_off', action: 'hide' },
     ],
+    [EntityType.TAG]:[]
   }
 
   getContextMenu(
