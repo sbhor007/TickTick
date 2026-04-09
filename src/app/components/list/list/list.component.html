@@ -1,0 +1,187 @@
+<div class="px-3 mt-6">
+  <!-- Single shared popup menu -->
+  <p-menu
+    #contextMenuOptions
+    [model]="contextMenu"
+    [popup]="true"
+    appendTo="body"
+  />
+
+  <!-- Section Header -->
+  <div class="flex items-center justify-between mb-2 px-1">
+    <h3
+      class="text-[11px] font-semibold tracking-widest text-gray-500 uppercase"
+    >
+      Lists
+    </h3>
+    <button
+      class="w-5 h-5 flex items-center justify-center rounded text-gray-500 hover:text-gray-300 hover:bg-white/[0.06] transition-colors"
+      (click)="showAddList()"
+    >
+      <i class="pi pi-plus text-[11px]"></i>
+    </button>
+  </div>
+
+  <!-- Create project form -->
+  @if (isShowCreateForm) {
+    <app-create-project
+      [folderId]="activeFolderId"
+      [mode]="mode"
+      [projectId]="projectId"
+      (formHandler)="formEventHandler($event)"
+    />
+  }
+
+  <!-- Scrollable list -->
+  <div
+    class="max-h-52 overflow-y-auto scrollbar-none scroll-smooth space-y-0.5"
+  >
+    <!-- Folders -->
+    @for (folder of folderWithProjects(); track $index) {
+      <div>
+        <!-- Folder row -->
+        <div
+        (contextmenu)="openFolderMenu($event, folder.id, folder.entityType,folder.isPinned)"
+          class="flex items-center gap-1 rounded-lg group cursor-pointer hover:bg-[#1c1c1f] transition-colors"
+        >
+          <!-- Chevron -->
+          <i
+            class="pi text-[10px] text-gray-500 w-4 flex-shrink-0 pl-1 transition-transform duration-150"
+            [ngClass]="isOpen($index) ? 'pi-chevron-down' : 'pi-chevron-right'"
+            (click)="toggleFolder($index)"
+          ></i>
+
+          <!-- Folder name + actions -->
+          <div
+            class="flex items-center justify-between flex-1 px-1 py-[6px]"
+            (click)="toggleFolder($index)"
+            [routerLink]="['folder/tasks', folder.id]"
+          >
+            <!-- Left: icon + name -->
+            <div
+              class="flex items-center gap-2 text-[13px] text-white/80 min-w-0"
+            >
+              <i
+                class="text-gray-400 text-xs flex-shrink-0"
+                [ngClass]="
+                  isOpen($index) ? 'pi pi-folder-open' : 'pi pi-folder'
+                "
+              ></i>
+              <span class="truncate">{{ folder.name }}</span>
+            </div>
+
+            <!-- Right: count + ··· -->
+            <div
+              class="relative w-6 h-5 flex items-center justify-end flex-shrink-0 ml-2"
+            >
+              <span
+                class="text-[11px] text-gray-500 group-hover:opacity-0 transition-opacity"
+              >
+                {{ folder.projects?.length ?? 0 }}
+              </span>
+              <i
+                class="pi pi-ellipsis-h absolute text-[11px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                (click)="openFolderMenu($event, folder.id, folder.entityType,folder.isPinned)"
+              ></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Folder projects -->
+        @if (isOpen($index) && folder.projects?.length > 0) {
+          <div
+            class="ml-4 pl-3 border-l border-white/[0.06] mt-0.5 space-y-0.5"
+          >
+            @for (project of folder.projects; track project.id) {
+              @if (!project?.isArchived) {
+                <div
+                  class="flex items-center justify-between px-2 py-[6px] rounded-lg hover:bg-[#232326] cursor-pointer group relative transition-colors"
+                  [routerLink]="['project/tasks', project.id]"
+                >
+                  <div
+                    class="flex items-center justify-between gap-2 min-w-0 flex-1"
+                  >
+                    <div class="flex items-center gap-2 min-w-0">
+                      <i
+                        class="pi pi-bars text-[10px] text-gray-500 flex-shrink-0"
+                      ></i>
+                      <span class="text-[13px] text-white/80 truncate">{{
+                        project.name
+                      }}</span>
+                    </div>
+                    <div
+                      class="w-2 h-2 rounded flex-shrink-0 ml-1"
+                      [ngStyle]="{ 'background-color': project.color }"
+                    ></div>
+                  </div>
+                  <!--  -->
+                  <i
+                    class="pi pi-ellipsis-h text-[11px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-2"
+                    (click)="
+                      openFolderMenu($event, project.id, project.entityType,project.isPinned,project.isArchived)
+                    "
+                  ></i>
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Projects without folder -->
+    @for (project of allProject(); track project.id) {
+      @if (
+        !project.isSmartView && project.folderId === null
+      ) {
+        <div
+          class="flex items-center justify-between px-2 py-[6px] rounded-lg hover:bg-[#232326] cursor-pointer group relative transition-colors"
+          [routerLink]="['project/tasks', project.id]"
+        >
+          <div class="flex items-center gap-2 min-w-0 flex-1">
+            <i class="pi pi-bars text-[10px] text-gray-500 flex-shrink-0"></i>
+            <span class="text-[13px] text-white/80 truncate">{{
+              project.name
+            }}</span>
+            <div
+              class="w-2 h-2 rounded flex-shrink-0 ml-1"
+              [ngStyle]="{ 'background-color': project.color }"
+            ></div>
+          </div>
+          <i
+            class="pi pi-ellipsis-h text-[11px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-2"
+            (click)="openFolderMenu($event, project.id, project.entityType,project.isPinned,project.isArchived)"
+          ></i>
+        </div>
+      }
+    }
+  </div>
+</div>
+
+<!-- Folder Edit Dialog -->
+@if (isFolderDialogOpen) {
+  <app-create-folder
+ [mode]="mode"
+ [folderId]="activeFolderId"
+ (folderEvent)="handleFolderEvent($event)"
+  >
+
+  </app-create-folder>
+}
+
+<!-- 
+{
+    "action": "update",
+    "entity": "PROJECT",
+    "entityId": "ea741d1f-e0ff-4498-be49-10f123e52258",
+    "payload": {
+        "name": "fgew",
+        "color": "",
+        "viewType": "",
+        "folderId": "2ee1ea1a-e865-46b0-bee4-4317e2b9e3b4",
+        "listType": "Task List",
+        "smartList": "All Task",
+        "entityType": "PROJECT"
+    }
+}
+-->

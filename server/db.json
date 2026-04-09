@@ -1,0 +1,103 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "username": "harsh",
+      "password": "hashed_pw",
+      "email": "harsh@example.com",
+      "createdAt": "2026-03-01T08:00:00Z"
+    }
+  ],
+  "folders": [
+    {
+      "id": "2ee1ea1a-e865-46b0-bee4-4317e2b9e3b4",
+      "userId": null,
+      "name": "test-1-22-new",
+      "isPinned": false,
+      "entityType": "FOLDER",
+      "projects": [],
+      "createdAt": "2026-04-04T01:53:28.996Z",
+      "updatedAt": "2026-04-04T01:53:28.996Z"
+    },
+    {
+      "id": "9fce680c-2b28-403b-af19-3fd45d770c2c",
+      "userId": null,
+      "name": "test-2",
+      "isPinned": true,
+      "entityType": "FOLDER",
+      "projects": [],
+      "createdAt": "09/04/2026",
+      "updatedAt": "09/04/2026"
+    }
+  ],
+  "projects": [
+    {
+      "name": "tets(copy-Thu )",
+      "color": "",
+      "viewType": "",
+      "folderId": null,
+      "listType": "Task List",
+      "smartList": "All Task",
+      "entityType": "PROJECT",
+      "id": "de79d794-dfab-42a1-8704-1843b55ed4f2",
+      "createdAt": "2026-04-09T05:14:34.779Z",
+      "updatedAt": "2026-04-09T05:14:34.779Z",
+      "isPinned": false,
+      "isArchived": true,
+      "isSmartView": false,
+      "icon": "pi pi-cog",
+      "tasks": []
+    },
+    {
+      "name": "test",
+      "color": "",
+      "viewType": "0",
+      "folderId": "2ee1ea1a-e865-46b0-bee4-4317e2b9e3b4",
+      "listType": "Note List",
+      "smartList": "Do not Show",
+      "entityType": "PROJECT",
+      "id": "af85897f-a0bc-4ebc-894b-bfc1db8b54b2",
+      "createdAt": "2026-04-09T06:22:21.094Z",
+      "updatedAt": "2026-04-09T06:22:21.094Z",
+      "isPinned": false,
+      "isArchived": false,
+      "isSmartView": false,
+      "icon": "pi pi-cog",
+      "tasks": []
+    },
+    {
+      "name": "tets(copy-Thu )(copy-Thu )",
+      "color": "",
+      "viewType": "",
+      "folderId": null,
+      "listType": "Task List",
+      "smartList": "All Task",
+      "entityType": "PROJECT",
+      "id": "41fd2760-bc10-4d11-9226-2ba49d1c3e2c",
+      "createdAt": "2026-04-09T06:23:30.473Z",
+      "updatedAt": "2026-04-09T06:23:30.473Z",
+      "isPinned": false,
+      "isArchived": true,
+      "isSmartView": false,
+      "icon": "pi pi-cog",
+      "tasks": []
+    },
+    {
+      "name": "test(copy-1775)",
+      "color": "",
+      "viewType": "0",
+      "folderId": "2ee1ea1a-e865-46b0-bee4-4317e2b9e3b4",
+      "listType": "Note List",
+      "smartList": "Do not Show",
+      "entityType": "PROJECT",
+      "id": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+      "createdAt": "2026-04-09T06:25:16.142Z",
+      "updatedAt": "2026-04-09T06:25:16.142Z",
+      "isPinned": false,
+      "isArchived": false,
+      "isSmartView": false,
+      "icon": "pi pi-cog",
+      "tasks": []
+    }
+  ]
+}

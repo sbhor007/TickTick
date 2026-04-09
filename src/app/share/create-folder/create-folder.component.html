@@ -1,0 +1,40 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+  <div class="w-[420px] rounded-xl bg-[#1f1f1f] text-white shadow-xl border border-gray-700">
+
+    <!-- HEADER -->
+    <div class="flex items-center justify-between px-5 py-4">
+      <h2 class="text-lg font-semibold">
+        {{ mode === 'create' ? 'New Folder' : 'Edit Folder' }}
+      </h2>
+
+      <button (click)="onClose()" class="text-gray-400 hover:text-white">
+        ✕
+      </button>
+    </div>
+
+    <!-- INPUT -->
+    <div class="px-5 pb-4">
+      <div class="relative">
+        <input
+          type="text"
+          [(ngModel)]="localFolderName"
+          placeholder="Folder name"
+          class="w-full rounded-md border border-blue-500 bg-[#2a2a2a] px-10 py-2 text-sm text-white"
+        />
+        <span class="absolute left-3 top-1/2 -translate-y-1/2">📁</span>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="flex justify-end gap-3 px-5 pb-4">
+      <button (click)="onClose()" class="border px-4 py-1.5 rounded-md">
+        Cancel
+      </button>
+
+      <button (click)="onSave()" class="bg-blue-600 px-4 py-1.5 rounded-md">
+        {{ mode === 'create' ? 'Create' : 'Update' }}
+      </button>
+    </div>
+
+  </div>
+</div>
