@@ -18,7 +18,7 @@
       </button>
     </div>
 
-    <div class="card flex ] w-full">
+    <div class="card flex ] w-full mb-5">
       <input
         type="text"
         class="w-full px-3"
@@ -28,7 +28,39 @@
       />
     </div>
 
-    <!-- color piker -->
+    <!-- color picker -->
+    <div
+      class="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-white/[0.12] w-fit"
+    >
+      <!-- none -->
+      <div
+        class="w-4 h-4 rounded-full cursor-pointer border border-white/20 flex items-center justify-center"
+        [ngClass]="{ 'ring-1 ring-offset-1 ring-white': !selectedColor }"
+        (click)="selectColor('')"
+      >
+        <span
+          style="
+            width: 10px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(-45deg);
+            display: block;
+          "
+        ></span>
+      </div>
+
+      @for (color of colors; track color) {
+        <div
+          class="w-4 h-4 rounded-full cursor-pointer transition-transform hover:scale-110"
+          [style.background]="color"
+          [ngClass]="{
+            'ring-1 ring-offset-1 ring-white scale-110':
+              selectedColor === color,
+          }"
+          (click)="selectColor(color)"
+        ></div>
+      }
+    </div>
     <!-- implement reusable component -->
 
     @if (mode !== "update" && existingTag?.entityType != "TAG") {

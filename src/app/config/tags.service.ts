@@ -180,5 +180,4 @@ export class TagsService {
     });
   }
 
-  // toggleSubTagPin(parrent){}
 }

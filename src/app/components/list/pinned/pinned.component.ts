@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { Menu } from "primeng/menu";
 import { MenuItem } from 'primeng/api';
 import { EntityType } from '../../../enums/entity-type';
+import { TagsService } from '../../../config/tags.service';
 
 @Component({
   selector: 'app-pinned',
@@ -17,12 +18,24 @@ export class PinnedComponent implements OnInit {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
   private folderWithProjectService = inject(FolderProjectService);
+  private tagService = inject(TagsService)
 
+//  pinnedData = computed(() => {
+//   const projects = this.projectService.projects$().filter(p => p.isPinned);
+//   const folders  = this.folderService.allFolders$().filter(f => f.isPinned);
+//   const tags = this.tagService.allTags$().filter(t => t.isPinned);
+//   const childTags = this.tagService.allTags$().map(t => t.childTag.filter(st => st.isPinned))
+//   return [...projects, ...folders,...tags,...childTags];
+// });
 
- pinnedData = computed(() => {
-  const projects = this.projectService.projects$().filter(p => p.isPinned);
-  const folders  = this.folderService.allFolders$().filter(f => f.isPinned);
-  return [...projects, ...folders];
+pinnedData = computed(() => {
+  const projects  = this.projectService.projects$().filter(p => p.isPinned);
+  const folders   = this.folderService.allFolders$().filter(f => f.isPinned);
+  const tags      = this.tagService.allTags$().filter(t => t.isPinned);
+  const childTags = this.tagService.allTags$()
+                      .flatMap(t => t.childTag.filter(st => st.isPinned));
+
+  return [...projects, ...folders, ...tags, ...childTags];
 });
 
 
@@ -36,6 +49,7 @@ export class PinnedComponent implements OnInit {
   ngOnInit(): void {
 
     this.projectService.loadAllProjects()
+    this.tagService.loadAllTags()
     // this.projectService.fetchPinnedProjects()
     // this.folderService.loadPinnedFolders()
     console.log("pinned Data::",this.pinnedData());
@@ -49,6 +63,16 @@ export class PinnedComponent implements OnInit {
     // this.folderService.loadPinnedFolders();
     // this.pinnedData = computed(() => [...this.folderService.allFolders$(),...this.projectService.projects$()])
   }
+
+  getEntityIcon(entityType: string): string {
+  const map: Record<string, string> = {
+    'PROJECT':   'pi pi-briefcase text-blue-400',
+    'FOLDER':    'pi pi-folder text-yellow-400',
+    'TAG':       'pi pi-tag text-purple-400',
+    'CHILD_TAG': 'pi pi-bookmark text-pink-400',
+  };
+  return map[entityType] ?? 'pi pi-circle text-white/40';
+}
 
   openContextMenu(entityType: EntityType, id: string,event:any){
     event.preventDefault()

@@ -1,46 +1,27 @@
-@if (this.pinnedData().length > 0) {
+@if (pinnedData().length > 0) {
   <div>
-    <p
-      class="text-[11px] text-gray-500 uppercase tracking-wide font-medium px-2 mb-2"
-    >
-      <p-menu
-        #contextMenuOptions
-        [model]="contextMenu"
-        [popup]="true"
-        appendTo="body"
-      />
-    </p>
+    <p-menu
+      #contextMenuOptions
+      [model]="contextMenu"
+      [popup]="true"
+      appendTo="body"
+    />
 
-    <div class="flex flex-wrap gap-2 px-2">
-
-        @for (p of pinnedData(); track $index) {
-        <div class="relative group" [routerLink]="['project/tasks', p.id]">
-          <!-- Card -->
-          <div
-            (contextmenu)="openContextMenu(p.entityType, p.id,$event)"
-            class="flex flex-col items-center justify-center gap-1.5 w-[64px] h-[64px] rounded-xl hover:bg-[#323236] cursor-pointer transition-colors"
-          >
-            <i class="pi pi-bars text-[18px] text-amber-400"></i>
-            <!-- 
-             <i
-  class="text-[18px]"
-  [ngClass]="{
-    'pi pi-bars':   p.entityType === 'PROJECT',
-    'pi pi-folder': p.entityType === 'FOLDER',
-    'pi pi-tag':    p.entityType === 'TAG',
-    'pi pi-tags':   p.entityType === 'SUBTAG'
-  }"
-></i> -->
-            <span
-              class="text-[11px] text-gray-400 truncate w-full text-center px-1"
-            >
-              {{ p.name }}
+    <div class="flex flex-wrap gap-1.5 px-2">
+      @for (p of pinnedData(); track $index) {
+        <div
+          class="relative group"
+          [routerLink]="['project/tasks', p.id]"
+          (contextmenu)="openContextMenu(p.entityType, p.id, $event)"
+        >
+          <div class="flex flex-col items-center justify-center gap-1 w-[52px] h-[52px] rounded-lg hover:bg-[#323236] cursor-pointer transition-colors">
+            <i [ngClass]="getEntityIcon(p.entityType)" class="text-[14px]"></i>
+            <span class="text-[10px] text-gray-400 truncate w-full text-center px-0.5">
+              {{ p.name || p.title }}
             </span>
           </div>
         </div>
       }
-
-     
     </div>
   </div>
   <div class="w-full border bg-gray-50/10"></div>

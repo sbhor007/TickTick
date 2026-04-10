@@ -50,7 +50,9 @@ export class TagInputComponent implements OnInit {
     '#7F77DD',
     '#D4537E',
   ];
-  selectedColor = '';
+  selectedColor = this.existingTag?.color ?? '';
+
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -73,6 +75,11 @@ export class TagInputComponent implements OnInit {
       entityType: [EntityType.TAG],
     });
   }
+
+  selectColor(color: string) {
+  this.selectedColor = color;
+  this.tagForm.get('color')?.setValue(color);
+}
 
   //  private loadParentTags(): void {
   //   // read from signal directly

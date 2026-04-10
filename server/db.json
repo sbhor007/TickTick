@@ -161,7 +161,7 @@
       "id": "de79d794-dfab-42a1-8704-1843b55ed4f2",
       "createdAt": "2026-04-09T05:14:34.779Z",
       "updatedAt": "2026-04-09T05:14:34.779Z",
-      "isPinned": true,
+      "isPinned": false,
       "isArchived": true,
       "isSmartView": false,
       "icon": "pi pi-cog",
@@ -260,9 +260,21 @@
       "name": "Work-1-its-worked",
       "color": "#3B82F6",
       "entityType": "TAG",
-      "childTag": [],
+      "childTag": [
+        {
+          "name": "Work-1-its-worked---",
+          "color": "#3B82F6",
+          "parentId": "tag_001",
+          "entityType": "CHILD_TAG",
+          "id": "365c4461-07bb-4fa1-b701-5cbcc6abae4c",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-10T11:42:44.812Z",
+          "updatedAt": "2026-04-10T12:00:57.005Z"
+        }
+      ],
       "createdAt": "2025-12-01T10:15:00Z",
-      "updatedAt": "2026-04-10T11:20:12.687Z",
+      "updatedAt": "2026-04-10T12:00:57.005Z",
       "isPinned": false,
       "count": 45,
       "isShared": true
@@ -275,7 +287,7 @@
       "childTag": [],
       "isPinned": false,
       "createdAt": "2026-04-10T09:20:30.895Z",
-      "updatedAt": "2026-04-10T10:59:02.738Z",
+      "updatedAt": "2026-04-10T12:01:07.894Z",
       "id": "1cy2EcI",
       "isShared": true
     },
@@ -284,19 +296,7 @@
       "color": "",
       "parentId": null,
       "entityType": "TAG",
-      "childTag": [
-        {
-          "name": "testing",
-          "color": "#3B82F6",
-          "parentId": "WATcGxJ",
-          "entityType": "TAG",
-          "id": "3b1e7c2a-480d-4e76-bc64-d972ca46d292",
-          "childTag": [],
-          "isPinned": false,
-          "createdAt": "2026-04-10T10:56:32.845Z",
-          "updatedAt": "2026-04-10T10:57:04.046Z"
-        }
-      ],
+      "childTag": [],
       "isPinned": false,
       "createdAt": "2026-04-10T09:39:03.354Z",
       "updatedAt": "2026-04-10T10:57:08.084Z",
