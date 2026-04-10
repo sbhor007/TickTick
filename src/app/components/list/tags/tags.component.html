@@ -1,5 +1,4 @@
-<!-- @if (tags().length > 0) { -->
-@if (true) {
+@if (tags().length > 0) {
   <!-- Single shared popup menu -->
   <p-menu
     #contextMenuOptions
@@ -41,9 +40,7 @@
         <div>
           <!-- Root tag row -->
           <div
-            (contextmenu)="
-              openContextMenu($event, tag)
-            "
+            (contextmenu)="openContextMenu($event, tag)"
             class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
           >
             <i
@@ -67,9 +64,7 @@
                 {{ tag.childTag?.length ?? 0 }}
               </span>
               <i
-                (click)="
-                  openContextMenu($event, tag)
-                "
+                (click)="openContextMenu($event, tag)"
                 class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
               ></i>
             </div>
@@ -96,12 +91,7 @@
                 <div>
                   <!-- Child row -->
                   <div
-                    (contextmenu)="
-                      openContextMenu(
-                        $event,
-                        child
-                      )
-                    "
+                    (contextmenu)="openContextMenu($event, child)"
                     class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
                     (click)="toggleExpandTag(child.id)"
                   >
@@ -126,12 +116,7 @@
                       </span>
                       <!-- TODO:implement option activator -->
                       <i
-                        (click)="
-                          openContextMenu(
-                            $event,
-                            child
-                          )
-                        "
+                        (click)="openContextMenu($event, child)"
                         class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
                       ></i>
                     </div>
@@ -155,12 +140,7 @@
                     <div class="ml-5 border-l border-white/10 pl-3">
                       @for (grand of child.childTag; track grand.id) {
                         <div
-                          (contextmenu)="
-                            openContextMenu(
-                              $event,
-                              grand
-                            )
-                          "
+                          (contextmenu)="openContextMenu($event, grand)"
                           class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
                         >
                           <i class="pi pi-tag text-[13px] text-white/35"></i>
@@ -176,12 +156,7 @@
                             grand.childTag?.length ?? 0
                           }}</span>
                           <i
-                            (click)="
-                              openContextMenu(
-                                $event,
-                                grand
-                              )
-                            "
+                            (click)="openContextMenu($event, grand)"
                             class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
                           ></i>
                         </div>
@@ -205,3 +180,53 @@
     (tagsEventHandler)="inputTagsEventHandler($event)"
   />
 }
+
+<p-dialog
+  header="Merge Tags"
+  [modal]="true"
+  [(visible)]="isVisibleConfirmPopup"
+  [style]="{ width: '25rem' }"
+>
+  <div class="flex flex-col gap-4 py-2">
+    <p class="text-sm text-white/60 leading-relaxed">
+      You can merge the related tasks of tag
+      <span class="text-white/90 font-medium">{{selectedTag?.name || ""}}</span> to
+      another tag. After merging, tag
+      <span class="text-white/90 font-medium">{{selectedTag?.name || ""}}</span>
+      will be deleted.
+    </p>
+
+    <select
+      [(ngModel)]="selectedTargetTag"
+      class="w-full bg-[#111113] border border-white/[0.12] rounded-xl px-2.5 py-2 text-[13px] text-white/75 outline-none cursor-pointer appearance-none"
+    >
+      <option [ngValue]="null" disabled selected>Select a tag</option>
+      @for (tag of tags(); track tag.id) {
+        <option *ngIf="tag.id != selectedTag?.id"
+          [ngValue]="tag.id"
+          style="background: #111113; color: rgba(255, 255, 255, 0.75)"
+        >
+          {{ tag.name }}
+        </option>
+      }
+    </select>
+
+    <div class="flex justify-end gap-2 pt-1">
+      <button
+        class="cursor-pointer py-1 px-8 bg-white/5 rounded-xl"
+        label="close"
+        (click)="closeConfirmDialog()"
+      >
+        close
+      </button>
+
+      <button
+        class="cursor-pointer py-1 px-8 bg-blue-500/20 rounded-xl"
+        label="continue"
+        (click)="mergeTags()"
+      >
+        confirm
+      </button>
+    </div>
+  </div>
+</p-dialog>

@@ -39,6 +39,7 @@ export class TagsService {
     }
     const body: Partial<Tag> = {
       ...payload,
+      id: crypto.randomUUID(),
       parentId: payload.parentId ?? null,
       childTag: [],
       isPinned: false,
@@ -63,8 +64,8 @@ export class TagsService {
       id: payload.id ?? crypto.randomUUID(),
       parentId: payload.parentId ?? null,
       entityType: EntityType.CHILD_TAG,
-      childTag: [],
-      isPinned: false,
+      childTag: payload.childTag ?? [],
+      isPinned: payload.isPinned ?? false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -72,7 +73,6 @@ export class TagsService {
     this.updateTag(payload.parentId, {
       ...tag,
       childTag: [...(tag?.childTag || []), child],
-      
     });
   }
   /* update tag */
@@ -89,17 +89,94 @@ export class TagsService {
     });
   }
 
+  /**Merge tags */
+  mergeTags(selectedTagId: string, targetId: string) {
+    const selectedTag = this.allTags$().find((f) => f.id === selectedTagId);
+    const selectedChildTags = selectedTag?.childTag ?? [];
+    selectedChildTags.forEach((cTag) => (cTag.parentId = targetId));
+
+    const targetTag = this.allTags$().find((t) => t.id === targetId);
+    if (targetTag && selectedChildTags.length) {
+      targetTag.childTag.push(...selectedChildTags);
+      this.updateTag(targetId, targetTag);
+      console.log('target::', targetTag);
+      this.deleteTag(selectedTagId);
+    }
+  }
+
   /** DELETE — remove a root tag */
-  deleteTag(id: string){
-     this.http.delete<void>(`${environment.API}/tags/${id}`).subscribe({
-      next: () =>{
+  deleteTag(id: string) {
+    this.http.delete<void>(`${environment.API}/tags/${id}`).subscribe({
+      next: () => {
         console.info('Tag deleted...');
-        this.loadAllTags()
+        this.loadAllTags();
       },
-      error: (err) =>{
-        this.loadAllTags()
+      error: (err) => {
+        this.loadAllTags();
         console.error('Error Occurs in tag update:', err);
-      }
-    })
+      },
+    });
+  }
+
+  fetchTagById(id: string): Observable<Tag> {
+    return this.http.get<Tag>(`${environment.API}/tags/${id}`).pipe(
+      catchError((err) => {
+        console.error('Error creating project:', err);
+        return of();
+      }),
+    );
+  }
+
+  moveSubTag(parentId: string, payload: any) {
+    this.fetchTagById(parentId).subscribe((tag) => {
+      tag.childTag.push({ ...payload, updatedAt: new Date().toISOString() });
+      this.updateTag(parentId, {
+        ...tag,
+        updatedAt: new Date().toISOString(),
+      });
+      // this.deleteSubTag(parentId,payload.id)
+    });
+  }
+
+  /**DELETE - sub tag */
+  deleteSubTag(parentId:string, childId:string){
+     this.fetchTagById(parentId).subscribe((tag) => {
+      const updatedChild = tag.childTag.filter(t => t.id != childId)
+      this.updateTag(parentId, {
+        ...tag,
+        childTag: updatedChild,
+        updatedAt: new Date().toISOString(),
+      })
+
+     })
+  }
+
+  /**UPDATE SUB_TAG */
+  updateSubTag(parentId: string, childId: string, payload: Tag) {
+    this.http.get<Tag>(`${environment.API}/tags/${parentId}`).subscribe({
+      next: (tag: Tag) => {
+        /**if parent id change */
+        if (payload.parentId != parentId) {
+          alert();
+          const moveChildTag = tag.childTag.find((t) => t.id == childId);
+          return;
+        }
+
+        const updatedChildTags = tag.childTag.map((t) =>
+          t.id === childId
+            ? { ...t, ...payload, updatedAt: new Date().toISOString() }
+            : t,
+        );
+        const updatedTag = {
+          ...tag,
+          childTag: updatedChildTags,
+          updatedAt: new Date().toISOString(),
+        };
+        this.updateTag(parentId, updatedTag);
+      },
+      error: (err) => {
+        console.error('Error occurs in Updating sub tag::', err);
+      },
+    });
   }
 }

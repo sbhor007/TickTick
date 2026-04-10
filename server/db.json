@@ -260,128 +260,23 @@
       "name": "Work-1-its-worked",
       "color": "#3B82F6",
       "entityType": "TAG",
-      "childTag": [
-        {
-          "id": "tag_001_1",
-          "parentId": "tag_001",
-          "name": "Meetings",
-          "color": "#3B82F6",
-          "entityType": "CHILD_TAG",
-          "childTag": [],
-          "createdAt": "2025-12-01T10:15:00Z",
-          "updatedAt": "2026-04-04T02:04:26.782Z",
-          "isPinned": false,
-          "count": 12
-        },
-        {
-          "id": "tag_001_2",
-          "parentId": "tag_001",
-          "name": "Projects",
-          "color": "#3B82F6",
-          "entityType": "CHILD_TAG",
-          "childTag": [],
-          "createdAt": "2025-12-01T10:15:00Z",
-          "updatedAt": "2026-03-10T11:00:00Z",
-          "isPinned": true,
-          "count": 18
-        },
-        {
-          "id": "fda90c68-872d-412d-9b17-2a297c5dd43e",
-          "parentId": "tag_001",
-          "name": "test",
-          "color": "#facc15",
-          "childTag": [],
-          "isPinned": false,
-          "createdAt": "2026-04-03T12:07:37.949Z",
-          "updatedAt": "2026-04-04T01:50:35.921Z",
-          "entityType": "CHILD_TAG"
-        }
-      ],
+      "childTag": [],
       "createdAt": "2025-12-01T10:15:00Z",
-      "updatedAt": "2026-04-10T05:34:02.486Z",
+      "updatedAt": "2026-04-10T10:57:08.095Z",
       "isPinned": false,
-      "count": 45
+      "count": 45,
+      "isShared": true
     },
     {
-      "id": "tag_003",
-      "parentId": null,
-      "name": "Shopping",
-      "color": "#F59E0B",
-      "entityType": "TAG",
-      "childTag": [
-        {
-          "name": "test-22",
-          "color": "",
-          "parentId": "tag_003",
-          "entityType": "TAG",
-          "id": "6437b400-505c-45d4-8c0a-6e1e7fd6c1f3",
-          "childTag": [],
-          "isPinned": false,
-          "createdAt": "2026-04-10T05:06:34.459Z",
-          "updatedAt": "2026-04-10T05:06:34.459Z"
-        }
-      ],
-      "createdAt": "2026-01-10T11:45:00Z",
-      "updatedAt": "2026-04-10T05:06:34.459Z",
-      "isPinned": false,
-      "count": 6
-    },
-    {
-      "name": "todo",
+      "name": "testing-update",
       "color": "",
       "parentId": null,
       "entityType": "TAG",
-      "id": "3185d4da-039c-4f07-8b4f-53e32885e9fb",
-      "createdAt": "2026-04-03T11:34:33.641Z",
-      "updatedAt": "2026-04-10T06:07:22.288Z",
-      "childTag": [
-        {
-          "name": "todo  test",
-          "color": "",
-          "parentId": "3185d4da-039c-4f07-8b4f-53e32885e9fb",
-          "entityType": "CHILD_TAG",
-          "id": "69b2afe1-9d47-4ae3-9ba7-a9ce9a92e2bf",
-          "childTag": [],
-          "isPinned": false,
-          "createdAt": "2026-04-10T06:06:35.344Z",
-          "updatedAt": "2026-04-10T06:06:35.344Z"
-        }
-      ],
-      "isPinned": false
-    },
-    {
-      "name": "tete",
-      "color": "",
-      "parentId": null,
-      "entityType": "TAG",
-      "childTag": [
-        {
-          "name": "ttt",
-          "color": "",
-          "parentId": "_CUbayC",
-          "entityType": "CHILD_TAG",
-          "id": "919fd20c-1d32-46ff-a4d1-80aab02e32ba",
-          "childTag": [],
-          "isPinned": false,
-          "createdAt": "2026-04-10T06:12:36.080Z",
-          "updatedAt": "2026-04-10T06:12:36.080Z"
-        },
-        {
-          "name": "night",
-          "color": "",
-          "parentId": "_CUbayC",
-          "entityType": "CHILD_TAG",
-          "id": "567d3a45-22a3-45eb-9b24-2ec343b699ff",
-          "childTag": [],
-          "isPinned": false,
-          "createdAt": "2026-04-10T06:14:02.664Z",
-          "updatedAt": "2026-04-10T06:14:02.664Z"
-        }
-      ],
+      "childTag": [],
       "isPinned": false,
-      "createdAt": "2026-04-09T14:21:27.700Z",
-      "updatedAt": "2026-04-10T06:14:04.219Z",
-      "id": "_CUbayC"
+      "createdAt": "2026-04-10T09:20:30.895Z",
+      "updatedAt": "2026-04-10T10:49:05.757Z",
+      "id": "1cy2EcI"
     },
     {
       "name": "test",
@@ -390,32 +285,32 @@
       "entityType": "TAG",
       "childTag": [
         {
-          "name": "todo",
-          "color": "",
-          "parentId": "36WjPZw",
-          "entityType": "CHILD_TAG",
-          "id": "87c5e6d1-dfae-4e54-85e8-7d712f7d7235",
+          "name": "testing",
+          "color": "#3B82F6",
+          "parentId": "WATcGxJ",
+          "entityType": "TAG",
+          "id": "3b1e7c2a-480d-4e76-bc64-d972ca46d292",
           "childTag": [],
           "isPinned": false,
-          "createdAt": "2026-04-10T06:14:32.780Z",
-          "updatedAt": "2026-04-10T06:14:32.780Z"
+          "createdAt": "2026-04-10T10:56:32.845Z",
+          "updatedAt": "2026-04-10T10:57:04.046Z"
         }
       ],
       "isPinned": false,
-      "createdAt": "2026-04-10T06:12:04.586Z",
-      "updatedAt": "2026-04-10T06:14:33.688Z",
-      "id": "36WjPZw"
+      "createdAt": "2026-04-10T09:39:03.354Z",
+      "updatedAt": "2026-04-10T10:57:08.084Z",
+      "id": "WATcGxJ"
     },
     {
-      "name": "tets",
+      "name": "tetsshdsf",
       "color": "",
       "parentId": null,
       "entityType": "TAG",
+      "id": "f068c02c-01eb-43e8-9fbd-ea45b9920e47",
       "childTag": [],
       "isPinned": false,
-      "createdAt": "2026-04-10T06:14:18.036Z",
-      "updatedAt": "2026-04-10T06:14:18.036Z",
-      "id": "vIo6CEt"
+      "createdAt": "2026-04-10T09:40:05.588Z",
+      "updatedAt": "2026-04-10T10:04:27.158Z"
     }
   ]
 }

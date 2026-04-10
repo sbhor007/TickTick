@@ -10,5 +10,6 @@ export interface Tag {
   createdAt: string;
   updatedAt: string;
   isPinned: boolean;
+  isShared?: boolean;
   count?: number;
 }

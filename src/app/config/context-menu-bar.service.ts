@@ -88,11 +88,6 @@ export class ContextMenuBarService {
       // { label: 'Pin', icon: 'pi pi-pin', action: 'pin' },
       { label: 'Merge Tags', icon: '', action: 'mergeTags' },
       { label: 'Create Sub Tag', icon: '', action: 'createSubTag' },
-      {
-        label: 'Move to Shared Tags',
-        icon: '',
-        action: 'moveToSharedTags',
-      },
       { label: '', icon: '', action: 'divider', isDivider: true },
       {
         label: 'Delete',
@@ -105,11 +100,7 @@ export class ContextMenuBarService {
       { label: 'Edit', icon: '', action: 'edit' },
       // { label: 'Pin', icon: 'pin', action: 'pin' },
       { label: 'Merge Tags', icon: '', action: 'mergeTags' },
-      {
-        label: 'Move to Shared Tags',
-        icon: '',
-        action: 'moveToSharedTags',
-      },
+
       { label: '', icon: '', action: 'divider', isDivider: true },
       { label: 'Delete', icon: '', action: 'delete' },
     ],
@@ -119,6 +110,7 @@ export class ContextMenuBarService {
     type: EntityType,
     isPinned: boolean = false,
     isArchived: boolean = false,
+    isShared: boolean = false,
   ): ContextMenuItem[] {
     const menu = [...(this.CONTEXT_MENU_MAP[type] || [])];
 
@@ -145,6 +137,18 @@ export class ContextMenuBarService {
         : { label: 'Pin', icon: 'push_pin', action: 'pin' };
 
       insertAfterEdit(pinItem);
+    }
+
+    //share and unshare tag
+    if ([EntityType.TAG, EntityType.CHILD_TAG].includes(type)) {
+      const sharedItem: ContextMenuItem = isShared
+        ? {
+            label: 'Move to Personal Tags',
+            icon: '',
+            action: 'shareUnshareTag',
+          }
+        : { label: 'Move to Shared Tags', icon: '', action: 'shareUnshareTag' };
+      insertAfterEdit(sharedItem);
     }
 
     // ✅ Archive / Unarchive (ONLY for PROJECT)

@@ -12,7 +12,9 @@ import { MenuItem } from 'primeng/api';
 import { Menu } from 'primeng/menu';
 import { EntityType } from '../../../enums/entity-type';
 import { ContextMenuBarService } from '../../../config/context-menu-bar.service';
-import { ActivatedRoute } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 interface TreeNode {
   label: string;
   icon: string;
@@ -22,7 +24,7 @@ interface TreeNode {
 
 @Component({
   selector: 'app-tags',
-  imports: [TagInputComponent, Menu],
+  imports: [TagInputComponent, Menu, CommonModule, FormsModule, DialogModule],
   templateUrl: './tags.component.html',
 })
 export class TagsComponent implements OnInit {
@@ -96,6 +98,8 @@ export class TagsComponent implements OnInit {
     const context = this.contextMenuService.getContextMenu(
       tag.entityType,
       tag.isPinned,
+      false,
+      tag.isShared,
     );
 
     this.contextMenu = context.map((item): MenuItem => {
@@ -134,10 +138,14 @@ export class TagsComponent implements OnInit {
           this.updateTag({ ...tag, isPinned: !tag.isPinned });
           console.log('Tag unpinned....');
           break;
+
         case 'mergeTags':
-          //TODO:han
+          this.isVisibleConfirmPopup = true;
+          this.selectedTag = tag;
           break;
-        case 'moveToSharedTags':
+        case 'shareUnshareTag':
+          this.updateTag({ ...tag, isShared: !tag.isShared });
+          console.log('Tag Share to....');
           break;
         case 'delete':
           this.tagsService.deleteTag(tag.id);
@@ -147,8 +155,8 @@ export class TagsComponent implements OnInit {
       // handle child tags menu actions
       switch (action) {
         case 'edit':
-        case 'edit':
-          this.mode = 'update';
+          this.mode = 'update_subtag';
+          this.selectedTag = tag;
           this.isTagInputOpen = true;
           break;
         case 'pin':
@@ -188,11 +196,48 @@ export class TagsComponent implements OnInit {
         this.tagsService.createTags(event.payload);
         this.closeDialog();
         break;
+      case 'update_subtag':
+        console.log(this.selectedTag);
+        this.updateSubTag(
+          event.payload,
+          this.selectedTag.parentId,
+          this.selectedTag.id,
+        );
+        this.selectedTag = null;
+      this.isTagInputOpen = false;
+        break;
     }
   }
 
   /**tags operation */
   updateTag(payload: Tag) {
     this.tagsService.updateTag(payload.id, payload);
+  }
+
+  /**update Sub tag */
+  updateSubTag(payload: any, parentId: string, childId: string) {
+    if (payload.parentId != parentId) {
+      this.tagsService.moveSubTag(payload.parentId, payload)
+      this.tagsService.deleteSubTag(parentId, childId)
+    } else {
+      this.tagsService.updateSubTag(parentId, childId, payload);
+      
+    }
+  }
+
+  /**CONFIRM DIALOGUE FOR MERGE TAGS*/
+  isVisibleConfirmPopup: boolean = false;
+  selectedTargetTag!: string;
+
+  mergeTags() {
+    console.log('selected merging tag id....', this.selectedTargetTag);
+    this.tagsService.mergeTags(this.selectedTag.id, this.selectedTargetTag);
+    this.selectedTag = null;
+    this.isVisibleConfirmPopup = false;
+  }
+
+  closeConfirmDialog() {
+    this.selectedTag = null;
+    this.isVisibleConfirmPopup = false;
   }
 }
