@@ -1,5 +1,12 @@
 <!-- @if (tags().length > 0) { -->
- @if (true) {
+@if (true) {
+  <!-- Single shared popup menu -->
+  <p-menu
+    #contextMenuOptions
+    [model]="contextMenu"
+    [popup]="true"
+    appendTo="body"
+  />
   <div class="px-2 mt-4">
     <!-- Header -->
     <div class="flex items-center justify-between px-2 py-1 mb-1">
@@ -34,8 +41,10 @@
         <div>
           <!-- Root tag row -->
           <div
+            (contextmenu)="
+              openContextMenu($event, tag)
+            "
             class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
-            
           >
             <i
               class="pi pi-chevron-right text-[10px] text-white/50 transition-transform duration-200"
@@ -58,8 +67,10 @@
                 {{ tag.childTag?.length ?? 0 }}
               </span>
               <i
+                (click)="
+                  openContextMenu($event, tag)
+                "
                 class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
-                
               ></i>
             </div>
           </div>
@@ -85,6 +96,12 @@
                 <div>
                   <!-- Child row -->
                   <div
+                    (contextmenu)="
+                      openContextMenu(
+                        $event,
+                        child
+                      )
+                    "
                     class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
                     (click)="toggleExpandTag(child.id)"
                   >
@@ -109,12 +126,17 @@
                       </span>
                       <!-- TODO:implement option activator -->
                       <i
+                        (click)="
+                          openContextMenu(
+                            $event,
+                            child
+                          )
+                        "
                         class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
-                        
                       ></i>
                     </div>
-                     <!-- Child context menu -->
-                  <!-- @if (openMenuId === child.id) {
+                    <!-- Child context menu -->
+                    <!-- @if (openMenuId === child.id) {
                     <div (click)="$event.stopPropagation()">
                       <app-context-menu
                         [entityType]="child.entityType"
@@ -128,13 +150,17 @@
                   } -->
                   </div>
 
-                 
-
                   <!-- ✅ grandchildren — uses isTagExpanded(), not toggleExpandTag() -->
                   @if (isTagExpanded(child.id) && hasChildren(child)) {
                     <div class="ml-5 border-l border-white/10 pl-3">
                       @for (grand of child.childTag; track grand.id) {
                         <div
+                          (contextmenu)="
+                            openContextMenu(
+                              $event,
+                              grand
+                            )
+                          "
                           class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
                         >
                           <i class="pi pi-tag text-[13px] text-white/35"></i>
@@ -149,6 +175,15 @@
                           <span class="text-xs text-gray-500">{{
                             grand.childTag?.length ?? 0
                           }}</span>
+                          <i
+                            (click)="
+                              openContextMenu(
+                                $event,
+                                grand
+                              )
+                            "
+                            class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
+                          ></i>
                         </div>
                       }
                     </div>
@@ -163,10 +198,10 @@
   </div>
 }
 
-@if (showDialog) {
+@if (isTagInputOpen) {
   <app-tag-input
-    [mode]="selectedMode"
+    [mode]="mode"
     [existingTag]="selectedTag"
-    (tagsEventHandler)="inputTagsEventhandler($event)"
+    (tagsEventHandler)="inputTagsEventHandler($event)"
   />
 }

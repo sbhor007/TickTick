@@ -9,6 +9,6 @@ export interface Tag {
   childTag: Tag[];
   createdAt: string;
   updatedAt: string;
-  isPinned?: boolean;
+  isPinned: boolean;
   count?: number;
 }

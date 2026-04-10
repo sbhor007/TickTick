@@ -1,35 +1,63 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { EntityType } from '../../enums/entity-type';
 import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
 import { TagsService } from '../../config/tags.service';
-export type TagMode = 'create' | 'update' | 'create_subtag' | 'update_subtag';
+export type TagMode = 'create' | 'update' | 'create_subtag' | 'update_subtag' | 'close';
+export interface TagEvent {
+  action: TagMode;
+  entityType?: EntityType;
+  payload?: any;
+}
 
 @Component({
   selector: 'app-tag-input',
-  imports: [ReactiveFormsModule,InputTextModule,CommonModule],
-  templateUrl: './tag-input.component.html'
+  imports: [ReactiveFormsModule, InputTextModule, CommonModule],
+  templateUrl: './tag-input.component.html',
 })
-export class TagInputComponent implements OnInit{
-  private tagService = inject(TagsService)
+export class TagInputComponent implements OnInit {
+  private tagService = inject(TagsService);
 
   @Input() mode: TagMode = 'create';
   @Input() existingTag: any = null;
 
-  @Output() tagsEventHandler = new EventEmitter<any>();
+  @Output() tagsEventHandler = new EventEmitter<TagEvent>();
 
-  parentTags = this.tagService.allTags$()
+  parentTags = this.tagService.allTags$();
 
   tagForm!: FormGroup;
-  colors = ['#E24B4A','#E8872A','#EFC82A','#639922','#1D9E75','#378ADD','#7F77DD','#D4537E'];
-selectedColor = '';
-  constructor(private fb: FormBuilder){}
+  colors = [
+    '#E24B4A',
+    '#E8872A',
+    '#EFC82A',
+    '#639922',
+    '#1D9E75',
+    '#378ADD',
+    '#7F77DD',
+    '#D4537E',
+  ];
+  selectedColor = '';
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.buildForm()
-  }
+    console.debug('is existing tag null, ', this.existingTag);
 
+    this.buildForm();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['existingTag'] && !changes['existingTag'].firstChange) {
@@ -37,12 +65,11 @@ selectedColor = '';
     }
   }
 
-  private buildForm(){
-    
+  private buildForm() {
     this.tagForm = this.fb.group({
-      name:      [this.existingTag?.name    ?? '', Validators.required],
-      color:      [this.existingTag?.color    ?? ''],
-      parentId:   [this.existingTag?.parentId ?? null],
+      name: [this.existingTag?.name ?? '', Validators.required],
+      color: [this.existingTag?.color ?? ''],
+      parentId: [this.existingTag?.parentId ?? null],
       entityType: [EntityType.TAG],
     });
   }
@@ -56,12 +83,16 @@ selectedColor = '';
   //   ];
   // }
 
-  get title(): string {
+  get title(): any {
     switch (this.mode) {
-      case 'create':         return 'Add Tag';
-      case 'update':         return 'Update Tag';
-      case 'create_subtag':  return 'Add Sub-tag';
-      case 'update_subtag':  return 'Update Sub-tag';
+      case 'create':
+        return 'Add Tag';
+      case 'update':
+        return 'Update Tag';
+      case 'create_subtag':
+        return 'Add Sub-tag';
+      case 'update_subtag':
+        return 'Update Sub-tag';
     }
   }
 
@@ -75,17 +106,36 @@ selectedColor = '';
 
   onSave(): void {
     if (this.tagForm.invalid) return;
+    let payload = {}
+    if(this.mode == 'create_subtag' ){
+      payload = {
+      ...this.tagForm.value,
+      
+      ...(this.isUpdate && { id: this.existingTag?.id }),
+      parentId: this.existingTag?.id ?? null
+    };
 
-    const payload = {
+    }else{
+      payload = {
+      ...this.existingTag,
       ...this.tagForm.value,
       ...(this.isUpdate && { id: this.existingTag?.id }),
     };
+    }
+    
 
-    this.tagsEventHandler.emit({action: this.mode,payload:payload});
-  }
-  
-  onClose(){
-    this.tagsEventHandler.emit({action: 'close'});
+    this.tagsEventHandler.emit(
+      {
+        action: this.mode,
+        entityType: EntityType.TAG,
+        payload: payload
+      }
+    );
   }
 
+  onClose() {
+    this.tagsEventHandler.emit({
+      action: 'close',
+    });
+  }
 }
