@@ -158,11 +158,29 @@ export class TagsComponent implements OnInit {
           this.mode = 'update_subtag';
           this.selectedTag = tag;
           this.isTagInputOpen = true;
+
           break;
         case 'pin':
-          this.updateTag({ ...tag, isPinned: !tag.isPinned });
+          this.selectedTag = tag
+          if(this.selectedTag?.parentId != null){
+            console.log("----------------");
+            
+            this.tagsService.updateSubTag(this.selectedTag.parentId, this.selectedTag.id,{...this.selectedTag, isPinned:!this.selectedTag.isPinned
+          })
           console.log('Tag Pinned....');
-
+          this.selectedTag = null
+          }
+          break;
+          case 'unpin':
+          this.selectedTag = tag
+          if(this.selectedTag?.parentId != null){
+            console.log("----------------");
+            
+            this.tagsService.updateSubTag(this.selectedTag.parentId, this.selectedTag.id,{...this.selectedTag, isPinned:!this.selectedTag.isPinned
+          })
+          console.log('Tag Pinned....');
+          this.selectedTag = null
+          }
           break;
         case 'mergeTags':
           //TODO:han
@@ -170,6 +188,9 @@ export class TagsComponent implements OnInit {
         case 'moveToSharedTags':
           break;
         case 'delete':
+          this.selectedTag = tag
+          this.tagsService.deleteSubTag(this.selectedTag.parentId, this.selectedTag.id)
+          this.selectedTag = null
           break;
       }
     }
@@ -213,6 +234,9 @@ export class TagsComponent implements OnInit {
   updateTag(payload: Tag) {
     this.tagsService.updateTag(payload.id, payload);
   }
+
+  /**toggle pin for subTag */
+
 
   /**update Sub tag */
   updateSubTag(payload: any, parentId: string, childId: string) {
