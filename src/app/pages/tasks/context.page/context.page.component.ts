@@ -5,6 +5,9 @@ import { TaskListComponent } from '../../../components/context/task-list/task-li
 import { combineLatest, distinctUntilChanged, map, switchMap } from 'rxjs';
 import { EntityType } from '../../../enums/entity-type';
 import { ContextHeaderComponent } from '../../../components/context/context-header/context-header.component';
+import { TagInputComponent } from "../../../share/tag-input/tag-input.component";
+import { TaskInputComponent } from "../../../share/task-input/task-input.component";
+import { ProjectService } from '../../../services/project.service';
 
 type RouteInfo = {
   id: string | null;
@@ -13,16 +16,19 @@ type RouteInfo = {
 
 @Component({
   selector: 'app-context.page',
-  imports: [Splitter, RouterOutlet, TaskListComponent, ContextHeaderComponent],
+  imports: [Splitter, RouterOutlet, TaskListComponent, ContextHeaderComponent, TagInputComponent, TaskInputComponent],
   templateUrl: './context.page.component.html',
   styles: ``,
 })
 export class ContextPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private projectService = inject(ProjectService)
   routeData = signal<RouteInfo>({
     id: null,
     entityType: EntityType.FOLDER,
   });
+
+  entity:any
 
  sortGroupData = signal<any>({ groupBy: 'none', sortBy: 'Title' });
 
@@ -73,6 +79,16 @@ export class ContextPageComponent implements OnInit {
         console.log('routeData updated:', values);
         this.routeData.set(values);
       });
+  }
+
+  loadEntityData(){
+    if(this.routeData().entityType == EntityType.FOLDER){
+
+    }else if(this.routeData().entityType == EntityType.PROJECT){
+      this.projectService.fetchProjectById(this.routeData().id || '').subscribe(data => {
+        this.entity = data
+      })
+    }
   }
 
   sortEventHandler(event: any) {

@@ -2,24 +2,7 @@
 
   <!-- Context Menu -->
   <p-menu #contextMenuOptions [model]="contextMenu" [popup]="true" appendTo="body">
-    <!-- <ng-template pTemplate="item" let-item>
-      @if (item.separator) {
-        <div class="p-menu-separator"></div>
-      } @else {
-        <button
-          class="p-menuitem-link flex items-center gap-2 px-3 py-2 cursor-pointer w-full text-left"
-          [class.bg-white]="hoveredItemId === item.id"
-          (mouseenter)="onItemEnter($event, item)"
-          (mouseleave)="onItemLeave($event, item)"
-          (click)="item.command && item.command($event)"
-        >
-          @if (item.icon) {
-            <span class="material-icons text-[16px] text-gray-400">{{ item.icon }}</span>
-          }
-          <span class="p-menuitem-text text-[13px]">{{ item.label }}</span>
-        </button>
-      }
-    </ng-template> -->
+   
   </p-menu>
 
   <!-- Subtask toggle slot (projected from parent) -->
@@ -96,10 +79,10 @@
     </div>
 
     <!-- Due Date -->
-    <span
-      class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
-      [class]="isCompleted.value ? 'text-gray-600' : 'text-orange-400'"
-    >
+   <span
+  class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
+  [class]="isCompleted.value ? 'text-gray-600' : getDueDateColor(task.dueDate)"
+>
       @if (task.dueDate) {
         {{ task.dueDate | shortDate }}
       } @else {

@@ -1,0 +1,19 @@
+<div
+  class="relative bg-neutral-900 border border-white/10 rounded-xl focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all"
+>
+<!-- Main Input Row -->
+ <div class="flex items-center gap-1 px-3 py-1.5 min-h-[44px]">
+
+     <!-- Text input -->
+    <input
+      #inputRef
+      class="flex-1 bg-transparent border-none outline-none text-neutral-200 text-sm placeholder-neutral-600 caret-blue-500"
+      type="text"
+      [placeholder]="'add task project name'"
+      autocomplete="off"
+      (keydown)="onInputKeydown($event)"
+      (input)="onInputChange($event)"
+      (focus)="isExpanded = true"
+    />
+ </div>
+</div>

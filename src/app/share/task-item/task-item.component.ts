@@ -135,4 +135,14 @@ getCheckboxClass(priority: TaskPriority): string {
     default:                  return `${base} border-gray-500 checked:bg-gray-500`;
   }
 }
+
+/**due date */
+getDueDateColor(dueDate: any): string {
+  if (!dueDate) return 'text-gray-500';
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(dueDate);
+  due.setHours(0, 0, 0, 0);
+  return due < today ? 'text-red-400' : 'text-blue-400';
+}
 }
