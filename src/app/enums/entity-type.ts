@@ -9,5 +9,7 @@ export enum EntityType {
   INBOX = 'INBOX',
   SUMMARY = 'SUMMARY',
   TAG = 'TAG',
-  CHILD_TAG = 'CHILD_TAG'
+  CHILD_TAG = 'CHILD_TAG',
+  TASK = 'TASK',
+  SUBTASK='SUBTASK'
 }

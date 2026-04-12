@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   HostListener,
   inject,
   OnInit,
@@ -39,7 +40,11 @@ export class TagsComponent implements OnInit {
   // ✅ tracks which tag rows are expanded
   expandedTags = new Set<string>();
 
-  tags = this.tagsService.allTags$;
+  tags = computed(() =>{
+    const notShared = this.tagsService.allTags$().filter(t => !t.isShared)
+    const shared = this.tagsService.allTags$().filter(t => t.isShared)
+    return [...notShared,...shared]
+  });
   /**Context menu*/
   @ViewChild('contextMenuOptions') contextMenuOptions!: Menu;
   contextMenu: MenuItem[] = [];
@@ -115,7 +120,7 @@ export class TagsComponent implements OnInit {
 
   /**Handle context menu actions */
   handleAction(tag: any, action: string, event: any) {
-    console.log('actions event for tags : ', event);
+      // $&('actions event for tags : ', event);
 
     if (tag.entityType === EntityType.TAG) {
       // handle tags context menu actions
@@ -132,11 +137,11 @@ export class TagsComponent implements OnInit {
           break;
         case 'pin':
           this.updateTag({ ...tag, isPinned: !tag.isPinned });
-          console.log('Tag Pinned....');
+            // $&('Tag Pinned....');
           break;
         case 'unpin':
           this.updateTag({ ...tag, isPinned: !tag.isPinned });
-          console.log('Tag unpinned....');
+            // $&('Tag unpinned....');
           break;
 
         case 'mergeTags':
@@ -145,7 +150,7 @@ export class TagsComponent implements OnInit {
           break;
         case 'shareUnshareTag':
           this.updateTag({ ...tag, isShared: !tag.isShared });
-          console.log('Tag Share to....');
+            // $&('Tag Share to....');
           break;
         case 'delete':
           this.tagsService.deleteTag(tag.id);
@@ -163,22 +168,22 @@ export class TagsComponent implements OnInit {
         case 'pin':
           this.selectedTag = tag
           if(this.selectedTag?.parentId != null){
-            console.log("----------------");
+              // $&("----------------");
             
             this.tagsService.updateSubTag(this.selectedTag.parentId, this.selectedTag.id,{...this.selectedTag, isPinned:!this.selectedTag.isPinned
           })
-          console.log('Tag Pinned....');
+            // $&('Tag Pinned....');
           this.selectedTag = null
           }
           break;
           case 'unpin':
           this.selectedTag = tag
           if(this.selectedTag?.parentId != null){
-            console.log("----------------");
+              // $&("----------------");
             
             this.tagsService.updateSubTag(this.selectedTag.parentId, this.selectedTag.id,{...this.selectedTag, isPinned:!this.selectedTag.isPinned
           })
-          console.log('Tag Pinned....');
+            // $&('Tag Pinned....');
           this.selectedTag = null
           }
           break;
@@ -197,7 +202,7 @@ export class TagsComponent implements OnInit {
   }
   /**input event handler */
   inputTagsEventHandler(event: any) {
-    console.log('Input handler Event : ', event);
+      // $&('Input handler Event : ', event);
 
     if (event.action == 'close') {
       this.closeDialog();
@@ -209,7 +214,7 @@ export class TagsComponent implements OnInit {
         this.closeDialog();
         break;
       case 'update':
-        console.log('Update Event', event);
+          // $&('Update Event', event);
         this.updateTag(event.payload);
         this.closeDialog();
         break;
@@ -218,7 +223,7 @@ export class TagsComponent implements OnInit {
         this.closeDialog();
         break;
       case 'update_subtag':
-        console.log(this.selectedTag);
+          // $&(this.selectedTag);
         this.updateSubTag(
           event.payload,
           this.selectedTag.parentId,
@@ -254,7 +259,7 @@ export class TagsComponent implements OnInit {
   selectedTargetTag!: string;
 
   mergeTags() {
-    console.log('selected merging tag id....', this.selectedTargetTag);
+      // $&('selected merging tag id....', this.selectedTargetTag);
     this.tagsService.mergeTags(this.selectedTag.id, this.selectedTargetTag);
     this.selectedTag = null;
     this.isVisibleConfirmPopup = false;

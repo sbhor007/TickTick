@@ -29,10 +29,10 @@ export class FolderService {
 
   loadAllFolders(){
     this.fetchAllFolders().subscribe(folders => {
-      console.log("Folder Data::");
-      console.table(folders)
+      // console.log("Folder Data::");
+      // console.table(folders)
       this._allFolders.set(folders)
-      console.table(this.allFolders$())
+      // console.table(this.allFolders$())
     })
   }
 
@@ -86,7 +86,7 @@ loadPinnedFolders(){
     })
   ).subscribe(data =>{
     this._pinnedFolders.set(data)
-    console.log('pinned folders:', data);
+    // console.log('pinned folders:', data);
   })
 }
 }

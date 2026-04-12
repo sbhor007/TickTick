@@ -1,0 +1,138 @@
+import { CommonModule, JsonPipe, SlicePipe } from '@angular/common';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TaskService } from '../../services/task.service';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
+import { ShortDatePipe } from '../../pipe/short-date.pipe';
+import { ContextMenuBarService } from '../../config/context-menu-bar.service';
+import { Menu } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
+import { EntityType } from '../../enums/entity-type';
+import { TooltipModule } from 'primeng/tooltip';
+import { TaskPriority } from '../../enus/task-priority';
+
+export type TaskActionType = 'update' | 'delete' | 'duplicate' | 'move' | 'complete';
+export type TaskEntityType = 'task' | 'subtask';
+export type TaskField = 'title' | 'status' | 'dueDate' | 'dueTime' | 'reminder' | 'repeat' | 'tags' | 'all';
+
+export interface TaskEventPayload {
+  actionType: TaskActionType;
+  entityType: TaskEntityType;
+  id: string;
+  field: TaskField;
+  payload: any;
+}
+
+@Component({
+  selector: 'app-task-item',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    JsonPipe,
+    SlicePipe,
+    CheckboxModule,
+    FormsModule,
+    InputTextModule,
+    ShortDatePipe,
+    TooltipModule,
+    Menu,
+  ],
+  templateUrl: './task-item.component.html',
+  styleUrl: './task-item.component.css'
+})
+export class TaskItemComponent {
+  private taskService = inject(TaskService);
+  private contextMenuService = inject(ContextMenuBarService);
+
+  @Input() task!: any;
+  @Output() taskEvent = new EventEmitter<TaskEventPayload>();
+  @Output() contextMenuEvent = new EventEmitter<any>();
+
+  isCompleted = new FormControl();
+  taskTitle = new FormControl('');
+
+  @ViewChild('contextMenuOptions') contextMenuOptions!: Menu;
+  contextMenu: MenuItem[] = [];
+
+  // tracks which menu item is currently hovered
+  hoveredItemId: string | null = null;
+
+  ngOnInit(): void {
+    this.taskTitle.setValue(this.task?.title ?? '');
+    this.isCompleted.setValue(this.task?.status === 'COMPLETED');
+  }
+
+  openFolderMenu(
+    event: MouseEvent,
+    id: string,
+    entityType: any,
+    isPinned: boolean,
+    isArchived: boolean = false,
+  ) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const context = this.contextMenuService.getContextMenu(entityType, isPinned, isArchived);
+
+    this.contextMenu = context.map((item): MenuItem => {
+      if (item.isDivider) return { separator: true };
+      return {
+        ...item,
+        // mark move-to items so the template can identify them
+        id: item.action === 'shareUnshareTag' ? 'move-to-item' : item.action,
+        command: () => this.handleAction(entityType, item.action, id),
+      };
+    });
+
+    this.contextMenuOptions.toggle(event);
+  }
+
+  handleAction(entityType: EntityType, action: string, id: string) {
+    console.log('action:', action, 'entityType:', entityType, 'id:', id);
+  }
+
+  onMoveToEnter(event: MouseEvent, item: MenuItem) {
+    this.hoveredItemId = item.id ?? null;
+    console.log('mouseenter → move-to item:', item.label, item);
+    // your hover logic here, e.g. show a submenu, preview, etc.
+  }
+
+  onMoveToLeave(event: MouseEvent, item: MenuItem) {
+    this.hoveredItemId = null;
+    console.log('mouseleave → move-to item:', item.label);
+  }
+
+
+
+onItemEnter(event: MouseEvent, item: MenuItem) {
+  if (item.id !== 'move-to-item') return;
+  this.hoveredItemId = item.id;
+  console.log('mouseenter → move-to:', item.label);
+  // your logic here
+}
+
+onItemLeave(event: MouseEvent, item: MenuItem) {
+  if (item.id !== 'move-to-item') return;
+  this.hoveredItemId = null;
+  console.log('mouseleave → move-to:', item.label);
+}
+
+/*checkbox*/
+getCheckboxClass(priority: TaskPriority): string {
+  const base = 'w-3.5 h-3.5 rounded-sm appearance-none border-2 cursor-pointer transition-colors';
+  switch (priority) {
+    case TaskPriority.HIGH:   return `${base} border-red-500 checked:bg-red-500`;
+    case TaskPriority.MEDIUM: return `${base} border-yellow-400 checked:bg-yellow-400`;
+    case TaskPriority.LOW:    return `${base} border-blue-400 checked:bg-blue-400`;
+    default:                  return `${base} border-gray-500 checked:bg-gray-500`;
+  }
+}
+}

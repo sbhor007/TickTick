@@ -33,7 +33,7 @@ export class SmartViewComponent {
   }
 
   navigate(id: string, routeName: string): void {
-    console.log(`${routeName.toLowerCase().replace(/\s+/g, '-')}/tasks`);
+      // $&(`${routeName.toLowerCase().replace(/\s+/g, '-')}/tasks`);
     
     this.router.navigate([`${routeName.toLowerCase().replace(/\s+/g, '-')}/tasks`, id]);
 }
@@ -70,7 +70,7 @@ contextMenuAction(
     id: string,
 
   ): void {
-    console.log('Action: for smart view  ');
+      // $&('Action: for smart view  ');
     // this.closeMenu(); // ✅ from base class
   }
 

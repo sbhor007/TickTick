@@ -23,7 +23,7 @@ export class FolderProjectService {
     let arr = []
     this.folderService.allFolders$().forEach(f =>{
       let data = this.projectService.projects$().filter(p => p.folderId == f.id)
-      f.projects.push(data)
+      // f.projects.push(data)
       arr.push(...data)
     })
 

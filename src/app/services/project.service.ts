@@ -33,8 +33,8 @@ export class ProjectService {
       //  console.log("Project Data::");
       // console.table(projects)
       this._projects.set(projects)
-       console.log("Project Data signal::");
-      console.table(this.projects$())
+      //  console.log("Project Data signal::");
+      // console.table(this.projects$())
     })
   }
 /**create new project */

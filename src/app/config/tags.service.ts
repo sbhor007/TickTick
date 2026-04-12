@@ -48,7 +48,7 @@ export class TagsService {
     };
     this.http.post<Tag>(`${environment.API}/tags`, body).subscribe({
       next: (data) => {
-        console.info('Tag Crated...');
+        // console.info('Tag Crated...');
         this.loadAllTags();
       },
       error: (err) => {
@@ -80,7 +80,7 @@ export class TagsService {
     const body = { ...changes, updatedAt: new Date().toISOString() };
     this.http.patch<Tag>(`${environment.API}/tags/${id}`, body).subscribe({
       next: (data) => {
-        console.info('Tag updated...');
+        // console.info('Tag updated...');
         this.loadAllTags();
       },
       error: (err) => {
@@ -99,7 +99,7 @@ export class TagsService {
     if (targetTag && selectedChildTags.length) {
       targetTag.childTag.push(...selectedChildTags);
       this.updateTag(targetId, targetTag);
-      console.log('target::', targetTag);
+      // console.log('target::', targetTag);
       this.deleteTag(selectedTagId);
     }
   }
@@ -108,7 +108,7 @@ export class TagsService {
   deleteTag(id: string) {
     this.http.delete<void>(`${environment.API}/tags/${id}`).subscribe({
       next: () => {
-        console.info('Tag deleted...');
+        // console.info('Tag deleted...');
         this.loadAllTags();
       },
       error: (err) => {

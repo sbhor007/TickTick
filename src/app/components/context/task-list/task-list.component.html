@@ -1,0 +1,62 @@
+<div>
+  @for (group of groupedTasks(); track group.key) {
+    @if (group.tasks.length > 0) {
+
+      <!-- Group Header -->
+      <div
+        class="flex items-center gap-1.5 px-2 py-1.5 cursor-pointer select-none"
+        (click)="toggleGroup(group.key)"
+      >
+        <i class="pi text-[10px] text-gray-500 transition-transform duration-200"
+          [class.pi-chevron-right]="isCollapsed(group.key)"
+          [class.pi-chevron-down]="!isCollapsed(group.key)"
+        ></i>
+        <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+          {{ group.label }}
+        </span>
+        <span class="text-[10px] text-gray-600 font-normal">
+          {{ group.tasks.length }}
+        </span>
+      </div>
+
+      <!-- Tasks -->
+      @if (!isCollapsed(group.key)) {
+        @for (task of group.tasks; track task.id) {
+
+          <!-- Task Row with inline subtask toggle -->
+          <app-task-item [task]="task">
+
+            @if (task.subtasks && task.subtasks.length > 0) {
+              <button
+                subtaskToggle
+                class="flex items-center justify-center w-3.5 h-3.5 flex-shrink-0"
+                (click)="$event.stopPropagation(); toggleGroup('sub_' + task.id)"
+              >
+                <i class="pi text-[9px] text-gray-500 transition-transform duration-200"
+                  [class.pi-chevron-right]="isCollapsed('sub_' + task.id)"
+                  [class.pi-chevron-down]="!isCollapsed('sub_' + task.id)"
+                ></i>
+              </button>
+            } @else {
+              <span subtaskToggle class="w-3.5 h-3.5 flex-shrink-0 block"></span>
+            }
+
+          </app-task-item>
+
+          <!-- Subtask rows -->
+          @if (task.subtasks && task.subtasks.length > 0 && !isCollapsed('sub_' + task.id)) {
+            <div class="ml-2  pl-2">
+              @for (subtask of task.subtasks; track subtask.id) {
+                <app-task-item [task]="subtask">
+                  <span subtaskToggle class="w-3.5 h-3.5 flex-shrink-0 block"></span>
+                </app-task-item>
+              }
+            </div>
+          }
+
+        }
+      }
+
+    }
+  }
+</div>

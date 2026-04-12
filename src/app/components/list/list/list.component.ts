@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   HostListener,
   inject,
   OnInit,
@@ -18,7 +19,6 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { ContextMenuBarService } from '../../../config/context-menu-bar.service';
 
-
 @Component({
   selector: 'app-list',
   imports: [
@@ -33,12 +33,23 @@ import { ContextMenuBarService } from '../../../config/context-menu-bar.service'
 export class ListComponent implements OnInit {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
-  private folderWithProjectService = inject(FolderProjectService);
+  // private folderWithProjectService = inject(FolderProjectService);
   private contextMenuService = inject(ContextMenuBarService);
 
-  allFolders = this.folderService.allFolders$;
+  allFolders = computed(() => {
+    const data = this.folderService
+      .allFolders$()
+      .map((folder) => ({
+        ...folder,
+        entityType:folder.entityType,
+        projects: this.projectService
+          .projects$()
+          .filter((p) => p.folderId === folder.id),
+      }));
+    return data;
+  });
   allProject = this.projectService.projects$;
-  folderWithProjects = this.folderWithProjectService.foldersWithProjects$;
+  // folderWithProjects = this.folderWithProjectService.foldersWithProjects$;
 
   isShowCreateForm = false;
   isFolderDialogOpen = false;
@@ -50,7 +61,7 @@ export class ListComponent implements OnInit {
   projectId: string | null = null;
 
   ngOnInit(): void {
-    this.folderWithProjectService.fetchFolderWithProjects();
+    // this.folderWithProjectService.fetchFolderWithProjects();
     this.folderService.loadAllFolders();
     this.projectService.loadAllProjects();
   }
@@ -60,33 +71,11 @@ export class ListComponent implements OnInit {
   @ViewChild('contextMenuOptions') contextMenuOptions!: Menu;
 
   contextMenu: MenuItem[] = [];
-  //
-  // folderItems: MenuItem[] = [
-  //   {
-  //     label: 'Folder',
-  //     items: [
-  //       { label: 'Rename', icon: 'pi pi-pencil', command: () => console.log("implement latter") },
-  //       { label: 'Delete', icon: 'pi pi-trash', command: () => console.log("implement latter") },
-  //       { label: 'Pin', icon: 'pi pi-bookmark', command: () => console.log("implement latter") },
-  //     ],
-  //   }
-  // ];
-
-  // projectItems: MenuItem[] = [
-  //   {
-  //     label: 'Project',
-  //     items: [
-  //       { label: 'Rename', icon: 'pi pi-pencil', command: () => console.log("implement latter") },
-  //       { label: 'Delete', icon: 'pi pi-trash', command: () => console.log("implement latter") },
-  //       { label: 'Pin', icon: 'pi pi-bookmark', command: () => console.log("implement latter") },
-  //     ],
-  //   }
-  // ];
 
   openFolderMenu(
     event: MouseEvent,
     id: string,
-    entityType: EntityType,
+    entityType: any,
     isPinned: boolean,
     isArchived: boolean = false,
   ) {
@@ -112,7 +101,7 @@ export class ListComponent implements OnInit {
   }
 
   handleAction(entityType: EntityType, action: string, id: string) {
-    console.log('handle actions::', action);
+    //   // $&('handle actions::', action);
 
     if (entityType === EntityType.FOLDER) {
       switch (action) {
@@ -182,13 +171,13 @@ export class ListComponent implements OnInit {
           break;
       }
     }
-    console.log(entityType + ' : ' + action + ' : ' + id);
+    // $&(entityType + ' : ' + action + ' : ' + id);
   }
   /**************option menu******************* */
 
   /**************folder event******************* */
   handleFolderEvent(event: any) {
-    console.log('folder event', event);
+    // $&('folder event', event);
     switch (event.action) {
       case 'update':
         this.updateFolder(event.folderId, event.folderName);
@@ -214,7 +203,7 @@ export class ListComponent implements OnInit {
       });
       this.folderService.deleteFolder(folderId).subscribe({
         next: () => {
-          this.folderWithProjectService.fetchFolderWithProjects();
+          // this.folderWithProjectService.fetchFolderWithProjects();
           this.reinitializedIds();
         },
         error: () => {
@@ -230,7 +219,7 @@ export class ListComponent implements OnInit {
       this.folderService
         .updateFolder(folder.id, { ...folder, name: updatedName })
         .subscribe((update) => {
-          console.log('Folder Updated....', update);
+          // $&('Folder Updated....', update);
           this.reloaddata();
           this.reinitializedIds();
         });
@@ -255,9 +244,9 @@ export class ListComponent implements OnInit {
       this.folderService
         .updateFolder(folder.id, { ...folder, isPinned: !folder.isPinned })
         .subscribe((update) => {
-          console.log('Folder Updated....', update);
-          this.folderService.loadAllFolders()
-          this.folderWithProjectService.fetchFolderWithProjects();
+          // $&('Folder Updated....', update);
+          this.folderService.loadAllFolders();
+          // this.folderWithProjectService.fetchFolderWithProjects();
           this.reinitializedIds();
         });
     });
@@ -275,7 +264,7 @@ export class ListComponent implements OnInit {
       return;
     }
 
-    console.log('Project Form Event Handler::', event);
+    // $&('Project Form Event Handler::', event);
 
     if (EntityType.PROJECT === event.entity) {
       const project = this.allProject().find((p) => p.id === event.entityId);
@@ -324,7 +313,7 @@ export class ListComponent implements OnInit {
     this.projectService
       .updateProject(projectId, updatedProject)
       .subscribe(() => {
-        console.log('project updated');
+        // $&('project updated');
 
         this.isShowCreateForm = false;
         this.reloaddata();
@@ -358,6 +347,6 @@ export class ListComponent implements OnInit {
 
   reloaddata() {
     this.projectService.loadAllProjects();
-    this.folderWithProjectService.fetchFolderWithProjects();
+    // this.folderWithProjectService.fetchFolderWithProjects();
   }
 }

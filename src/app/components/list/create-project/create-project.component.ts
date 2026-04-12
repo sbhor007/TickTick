@@ -102,7 +102,6 @@ export class CreateProjectComponent implements OnInit {
 
 
  onFolderChange(event: any) {
-  console.log("------");
   
   const selected = event.value;
   if (selected?.command) {
@@ -113,7 +112,7 @@ export class CreateProjectComponent implements OnInit {
   /**create project task */
   onSubmit() {
     if (this.projectForm.invalid) {
-      console.log("invalid",this.projectForm.value);
+      // console.log("invalid",this.projectForm.value);
       
       this.projectForm.markAllAsTouched();
       return;
@@ -146,7 +145,7 @@ export class CreateProjectComponent implements OnInit {
         payload: this.projectForm.value
       })
     } else {
-      console.log(this.projectForm.value);
+      // console.log(this.projectForm.value);
       this.formHandler.emit({
         action:"create",
         entity:EntityType.PROJECT,
@@ -165,7 +164,7 @@ export class CreateProjectComponent implements OnInit {
 
   handleFolderEvent(event: any) {
     this.isShowFolderDialog.set(false);
-    console.log(event);
+    // console.log(event);
     
 
     if (event.action === 'cancel'){
@@ -175,7 +174,7 @@ export class CreateProjectComponent implements OnInit {
 
     // CREATE
     if (event.action === 'create') {
-      console.log("Folder created...");
+      // console.log("Folder created...");
       
       this.folderService.loadAllFolders()
       this.projectForm.patchValue({
@@ -185,7 +184,7 @@ export class CreateProjectComponent implements OnInit {
     }
     //  UPDATE
     if (event.action === 'update') {
-      console.log('Folder updated:', event.folderName);
+      // console.log('Folder updated:', event.folderName);
     }
   }
 

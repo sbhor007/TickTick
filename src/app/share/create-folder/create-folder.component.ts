@@ -38,18 +38,18 @@ export class CreateFolderComponent {
     // Initialize input value
     this.localFolderName = this.folderName || '';
     if (this.folderId) {
-      console.log(this.folderId);
+        // $&(this.folderId);
       this.folderService.fetchFolderById(this.folderId).subscribe((folder) => {
-        console.log(folder);
+          // $&(folder);
         this.folderData = folder;
-        console.log(this.folderData);
+          // $&(this.folderData);
         this.localFolderName = this.folderData.name;
       });
     }
   }
 
   onClose() {
-    console.log("call folder emit");
+      // $&("call folder emit");
     
     this.folderEvent.emit({ action: 'cancel' });
   }
@@ -76,7 +76,7 @@ export class CreateFolderComponent {
       updatedAt: new Date().toLocaleDateString(),
     };
     this.folderService.createFolder(folderData).subscribe((data) => {
-      console.log('Folder Creted',data);
+        // $&('Folder Creted',data);
       this.folderService.loadAllFolders()
       this.folderEvent.emit({
         action: 'create',

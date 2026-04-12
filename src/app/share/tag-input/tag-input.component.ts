@@ -68,8 +68,12 @@ export class TagInputComponent implements OnInit {
   }
 
   private buildForm() {
+    let existingName = this.existingTag?.name
+    if(this.mode == 'create_subtag'){
+      existingName = ''
+    }
     this.tagForm = this.fb.group({
-      name: [this.existingTag?.name ?? '', Validators.required],
+      name: [existingName ?? '', Validators.required],
       color: [this.existingTag?.color ?? ''],
       parentId: [this.existingTag?.parentId ?? null],
       entityType: [EntityType.TAG],

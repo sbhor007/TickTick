@@ -1,4 +1,5 @@
 import { EntityType } from "../enums/entity-type";
+import { Task } from "./task";
 
 export interface Project {
   id: string;
@@ -15,5 +16,5 @@ export interface Project {
   isArchived: boolean;
   isSmartView: boolean;
   icon: string;
-  tasks: any[];
+  tasks: Task[];
 }

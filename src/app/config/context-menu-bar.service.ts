@@ -104,8 +104,95 @@ export class ContextMenuBarService {
       { label: '', icon: '', action: 'divider', isDivider: true },
       { label: 'Delete', icon: '', action: 'delete' },
     ],
-  };
+    [EntityType.TASK]: [
+      {
+        label: 'Date',
+        icon: '',
+        isSectionHeader: true,
+        action: 'date_section',
+        renderType: 'icon-grid',
+        children: [
+          { label: 'Today', icon: 'pi pi-sun', action: 'set_date_today' },
+          {
+            label: 'Tomorrow',
+            icon: 'pi pi-cloud-sun',
+            action: 'set_date_tomorrow',
+          },
+          {
+            label: 'Next Week',
+            icon: 'pi pi-calendar',
+            action: 'set_date_next_week',
+          },
+          {
+            label: 'Custom',
+            icon: 'pi pi-calendar-clock',
+            action: 'set_date_custom',
+          },
+        ],
+      },
+      {
+        label: 'Priority',
+        icon: '',
+        isSectionHeader: true,
+        action: 'priority_section',
+        renderType: 'icon-grid',
+        children: [
+          {
+            label: 'High',
+            icon: 'pi pi-flag-fill',
+            action: 'set_priority_high',
+            color: '#ef4444',
+          },
+          {
+            label: 'Medium',
+            icon: 'pi pi-flag-fill',
+            action: 'set_priority_medium',
+            color: '#eab308',
+          },
+          {
+            label: 'Low',
+            icon: 'pi pi-flag-fill',
+            action: 'set_priority_low',
+            color: '#3b82f6',
+          },
+          {
+            label: 'None',
+            icon: 'pi pi-flag-fill',
+            action: 'set_priority_none',
+            color: '#6b7280',
+          },
+        ],
+      },
+      { label: '', icon: '', action: 'divider', isDivider: true },
 
+      { label: 'Add Subtask', icon: 'add_task', action: 'add_subtask' },
+      {
+        label: 'Link Parent Task',
+        icon: 'account_tree',
+        action: 'link_parent',
+      },
+      // { label: 'Pin', icon: 'push_pin', action: 'pin' },
+      { label: "Won't Do", icon: 'block', action: 'wont_do' },
+      {
+        label: 'Move to',
+        icon: 'folder_open',
+        action: 'move_to',
+        hasSubmenu: true,
+      },
+      { label: 'Tags', icon: 'label', action: 'manage_tags' },
+
+      { label: '', icon: '', action: 'divider', isDivider: true },
+
+      { label: 'Duplicate', icon: 'content_copy', action: 'duplicate' },
+      { label: 'Copy Link', icon: 'link', action: 'copy_link' },
+      { label: 'Convert to Note', icon: 'note_alt', action: 'convert_to_note' },
+
+      { label: '', icon: '', action: 'divider', isDivider: true },
+
+      { label: 'Delete', icon: 'delete', action: 'delete', isDanger: true },
+    ],
+    [EntityType.SUBTASK]: [],
+  };
   getContextMenu(
     type: EntityType,
     isPinned: boolean = false,

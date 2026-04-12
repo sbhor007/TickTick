@@ -7,6 +7,10 @@
     appendTo="body"
   />
 
+  <pre>
+    <!-- {{allFolders() | json}} -->
+  </pre>
+
   <!-- Section Header -->
   <div class="flex items-center justify-between mb-2 px-1">
     <h3
@@ -37,7 +41,7 @@
     class="max-h-52 overflow-y-auto scrollbar-none scroll-smooth space-y-0.5"
   >
     <!-- Folders -->
-    @for (folder of folderWithProjects(); track $index) {
+    @for (folder of allFolders(); track $index) {
       <div>
         <!-- Folder row -->
         <div
@@ -88,7 +92,7 @@
         </div>
 
         <!-- Folder projects -->
-        @if (isOpen($index) && folder.projects?.length > 0) {
+        @if (isOpen($index)) {
           <div
             class="ml-4 pl-3 border-l border-white/[0.06] mt-0.5 space-y-0.5"
           >

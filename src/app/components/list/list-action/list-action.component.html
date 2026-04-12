@@ -1,27 +1,28 @@
-<div class="w-full  flex flex-col h-full overflow-y-auto text-sm text-gray-300">
-
+<div class="flex flex-col h-full text-sm text-gray-300  w-full">
   <!-- pin section:START -->
   <app-pinned></app-pinned>
   <!-- smart list section -->
-   <app-smart-view></app-smart-view>
-    <!-- List Section -->
-     <app-list></app-list>
-     <!-- tags section -->
-      <app-tags></app-tags>
+  <app-smart-view></app-smart-view>
+  <!-- List Section -->
+  <app-list></app-list>
+  <!-- tags section -->
+  <app-tags></app-tags>
   <!-- Footer -->
-  <div class="px-3 pb-3 border-t border-gray-800 pt-3">
+  <div class="px-3 pb-3 border-t border-gray-800 pt-3 mt-auto">
     <ul class="space-y-1 flex flex-col">
       <li
-        class="pi pi-check-circle hover:bg-[#1c1c1f] py-3 px-4 rounded-xl cursor-pointer"
+        class="flex items-center gap-3 hover:bg-[#1c1c1f] py-3 px-4 rounded-xl cursor-pointer"
         [routerLink]="'completed-tasks'"
       >
-        Completed
+        <i class="pi pi-check-circle text-base"></i>
+        <span>Completed</span>
       </li>
       <li
-        class="pi pi-trash hover:bg-[#1c1c1f] py-3 px-4 rounded-xl cursor-pointer"
+        class="flex items-center gap-3 hover:bg-[#1c1c1f] py-3 px-4 rounded-xl cursor-pointer"
         [routerLink]="'trashed'"
       >
-        Trash
+        <i class="pi pi-trash text-base"></i>
+        <span>Trash</span>
       </li>
     </ul>
   </div>
