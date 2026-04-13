@@ -4,7 +4,7 @@ import { TaskStatus } from "../enus/task-status";
 
 export interface Task {
   id: string;
-  userId: string;
+  userId: string | null;
   projectId: string;
   title: string | null | undefined;
   description: string;

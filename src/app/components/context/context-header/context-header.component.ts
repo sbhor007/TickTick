@@ -25,13 +25,18 @@ export type SubMenuType = 'group' | 'sort' | null;
   selector: 'app-context-header',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './context-header.component.html',
-  styles: ``,
+  styles: [`
+    ::ng-deep .hidden-input .p-datepicker-input {
+      display: none;
+    }
+  `],
 })
 export class ContextHeaderComponent implements OnInit, OnChanges {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
 
   @Input() routeData!: Signal<any>;
+  
 
   groupOptions: GroupByOption[] = ['Date', 'Tag', 'Priority', 'None'];
   sortOptions: SortByOption[] = ['Date', 'Title', 'Tag', 'Priority'];

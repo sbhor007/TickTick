@@ -28,5 +28,19 @@ export class TaskService {
       this.allTasks$.set(tasks)
     })
   }
+
+  /**create task */
+  crateTask(projectId:string,task:Task){
+    this.http.post<Task>(`${environment.API}/tasks`,task).subscribe({
+      next: (taskData) =>{
+        console.log("task Created...");
+        this.loadAllTasks()        
+      },
+      error: (err) => {
+        console.error("error occur when task creation:: ",err);
+        
+      }
+    })
+  }
 }
 

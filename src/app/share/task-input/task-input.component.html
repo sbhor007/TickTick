@@ -1,19 +1,66 @@
-<div
-  class="relative bg-neutral-900 border border-white/10 rounded-xl focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all"
->
-<!-- Main Input Row -->
- <div class="flex items-center gap-1 px-3 py-1.5 min-h-[44px]">
+<div class="relative">
+  <!-- Input Wrapper -->
+  <div
+    class="relative bg-neutral-900 border border-white/10 rounded-xl focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all"
+  >
+    <!-- Main Input Row -->
+    <div class="flex items-center gap-1 px-3 py-1.5 min-h-[44px]">
+      <input
+        class="flex-1 bg-transparent border-none outline-none text-neutral-200 text-sm placeholder-neutral-600 caret-blue-500"
+        type="text"
+        [placeholder]="'Add task ' + project?.name"
+        autocomplete="off"
+        [(ngModel)]="taskTitle"
+        (keydown.enter)="onInputKeydown($event)"
+        (onKeydown)="selectPriorityOrTag($event)"
+        (focus)="isExpanded = true"
+      />
 
-     <!-- Text input -->
-    <input
-      #inputRef
-      class="flex-1 bg-transparent border-none outline-none text-neutral-200 text-sm placeholder-neutral-600 caret-blue-500"
-      type="text"
-      [placeholder]="'add task project name'"
-      autocomplete="off"
-      (keydown)="onInputKeydown($event)"
-      (input)="onInputChange($event)"
-      (focus)="isExpanded = true"
-    />
- </div>
+      <!-- Calendar Icon -->
+      <p class="text-[10px] text-blue-400">
+        {{ lastSelection()?.date | date }}
+      </p>
+      <button
+        type="button"
+        class="flex items-center justify-center p-1.5 rounded-md transition-all"
+        [class.text-blue-500]="isDateTimePikerVisible"
+        [class.text-neutral-500]="!isDateTimePikerVisible"
+        [class.hover:text-neutral-300]="!isDateTimePikerVisible"
+        (click)="toggeleDateTimePiker()"
+      >
+        <i class="pi pi-calendar text-[13px]"></i>
+      </button>
+    </div>
+
+    <!-- Selected Date/Time Badge (shown inside input area when date is selected) -->
+    <!-- @if (selectedDateTime) {
+      <div class="flex items-center gap-1.5 px-3 pb-2">
+        <span
+          class="flex items-center gap-1 text-[11px] text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-md px-2 py-0.5"
+        >
+          <i class="pi pi-clock text-[10px]"></i>
+          {{ selectedDateTime | date: "MMM d, y · h:mm a" }}
+          <button
+            type="button"
+            class="ml-1 text-blue-400/60"
+            (click)="clearDateTime()"
+          >
+            <i class="pi pi-times cursor-pointer text-[9px]">i</i>
+          </button>
+        </span>
+      </div>
+    } -->
+  </div>
+
+  <!-- Date Time Picker Dropdown -->
+  @if (isDateTimePikerVisible) {
+    <div class="absolute top-full left-0 mt-2 z-50 w-full min-w-[300px]">
+      <app-date-time-picker
+        [initialDate]="initialDate()"
+        [initialTime]="initialTime()"
+        (confirmed)="onConfirmed($event)"
+        (closed)="isDateTimePikerVisible = false"
+      />
+    </div>
+  }
 </div>

@@ -1137,6 +1137,32 @@
       "createdAt": "2026-04-01T14:10:00Z",
       "updatedAt": "2026-04-12T14:30:00Z",
       "completedAt": null
+    },
+    {
+      "id": "125d7b95-c825-4f52-957e-2f0454efa37f",
+      "userId": null,
+      "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+      "title": "testing-2",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "reminder": {
+        "type": "daily"
+      },
+      "repeat": {
+        "type": "on-the-day"
+      },
+      "dueDate": "2026-04-12T18:30:00.000Z",
+      "createdAt": "2026-04-13T10:29:52.332Z",
+      "updatedAt": "2026-04-13T10:29:52.332Z",
+      "completedAt": null
     }
   ],
   "tags": [

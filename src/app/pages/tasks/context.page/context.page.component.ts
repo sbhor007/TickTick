@@ -5,9 +5,10 @@ import { TaskListComponent } from '../../../components/context/task-list/task-li
 import { combineLatest, distinctUntilChanged, map, switchMap } from 'rxjs';
 import { EntityType } from '../../../enums/entity-type';
 import { ContextHeaderComponent } from '../../../components/context/context-header/context-header.component';
-import { TagInputComponent } from "../../../share/tag-input/tag-input.component";
-import { TaskInputComponent } from "../../../share/task-input/task-input.component";
+import { TagInputComponent } from '../../../share/tag-input/tag-input.component';
+import { TaskInputComponent } from '../../../share/task-input/task-input.component';
 import { ProjectService } from '../../../services/project.service';
+import { DateTimePickerComponent } from '../../../share/date-time-picker/date-time-picker.component';
 
 type RouteInfo = {
   id: string | null;
@@ -16,52 +17,31 @@ type RouteInfo = {
 
 @Component({
   selector: 'app-context.page',
-  imports: [Splitter, RouterOutlet, TaskListComponent, ContextHeaderComponent, TagInputComponent, TaskInputComponent],
+  imports: [
+    Splitter,
+    RouterOutlet,
+    TaskListComponent,
+    ContextHeaderComponent,
+    TagInputComponent,
+    TaskInputComponent,
+    DateTimePickerComponent,
+  ],
   templateUrl: './context.page.component.html',
   styles: ``,
 })
 export class ContextPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private projectService = inject(ProjectService)
+  private projectService = inject(ProjectService);
+
   routeData = signal<RouteInfo>({
     id: null,
     entityType: EntityType.FOLDER,
   });
 
-  entity:any
+  entityData = signal<any>(null);
 
- sortGroupData = signal<any>({ groupBy: 'none', sortBy: 'Title' });
+  sortGroupData = signal<any>({ groupBy: 'none', sortBy: 'Title' });
 
-
-
-  //   ngOnInit(): void {
-  //     // this.route.paramMap
-  //     //   .pipe(
-  //     //     map((param) => ({
-  //     //       id: param.get('id'),
-  //     //       entityType: this.route.snapshot.data['entityType'],
-  //     //     })),
-  //     //   )
-  //     //   .subscribe((values) => {
-  //     //     this.routeData.set(values)
-  //     //   });
-
-  //     combineLatest([
-  //   this.route.paramMap,
-  //   this.route.data
-  // ])
-  //   .pipe(
-  //     map(([params, data]) => ({
-  //       id: params.get('id'),
-  //       entityType: data['entityType'],
-  //     }))
-  //   )
-  //   .subscribe((values) => {
-  //     console.log("before::",values);
-  //     this.routeData.set(values);
-  //     console.log("after::",values);
-  //   });
-  //   }
   ngOnInit(): void {
     this.route.paramMap
       .pipe(
@@ -78,21 +58,25 @@ export class ContextPageComponent implements OnInit {
       .subscribe((values) => {
         console.log('routeData updated:', values);
         this.routeData.set(values);
+        this.loadEntityData();
       });
   }
 
-  loadEntityData(){
-    if(this.routeData().entityType == EntityType.FOLDER){
+  private loadEntityData(): void {
+    const { entityType, id } = this.routeData();
 
-    }else if(this.routeData().entityType == EntityType.PROJECT){
-      this.projectService.fetchProjectById(this.routeData().id || '').subscribe(data => {
-        this.entity = data
-      })
+    if (entityType === EntityType.FOLDER) {
+      
+    } else if (entityType === EntityType.PROJECT) {
+      this.projectService.fetchProjectById(id ?? '').subscribe((data) => {
+        console.log('Project data::', data);
+        this.entityData.set(data);
+      });
     }
   }
 
-  sortEventHandler(event: any) {
-    console.log('Event :: ', event);
+  sortEventHandler(event: any): void {
+    console.log('Sort event::', event);
     this.sortGroupData.set(event);
   }
 }
