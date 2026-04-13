@@ -60,7 +60,7 @@ export class TaskListComponent implements OnInit {
         key: 'pinned',
         label: 'Pinned',
         tasks: data.filter(
-          (t) => t.isPinned && t.status !== TaskStatus.COMPLETED,
+          (t) => t.isPinned && t.status !== TaskStatus.COMPLETED ,
         ),
       },
       {

@@ -1,8 +1,13 @@
-<div class="flex items-center gap-3 px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors group mb-0.5 w-full">
-
+<div
+  class="flex items-center gap-3 px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors group mb-0.5 w-full"
+>
   <!-- Context Menu -->
-  <p-menu #contextMenuOptions [model]="contextMenu" [popup]="true" appendTo="body">
-   
+  <p-menu
+    #contextMenuOptions
+    [model]="contextMenu"
+    [popup]="true"
+    appendTo="body"
+  >
   </p-menu>
 
   <!-- Subtask toggle slot (projected from parent) -->
@@ -17,9 +22,17 @@
         [class]="getCheckboxClass(task.priority)"
       />
       @if (isCompleted.value) {
-        <span class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <svg viewBox="0 0 16 16" fill="currentColor" class="w-2.5 h-2.5 text-white">
-            <path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/>
+        <span
+          class="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            class="w-2.5 h-2.5 text-white"
+          >
+            <path
+              d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+            />
           </svg>
         </span>
       }
@@ -37,19 +50,24 @@
 
   <!-- Right: Meta + Actions -->
   <div class="flex items-center gap-1.5 flex-shrink-0">
-
     <!-- Tags -->
     @if (task.tags && task.tags.length > 0) {
       @for (tag of task.tags | slice: 0 : 2; track $index) {
         <span
           class="text-[10px] px-1.5 py-0.5 rounded font-medium whitespace-nowrap"
-          [class]="isCompleted.value ? 'bg-white/5 text-gray-600' : 'bg-white/10 text-gray-400'"
+          [class]="
+            isCompleted.value
+              ? 'bg-white/5 text-gray-600'
+              : 'bg-white/10 text-gray-400'
+          "
         >
           {{ tag }}
         </span>
       }
       @if (task.tags.length > 2) {
-        <span class="text-[10px] px-1 py-0.5 rounded bg-white/10 text-gray-500 font-medium">
+        <span
+          class="text-[10px] px-1 py-0.5 rounded bg-white/10 text-gray-500 font-medium"
+        >
           +{{ task.tags.length - 2 }}
         </span>
       }
@@ -62,31 +80,55 @@
       [class.text-gray-500]="!isCompleted.value"
     >
       @if (task?.subtasks?.length > 0) {
-        <i class="pi pi-list text-[11px]" pTooltip="Subtasks" tooltipPosition="top"></i>
+        <i
+          class="pi pi-list text-[11px]"
+          pTooltip="Subtasks"
+          tooltipPosition="top"
+        ></i>
       }
       @if (task.attachmentId) {
-        <i class="pi pi-paperclip text-[11px]" pTooltip="Attachment" tooltipPosition="top"></i>
+        <i
+          class="pi pi-paperclip text-[11px]"
+          pTooltip="Attachment"
+          tooltipPosition="top"
+        ></i>
       }
       @if (task.repeat) {
-        <i class="pi pi-refresh text-[11px]" pTooltip="Repeat" tooltipPosition="top"></i>
+        <i
+          class="pi pi-refresh text-[11px]"
+          pTooltip="Repeat"
+          tooltipPosition="top"
+        ></i>
       }
       @if (task.reminder) {
-        <i class="pi pi-bell text-[11px]" pTooltip="Reminder" tooltipPosition="top"></i>
+        <i
+          class="pi pi-bell text-[11px]"
+          pTooltip="Reminder"
+          tooltipPosition="top"
+        ></i>
       }
       @if (task.description) {
-        <i class="pi pi-align-left text-[11px]" pTooltip="Description" tooltipPosition="top"></i>
+        <i
+          class="pi pi-align-left text-[11px]"
+          pTooltip="Description"
+          tooltipPosition="top"
+        ></i>
       }
     </div>
 
     <!-- Due Date -->
-   <span
-  class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
-  [class]="isCompleted.value ? 'text-gray-600' : getDueDateColor(task.dueDate)"
->
+    <span
+      class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
+      [class]="
+        isCompleted.value ? 'text-gray-600' : getDueDateColor(task.dueDate)
+      "
+    >
       @if (task.dueDate) {
         {{ task.dueDate | shortDate }}
       } @else {
-        <i class="pi pi-calendar text-[11px] opacity-0 group-hover:opacity-40 transition-opacity"></i>
+        <i
+          class="pi pi-calendar text-[11px] opacity-0 group-hover:opacity-40 transition-opacity"
+        ></i>
       }
     </span>
 
@@ -97,6 +139,5 @@
     >
       <i class="pi pi-ellipsis-h text-gray-400 text-[11px]"></i>
     </button>
-
   </div>
 </div>

@@ -18,10 +18,25 @@ import { MenuItem } from 'primeng/api';
 import { EntityType } from '../../enums/entity-type';
 import { TooltipModule } from 'primeng/tooltip';
 import { TaskPriority } from '../../enus/task-priority';
+import { debounceTime } from 'rxjs';
+import { TaskStatus } from '../../enus/task-status';
 
-export type TaskActionType = 'update' | 'delete' | 'duplicate' | 'move' | 'complete';
+export type TaskActionType =
+  | 'update'
+  | 'delete'
+  | 'duplicate'
+  | 'move'
+  | 'complete';
 export type TaskEntityType = 'task' | 'subtask';
-export type TaskField = 'title' | 'status' | 'dueDate' | 'dueTime' | 'reminder' | 'repeat' | 'tags' | 'all';
+export type TaskField =
+  | 'title'
+  | 'status'
+  | 'dueDate'
+  | 'dueTime'
+  | 'reminder'
+  | 'repeat'
+  | 'tags'
+  | 'all';
 
 export interface TaskEventPayload {
   actionType: TaskActionType;
@@ -36,7 +51,6 @@ export interface TaskEventPayload {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    JsonPipe,
     SlicePipe,
     CheckboxModule,
     FormsModule,
@@ -46,10 +60,11 @@ export interface TaskEventPayload {
     Menu,
   ],
   templateUrl: './task-item.component.html',
-  styleUrl: './task-item.component.css'
+  styleUrl: './task-item.component.css',
 })
 export class TaskItemComponent {
   private taskService = inject(TaskService);
+
   private contextMenuService = inject(ContextMenuBarService);
 
   @Input() task!: any;
@@ -68,6 +83,37 @@ export class TaskItemComponent {
   ngOnInit(): void {
     this.taskTitle.setValue(this.task?.title ?? '');
     this.isCompleted.setValue(this.task?.status === 'COMPLETED');
+    /**update title(task and sub task) */
+    this.taskTitle.valueChanges.pipe(debounceTime(1000)).subscribe((val) => {
+      if (val != null) {
+        if (this.task.entityType === EntityType.TASK) {
+          this.taskService.updateTask(this.task.id, {
+            ...this.task,
+            title: val,
+          });
+        } else if (this.task.entityType === EntityType.SUBTASK) {
+          this.taskService.updateSubTask(this.task.parentId, this.task.id, {
+            ...this.task,
+            title: val,
+          });
+        }
+      }
+    });
+    /**update task status */
+    this.isCompleted.valueChanges.subscribe((val) => {
+      console.log('checkBox Value :', this.task.entityType);
+      if (this.task.entityType === EntityType.TASK) {
+        this.taskService.updateTask(this.task.id, {
+          ...this.task,
+          status: val == true ? TaskStatus.COMPLETED : TaskStatus.PENDING,
+        });
+      } else if (this.task.entityType === EntityType.SUBTASK) {
+        this.taskService.updateSubTask(this.task.parentId, this.task.id, {
+          ...this.task,
+          status: val == true ? TaskStatus.COMPLETED : TaskStatus.PENDING,
+        });
+      }
+    });
   }
 
   openFolderMenu(
@@ -80,7 +126,11 @@ export class TaskItemComponent {
     event.stopPropagation();
     event.preventDefault();
 
-    const context = this.contextMenuService.getContextMenu(entityType, isPinned, isArchived);
+    const context = this.contextMenuService.getContextMenu(
+      entityType,
+      isPinned,
+      isArchived,
+    );
 
     this.contextMenu = context.map((item): MenuItem => {
       if (item.isDivider) return { separator: true };
@@ -110,39 +160,42 @@ export class TaskItemComponent {
     console.log('mouseleave → move-to item:', item.label);
   }
 
-
-
-onItemEnter(event: MouseEvent, item: MenuItem) {
-  if (item.id !== 'move-to-item') return;
-  this.hoveredItemId = item.id;
-  console.log('mouseenter → move-to:', item.label);
-  // your logic here
-}
-
-onItemLeave(event: MouseEvent, item: MenuItem) {
-  if (item.id !== 'move-to-item') return;
-  this.hoveredItemId = null;
-  console.log('mouseleave → move-to:', item.label);
-}
-
-/*checkbox*/
-getCheckboxClass(priority: TaskPriority): string {
-  const base = 'w-3.5 h-3.5 rounded-sm appearance-none border-2 cursor-pointer transition-colors';
-  switch (priority) {
-    case TaskPriority.HIGH:   return `${base} border-red-500 checked:bg-red-500`;
-    case TaskPriority.MEDIUM: return `${base} border-yellow-400 checked:bg-yellow-400`;
-    case TaskPriority.LOW:    return `${base} border-blue-400 checked:bg-blue-400`;
-    default:                  return `${base} border-gray-500 checked:bg-gray-500`;
+  onItemEnter(event: MouseEvent, item: MenuItem) {
+    if (item.id !== 'move-to-item') return;
+    this.hoveredItemId = item.id;
+    console.log('mouseenter → move-to:', item.label);
+    // your logic here
   }
-}
 
-/**due date */
-getDueDateColor(dueDate: any): string {
-  if (!dueDate) return 'text-gray-500';
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
-  due.setHours(0, 0, 0, 0);
-  return due < today ? 'text-red-400' : 'text-blue-400';
-}
+  onItemLeave(event: MouseEvent, item: MenuItem) {
+    if (item.id !== 'move-to-item') return;
+    this.hoveredItemId = null;
+    console.log('mouseleave → move-to:', item.label);
+  }
+
+  /*checkbox*/
+  getCheckboxClass(priority: TaskPriority): string {
+    const base =
+      'w-3.5 h-3.5 rounded-sm appearance-none border-2 cursor-pointer transition-colors';
+    switch (priority) {
+      case TaskPriority.HIGH:
+        return `${base} border-red-500 checked:bg-red-500`;
+      case TaskPriority.MEDIUM:
+        return `${base} border-yellow-400 checked:bg-yellow-400`;
+      case TaskPriority.LOW:
+        return `${base} border-blue-400 checked:bg-blue-400`;
+      default:
+        return `${base} border-gray-500 checked:bg-gray-500`;
+    }
+  }
+
+  /**due date */
+  getDueDateColor(dueDate: any): string {
+    if (!dueDate) return 'text-gray-500';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+    return due < today ? 'text-red-400' : 'text-blue-400';
+  }
 }
