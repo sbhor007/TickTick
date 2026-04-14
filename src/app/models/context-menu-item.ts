@@ -9,5 +9,6 @@ export interface ContextMenuItem {
   children?: ContextMenuItem[];  // For sections like Date & Priority
   hasSubmenu?: boolean
   renderType?:any
+  items?:any
 //   command?: 
 }

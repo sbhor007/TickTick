@@ -90,8 +90,8 @@ export class TaskService {
   deleteTask(taskId: string) {
     this.http.delete<void>(`${environment.API}/tasks/${taskId}`).subscribe({
       next: (data) => {
-        console.log("deleted Data",data);
-        
+        console.log('deleted Data', data);
+
         this.loadAllTasks();
       },
       error: (err) => {
@@ -101,21 +101,48 @@ export class TaskService {
     });
   }
 
-  deleteSubTask(parentTaskId: string, taskId: string) {
-    const parentTask = this.allTasks$().find((t) => t.id == parentTaskId);
+  // deleteSubTask(parentTaskId: string, taskId: string) {
+  //   const parentTask = this.allTasks$().find((t) => t.id == parentTaskId);
 
-    if (parentTask) {
-      const updateSubTask = parentTask.subtasks?.filter(
-        (st) => st.id != taskId,
+  //   if (parentTask) {
+  //     const updateSubTask = parentTask.subtasks?.filter(
+  //       (st) => st.id != taskId,
+  //     );
+  //     this.updateTask(parentTask.id, {
+  //       ...parentTask,
+  //       subtasks: updateSubTask,
+  //       updatedAt: new Date().toISOString(),
+  //     });
+  //     console.log("sub task deleted...");
+
+  //   }
+  // }
+  deleteSubTask(parentTaskId: string, taskId: string) {
+    if (!parentTaskId) {
+      console.warn(
+        'deleteSubTask: parentTaskId is missing for subtask',
+        taskId,
       );
-      this.updateTask(parentTask.id, {
-        ...parentTask,
-        subtasks: updateSubTask,
-        updatedAt: new Date().toISOString(),
-      });
-      console.log("sub task deleted...");
-      
+      return;
     }
+
+    const parentTask = this.allTasks$().find((t) => t.id === parentTaskId);
+    if (!parentTask) {
+      console.warn('deleteSubTask: parent task not found:', parentTaskId);
+      return;
+    }
+
+    const updatedSubTasks = parentTask.subtasks?.filter(
+      (st) => st.id !== taskId,
+    );
+
+    this.updateTask(parentTask.id, {
+      ...parentTask,
+      subtasks: updatedSubTasks,
+      updatedAt: new Date().toISOString(),
+    });
+
+    console.log('subtask deleted:', taskId);
   }
 
   /**link Task to parent Task */

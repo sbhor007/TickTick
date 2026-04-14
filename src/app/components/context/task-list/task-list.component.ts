@@ -26,19 +26,25 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ShortDatePipe } from '../../../pipe/short-date.pipe';
-import { TagSelectorComponent } from "../../../share/tag-selector/tag-selector.component";
+import { TagSelectorComponent } from '../../../share/tag-selector/tag-selector.component';
 import { TrashService } from '../../../services/trash.service';
 
 @Component({
   selector: 'app-task-list',
-  imports: [JsonPipe, TaskItemComponent, ReactiveFormsModule, ShortDatePipe, TagSelectorComponent],
+  imports: [
+    JsonPipe,
+    TaskItemComponent,
+    ReactiveFormsModule,
+    ShortDatePipe,
+    TagSelectorComponent,
+  ],
   templateUrl: './task-list.component.html',
 })
 export class TaskListComponent implements OnInit {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
   private taskService = inject(TaskService);
-  private trashService = inject(TrashService)
+  private trashService = inject(TrashService);
 
   @Input() routeData!: any;
   // @Input() sortGroupData: any = { groupBy: 'none', sortBy: 'Title' };
@@ -55,7 +61,7 @@ export class TaskListComponent implements OnInit {
   searchQuery = new FormControl('');
 
   ngOnInit(): void {
-    this.trashService.loadAllTrash()
+    this.trashService.loadAllTrash();
     this.taskService.loadAllTasks();
     this.loadRouteData();
 
@@ -75,7 +81,7 @@ export class TaskListComponent implements OnInit {
   }
 
   allTaskInsideProject: any;
-
+/**task as per there entity type */
   groupedTasks = computed(() => {
     const routerData = this.routeData();
     const { groupBy, sortBy } = this.sortGroupData();
@@ -122,8 +128,13 @@ export class TaskListComponent implements OnInit {
   /**getData */
   getTaskData(routerData: any) {
     if (routerData.entityType === EntityType.FOLDER) {
-      // data = this.taskService
-      // .allTasks$()
+      const projects = this.projectService.projects$().filter(p => p.folderId === routerData.id)
+      if(projects){
+        return projects.map(p => ({...p,tasks:this.taskService.allTasks$().filter(pr => p.id === pr.projectId)}))
+      }
+      return []
+      return this.taskService
+      .allTasks$()
     } else if (routerData.entityType === EntityType.PROJECT) {
       return this.taskService
         .allTasks$()
@@ -134,25 +145,23 @@ export class TaskListComponent implements OnInit {
       return this.taskService
         .allTasks$()
         .filter((t) => this.isToday(t?.dueDate ?? ''));
-    } else if(routerData.entityType === EntityType.TOMORROW){
+    } else if (routerData.entityType === EntityType.TOMORROW) {
       return this.taskService
         .allTasks$()
         .filter((t) => this.isTomorrow(t?.dueDate ?? ''));
-    }else if(routerData.entityType === EntityType.NEXT_SEVEN_DAYS){
+    } else if (routerData.entityType === EntityType.NEXT_SEVEN_DAYS) {
       return this.taskService
         .allTasks$()
         .filter((t) => this.isWithinNext7Days(t?.dueDate ?? ''));
-    }
-    else if (routerData.entityType === EntityType.INBOX) {
+    } else if (routerData.entityType === EntityType.INBOX) {
       return this.taskService
         .allTasks$()
         .filter((t) => t.projectId === routerData.id);
-    }else if(routerData.entityType === EntityType.TRASHED){
-      
-      const trash = this.trashService.allTrash$()
-      
-      console.log("Trashed Data:",trash);
-      return trash
+    } else if (routerData.entityType === EntityType.TRASHED) {
+      const trash = this.trashService.allTrash$();
+
+      console.log('Trashed Data:', trash);
+      return trash;
     }
     return [];
   }
@@ -168,25 +177,25 @@ export class TaskListComponent implements OnInit {
   }
 
   isTomorrow(dueDate: any): boolean {
-  if (!dueDate) return false;
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
-  due.setHours(0, 0, 0, 0);
-  return due.getTime() === tomorrow.getTime();
-}
+    if (!dueDate) return false;
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+    return due.getTime() === tomorrow.getTime();
+  }
 
-isWithinNext7Days(dueDate: any): boolean {
-  if (!dueDate) return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const next7Days = new Date();
-  next7Days.setDate(next7Days.getDate() + 7);
-  next7Days.setHours(23, 59, 59, 999);
-  const due = new Date(dueDate);
-  return due >= today && due <= next7Days;
-}
+  isWithinNext7Days(dueDate: any): boolean {
+    if (!dueDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const next7Days = new Date();
+    next7Days.setDate(next7Days.getDate() + 7);
+    next7Days.setHours(23, 59, 59, 999);
+    const due = new Date(dueDate);
+    return due >= today && due <= next7Days;
+  }
   /**priority color */
   getCheckboxClass(priority: TaskPriority): string {
     switch (priority) {
@@ -408,13 +417,28 @@ isWithinNext7Days(dueDate: any): boolean {
       case 'convert_to_note':
         break;
       case 'delete':
-        if(EntityType.TASK === event.entityType){
-          this.trashService.addTrash({...event.payload,entityType:EntityType.TRASHED})
-          this.taskService.deleteTask(event.entityId)
-        }else if(EntityType.SUBTASK  === event.entityType){
-          this.trashService.addTrash({...event.payload,entityType:EntityType.TRASHED})
-          this.taskService.deleteSubTask(event.payload.parentId, event.entityId)
+        if (EntityType.TASK === event.entityType) {
+          this.trashService.addTrash({
+            ...event.payload,
+            entityType: EntityType.TRASHED,
+          });
+          this.taskService.deleteTask(event.entityId);
+        } else if (EntityType.SUBTASK === event.entityType) {
+          this.trashService.addTrash({
+            ...event.payload,
+            entityType: EntityType.TRASHED,
+          });
+
+          // ✅ parentId must come from the subtask's own field
+          this.taskService.deleteSubTask(
+            event.payload.parentId,
+            event.entityId,
+          );
         }
+        break;
+      case 'restore':
+        console.log('Task Item Event Handler::', event);
+        this.trashService.restoreTask(event.entityId);
         break;
     }
   }

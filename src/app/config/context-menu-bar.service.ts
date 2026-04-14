@@ -198,7 +198,7 @@ export class ContextMenuBarService {
         isSectionHeader: true,
         action: 'date_section',
         renderType: 'icon-grid',
-        children: [
+        items: [
           { label: 'Today', icon: 'pi pi-sun', action: 'set_date_today' },
           {
             label: 'Tomorrow',
@@ -223,7 +223,7 @@ export class ContextMenuBarService {
         isSectionHeader: true,
         action: 'priority_section',
         renderType: 'icon-grid',
-        children: [
+        items: [
           {
             label: 'High',
             icon: 'pi pi-flag-fill',

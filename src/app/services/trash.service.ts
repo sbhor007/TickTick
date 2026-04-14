@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment.development';
 import { catchError, Observable, of } from 'rxjs';
 import { Task } from '../models/task';
 import { EntityType } from '../enums/entity-type';
+import { TaskService } from './task.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TrashService {
+  private taskService = inject(TaskService)
   private _allTrash = signal<Task[]>([]);
   readonly allTrash$ = this._allTrash;
 
@@ -46,4 +48,68 @@ export class TrashService {
       },
     });
   }
+
+  restoreTask(taskId: string) {
+  const task = this.allTrash$().find((t) => t.id === taskId);
+  if (!task) return;
+
+  if (task.parentId) {
+    // ── Restore SUBTASK ──────────────────────────────────────────
+    // Restore subtasks back to its original entityType
+    const restoredSubTask: Task = {
+      ...task,
+      entityType: EntityType.SUBTASK,
+    };
+
+    const parentTask = this.taskService.allTasks$().find(
+      (t) => t.id === task.parentId
+    );
+
+    if (parentTask) {
+      // Parent still exists → re-attach subtask
+      this.taskService.updateTask(parentTask.id, {
+        ...parentTask,
+        subtasks: [...(parentTask.subtasks ?? []), restoredSubTask],
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      // Parent was also deleted → restore as standalone TASK
+      const restoredAsTask: Task = {
+        ...task,
+        parentId: null,
+        entityType: EntityType.TASK,
+        subtasks: [],
+      };
+      this.taskService.crateTask(restoredAsTask.projectId, restoredAsTask);
+    }
+  } else {
+    // ── Restore TASK ─────────────────────────────────────────────
+    // Restore subtasks entityType back to SUBTASK
+    const restoredTask: Task = {
+      ...task,
+      entityType: EntityType.TASK,
+      subtasks: task.subtasks?.map((st) => ({
+        ...st,
+        entityType: EntityType.SUBTASK,
+      })) ?? [],
+    };
+    this.taskService.crateTask(restoredTask.projectId, restoredTask);
+  }
+
+  // Remove from trash after restore
+  this.removeFromTrash(taskId);
+}
+
+removeFromTrash(taskId: string) {
+  this.http.delete<void>(`${environment.API}/trash/${taskId}`).subscribe({
+    next: () => {
+      this.loadAllTrash();
+      console.log('Removed from trash');
+    },
+    error: (err) => {
+      this.loadAllTrash()
+      console.error('Error removing from trash:', err);
+    },
+  });
+}
 }

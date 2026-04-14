@@ -18,3 +18,4 @@ export interface Project {
   icon: string;
   tasks: Task[];
 }
+
