@@ -3,6 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { Task } from '../models/task';
 import { catchError, Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { EntityType } from '../enums/entity-type';
 
 @Injectable({
   providedIn: 'root',
@@ -42,23 +43,33 @@ export class TaskService {
     });
   }
 
+  /**createSubTask */
+  createSubTask(parentId: string, subtask: Task) {
+    const parentTask = this.allTasks$().find((t) => t.id === parentId);
+    if (parentTask) {
+      parentTask?.subtasks?.push(subtask);
+      this.updateTask(parentId, parentTask);
+      console.log('SubTask Created');
+    }
+  }
   /**update task */
-  updateTask(taskId: string, updatedTask: Partial<Task>){
+  updateTask(taskId: string, updatedTask: Partial<Task>) {
     console.log('updateTask called::', taskId, updatedTask);
 
     return this.http
       .patch<Task>(`${environment.API}/tasks/${taskId}`, {
         ...updatedTask,
         updatedAt: new Date().toISOString(),
-      }).subscribe({
-        next: (task) =>{
-          console.log("task updated");
-          this.loadAllTasks()
-        },
-        error: (err) =>{
-          console.error("Error Occur during task update::",err)
-        }
       })
+      .subscribe({
+        next: (task) => {
+          console.log('task updated');
+          this.loadAllTasks();
+        },
+        error: (err) => {
+          console.error('Error Occur during task update::', err);
+        },
+      });
   }
 
   /**Update sub Task */
@@ -75,5 +86,72 @@ export class TaskService {
     this.updateTask(parentId, { ...parentTask, subtasks: updatedSubTasks });
   }
 
+  /**delete Task */
+  deleteTask(taskId: string) {
+    this.http.delete<void>(`${environment.API}/tasks/${taskId}`).subscribe({
+      next: (data) => {
+        console.log("deleted Data",data);
+        
+        this.loadAllTasks();
+      },
+      error: (err) => {
+        this.loadAllTasks();
+        console.error('Error Occurs in tag update:', err);
+      },
+    });
+  }
 
+  deleteSubTask(parentTaskId: string, taskId: string) {
+    const parentTask = this.allTasks$().find((t) => t.id == parentTaskId);
+
+    if (parentTask) {
+      const updateSubTask = parentTask.subtasks?.filter(
+        (st) => st.id != taskId,
+      );
+      this.updateTask(parentTask.id, {
+        ...parentTask,
+        subtasks: updateSubTask,
+        updatedAt: new Date().toISOString(),
+      });
+      console.log("sub task deleted...");
+      
+    }
+  }
+
+  /**link Task to parent Task */
+  linkToParentTask(targetedTaskId: String, task: Task) {
+    if (task.parentId) {
+      // TODO: remove that child task first form another task then add to targeted task
+      const parentTask = this.allTasks$().find((t) => task.parentId == t.id);
+      if (parentTask) {
+        let subTasks = parentTask?.subtasks?.filter((t) => t.id != task.id);
+        if (subTasks?.length == 0) {
+          this.updateTask(parentTask?.id, {
+            ...parentTask,
+            subtasks: [],
+            updatedAt: new Date().toISOString(),
+          });
+        } else {
+          this.updateTask(parentTask?.id, {
+            ...parentTask,
+            subtasks: subTasks,
+            updatedAt: new Date().toISOString(),
+          });
+        }
+      }
+    }
+    const targetedTask = this.allTasks$().find((t) => t.id === targetedTaskId);
+    if (targetedTask) {
+      targetedTask.subtasks?.push({
+        ...task,
+        parentId: targetedTask.id,
+        entityType: EntityType.SUBTASK,
+      });
+      this.updateTask(targetedTask.id, { ...targetedTask });
+      console.log('Linked to parent Task success');
+      if (!task.parentId) {
+        this.deleteTask(task.id);
+      }
+    }
+  }
 }

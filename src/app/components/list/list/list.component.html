@@ -59,7 +59,7 @@
           <div
             class="flex items-center justify-between flex-1 px-1 py-[6px]"
             (click)="toggleFolder($index)"
-            [routerLink]="['folder/tasks', folder.id]"
+            [routerLink]="['folder', folder.id]"
           >
             <!-- Left: icon + name -->
             <div
@@ -100,7 +100,7 @@
               @if (!project?.isArchived) {
                 <div
                   class="flex items-center justify-between px-2 py-[6px] rounded-lg hover:bg-[#232326] cursor-pointer group relative transition-colors"
-                  [routerLink]="['project/tasks', project.id]"
+                  [routerLink]="['project', project.id]"
                 >
                   <div
                     class="flex items-center justify-between gap-2 min-w-0 flex-1"
@@ -140,7 +140,7 @@
       ) {
         <div
           class="flex items-center justify-between px-2 py-[6px] rounded-lg hover:bg-[#232326] cursor-pointer group relative transition-colors"
-          [routerLink]="['project/tasks', project.id]"
+          [routerLink]="['project', project.id]"
         >
           <div class="flex items-center gap-2 min-w-0 flex-1">
             <i class="pi pi-bars text-[10px] text-gray-500 flex-shrink-0"></i>

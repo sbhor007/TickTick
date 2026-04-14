@@ -13,70 +13,203 @@ import { FolderService } from '../../../services/folder.service';
 import { ProjectService } from '../../../services/project.service';
 import { TaskService } from '../../../services/task.service';
 import { EntityType } from '../../../enums/entity-type';
-import { JsonPipe } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { TaskItemComponent } from '../../../share/task-item/task-item.component';
 import { Folder } from '../../../models/folder';
 import { TaskStatus } from '../../../enus/task-status';
+import { Task } from '../../../models/task';
+import { TaskPriority } from '../../../enus/task-priority';
+import {
+  FormControl,
+  FormsModule,
+  NgModel,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { ShortDatePipe } from '../../../pipe/short-date.pipe';
+import { TagSelectorComponent } from "../../../share/tag-selector/tag-selector.component";
+import { TrashService } from '../../../services/trash.service';
 
 @Component({
   selector: 'app-task-list',
-  imports: [JsonPipe, TaskItemComponent],
+  imports: [JsonPipe, TaskItemComponent, ReactiveFormsModule, ShortDatePipe, TagSelectorComponent],
   templateUrl: './task-list.component.html',
 })
 export class TaskListComponent implements OnInit {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
   private taskService = inject(TaskService);
+  private trashService = inject(TrashService)
 
   @Input() routeData!: any;
   // @Input() sortGroupData: any = { groupBy: 'none', sortBy: 'Title' };
 
-  sortGroupData = input<any>({ groupBy: 'none', sortBy: 'Title' });
+  /**taskId for link to parent */
+  allTasks = this.taskService.allTasks$();
+  isOpenLinkToParent = false;
+  selectedTaskToLink!: Task;
+
   private entityData = signal<any | null>(null);
+  sortGroupData = input<any>({ groupBy: 'none', sortBy: 'Title' });
   collapsedGroups = signal<Set<string>>(new Set());
 
+  searchQuery = new FormControl('');
+
   ngOnInit(): void {
+    this.trashService.loadAllTrash()
     this.taskService.loadAllTasks();
     this.loadRouteData();
+
+    this.allTasks = this.taskService.allTasks$();
+
+    /**search */
+    this.searchQuery.valueChanges.subscribe((val) => {
+      console.log(val);
+      if (val) {
+        this.allTasks = this.taskService
+          .allTasks$()
+          .filter((t) => t.title?.toLowerCase()?.includes(val.toLowerCase()));
+      } else {
+        this.allTasks = this.taskService.allTasks$();
+      }
+    });
   }
+
+  allTaskInsideProject: any;
 
   groupedTasks = computed(() => {
     const routerData = this.routeData();
     const { groupBy, sortBy } = this.sortGroupData();
-    console.log(groupBy, sortBy);
 
-    let data =
-      routerData.entityType === EntityType.PROJECT
-        ? this.taskService
-            .allTasks$()
-            .filter((t) => t.projectId === routerData.id)
-        : [];
+    let data: Task[] = this.getTaskData(routerData);
+
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
+
     if (groupBy !== 'None') {
       return this.groupByFn(data, groupBy);
     }
+
+    // Helper flags (inline — no need for separate methods)
+    const hasPinnedContent = (t: Task) =>
+      (t.isPinned || t.subtasks?.some((st) => st.isPinned)) &&
+      t.status !== TaskStatus.COMPLETED;
+
+    const isCompleted = (t: Task) =>
+      t.status === TaskStatus.COMPLETED ||
+      t.subtasks?.every((st) => st.status === TaskStatus.COMPLETED);
+
     return [
       {
         key: 'pinned',
         label: 'Pinned',
-        tasks: data.filter(
-          (t) => t.isPinned && t.status !== TaskStatus.COMPLETED ,
-        ),
+        // Task itself is pinned OR any subtask is pinned
+        tasks: data.filter((t) => hasPinnedContent(t)),
       },
       {
         key: 'unpinned',
         label: 'Tasks',
-        tasks: data.filter(
-          (t) => !t.isPinned && t.status !== TaskStatus.COMPLETED,
-        ),
+        // Not pinned (neither task nor subtasks) AND not completed
+        tasks: data.filter((t) => !hasPinnedContent(t) && !isCompleted(t)),
       },
       {
         key: 'completed',
         label: 'Completed',
-        tasks: data.filter((t) => t.status === TaskStatus.COMPLETED),
+        // Task itself completed OR all subtasks completed
+        tasks: data.filter((t) => isCompleted(t)),
       },
     ];
   });
+
+  /**getData */
+  getTaskData(routerData: any) {
+    if (routerData.entityType === EntityType.FOLDER) {
+      // data = this.taskService
+      // .allTasks$()
+    } else if (routerData.entityType === EntityType.PROJECT) {
+      return this.taskService
+        .allTasks$()
+        .filter((t) => t.projectId === routerData.id);
+    } else if (routerData.entityType === EntityType.ALL) {
+      return this.taskService.allTasks$();
+    } else if (routerData.entityType === EntityType.TODAY) {
+      return this.taskService
+        .allTasks$()
+        .filter((t) => this.isToday(t?.dueDate ?? ''));
+    } else if(routerData.entityType === EntityType.TOMORROW){
+      return this.taskService
+        .allTasks$()
+        .filter((t) => this.isTomorrow(t?.dueDate ?? ''));
+    }else if(routerData.entityType === EntityType.NEXT_SEVEN_DAYS){
+      return this.taskService
+        .allTasks$()
+        .filter((t) => this.isWithinNext7Days(t?.dueDate ?? ''));
+    }
+    else if (routerData.entityType === EntityType.INBOX) {
+      return this.taskService
+        .allTasks$()
+        .filter((t) => t.projectId === routerData.id);
+    }else if(routerData.entityType === EntityType.TRASHED){
+      
+      const trash = this.trashService.allTrash$()
+      
+      console.log("Trashed Data:",trash);
+      return trash
+    }
+    return [];
+  }
+
+  /**compare due date */
+  isToday(dueDate: any): boolean {
+    if (!dueDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+    return due.getTime() === today.getTime();
+  }
+
+  isTomorrow(dueDate: any): boolean {
+  if (!dueDate) return false;
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  const due = new Date(dueDate);
+  due.setHours(0, 0, 0, 0);
+  return due.getTime() === tomorrow.getTime();
+}
+
+isWithinNext7Days(dueDate: any): boolean {
+  if (!dueDate) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const next7Days = new Date();
+  next7Days.setDate(next7Days.getDate() + 7);
+  next7Days.setHours(23, 59, 59, 999);
+  const due = new Date(dueDate);
+  return due >= today && due <= next7Days;
+}
+  /**priority color */
+  getCheckboxClass(priority: TaskPriority): string {
+    switch (priority) {
+      case TaskPriority.HIGH:
+        return `border-red-500 checked:bg-red-500`;
+      case TaskPriority.MEDIUM:
+        return `border-yellow-400 checked:bg-yellow-400`;
+      case TaskPriority.LOW:
+        return `border-blue-400 checked:bg-blue-400`;
+      default:
+        return `border-gray-500 checked:bg-gray-500`;
+    }
+  }
+
+  /**due date color */
+  getDueDateColor(dueDate: any): string {
+    if (!dueDate) return 'text-gray-500';
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    due.setHours(0, 0, 0, 0);
+    return due < today ? 'text-red-400' : 'text-blue-400';
+  }
 
   /**sort by */
   sortBy(a: any, b: any, sortType: string): number {
@@ -233,4 +366,102 @@ export class TaskListComponent implements OnInit {
   isCollapsed(key: string): boolean {
     return this.collapsedGroups().has(key);
   }
+
+  /**task-item-event-handler */
+  taskItemEventHandler(event: any) {
+    console.log('Task Item Event Handler::', event);
+    switch (event.action) {
+      case 'add_subtask':
+        this.createSubTask(event.entityId, event.payload);
+        break;
+      case 'link_parent':
+        this.isOpenLinkToParent = true;
+        this.selectedTaskToLink = event.payload;
+        break;
+      case 'pin':
+        this.taskService.updateTask(event.entityId, {
+          ...event.payload,
+          isPinned: !event.payload.isPinned,
+        });
+        break;
+      case 'unpin':
+        this.taskService.updateTask(event.entityId, {
+          ...event.payload,
+          isPinned: !event.payload.isPinned,
+        });
+        break;
+      case 'wont_do':
+        break;
+      case 'add_tags_to_task':
+        break;
+      case 'duplicate':
+        this.taskService.crateTask(event.payload.projectId, {
+          ...event.payload,
+          id: crypto.randomUUID(),
+          title: event.payload.title + ' copied',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        });
+        break;
+      case 'copy_link':
+        break;
+      case 'convert_to_note':
+        break;
+      case 'delete':
+        if(EntityType.TASK === event.entityType){
+          this.trashService.addTrash({...event.payload,entityType:EntityType.TRASHED})
+          this.taskService.deleteTask(event.entityId)
+        }else if(EntityType.SUBTASK  === event.entityType){
+          this.trashService.addTrash({...event.payload,entityType:EntityType.TRASHED})
+          this.taskService.deleteSubTask(event.payload.parentId, event.entityId)
+        }
+        break;
+    }
+  }
+  // create a sub task
+  createSubTask(taskId: string, task: Task) {
+    // const task = this.taskService.allTasks$().find(t => t.id == taskId)
+    const subTask: Task = {
+      id: crypto.randomUUID(),
+      userId: null,
+      projectId: task?.projectId ?? null,
+      parentId: task.id,
+      title: '',
+      description: '',
+      status: TaskStatus.PENDING,
+      priority: TaskPriority.NONE,
+      isPinned: false,
+      subtasks: [],
+      tags: [],
+      comments: [],
+      attachmentId: null,
+      entityType: EntityType.SUBTASK,
+      reminder: null,
+      repeat: null,
+      dueDate: null,
+      dueDateTime: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      completedAt: null,
+    };
+
+    this.taskService.createSubTask(taskId, subTask);
+  }
+
+  /**move to parent */
+  linkToParent(selectedTaskId: string) {
+    this.isOpenLinkToParent = false;
+    if (
+      selectedTaskId != null ||
+      (selectedTaskId != '' && this.selectedTaskToLink)
+    ) {
+      this.taskService.linkToParentTask(
+        selectedTaskId,
+        this.selectedTaskToLink,
+      );
+    }
+  }
+  // linkToParent(currentTaskId:string){
+
+  // }
 }

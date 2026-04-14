@@ -1,6 +1,6 @@
 import { Component, computed, inject, ViewChild } from '@angular/core';
 import { ProjectService } from '../../../services/project.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Menu } from "primeng/menu";
 import { EntityType } from '../../../enums/entity-type';
@@ -9,7 +9,7 @@ import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-smart-view',
-  imports: [CommonModule, Menu],
+  imports: [CommonModule, Menu, RouterLink],
   templateUrl: './smart-view.component.html'
 })
 export class SmartViewComponent {

@@ -25,6 +25,7 @@
         <span
           class="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
+
           <svg
             viewBox="0 0 16 16"
             fill="currentColor"
@@ -135,7 +136,7 @@
     <!-- Ellipsis Button -->
     <button
       class="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded cursor-pointer"
-      (click)="openFolderMenu($event, task.id, task.entityType, task.isPinned)"
+      (click)="openFolderMenu($event, task)"
     >
       <i class="pi pi-ellipsis-h text-gray-400 text-[11px]"></i>
     </button>

@@ -5,7 +5,7 @@ import { TaskStatus } from "../enus/task-status";
 export interface Task {
   id: string;
   userId: string | null;
-  projectId: string;
+  projectId: string ;
   title: string | null | undefined;
   description: string;
   status: TaskStatus;
@@ -17,11 +17,11 @@ export interface Task {
   tags?: any[];
   comments?: any[];
   attachmentId?: string | null;
-  entityType?: EntityType;
+  entityType: EntityType;
   reminder?: any;
   repeat?: any;
   dueDate: Date | string | null;
-  dueDateTime?: string;
+  dueDateTime?: string |null;
   createdAt?: Date | string | null;
   updatedAt?: Date | string | null;
   completedAt?: Date | string | null;

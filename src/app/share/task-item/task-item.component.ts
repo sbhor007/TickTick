@@ -20,14 +20,16 @@ import { TooltipModule } from 'primeng/tooltip';
 import { TaskPriority } from '../../enus/task-priority';
 import { debounceTime } from 'rxjs';
 import { TaskStatus } from '../../enus/task-status';
+import { Task } from '../../models/task';
+import { Base } from 'primeng/base';
 
 export type TaskActionType =
   | 'update'
   | 'delete'
   | 'duplicate'
   | 'move'
+  | 'create_subtask'
   | 'complete';
-export type TaskEntityType = 'task' | 'subtask';
 export type TaskField =
   | 'title'
   | 'status'
@@ -40,10 +42,17 @@ export type TaskField =
 
 export interface TaskEventPayload {
   actionType: TaskActionType;
-  entityType: TaskEntityType;
+  entityType: EntityType;
   id: string;
   field: TaskField;
   payload: any;
+}
+
+export interface ContextMenuI {
+  action: string;
+  entityType: EntityType;
+  entityId: string;
+  payload?: Task;
 }
 
 @Component({
@@ -69,7 +78,7 @@ export class TaskItemComponent {
 
   @Input() task!: any;
   @Output() taskEvent = new EventEmitter<TaskEventPayload>();
-  @Output() contextMenuEvent = new EventEmitter<any>();
+  @Output() contextMenuEvent = new EventEmitter<ContextMenuI>();
 
   isCompleted = new FormControl();
   taskTitle = new FormControl('');
@@ -86,6 +95,7 @@ export class TaskItemComponent {
     /**update title(task and sub task) */
     this.taskTitle.valueChanges.pipe(debounceTime(1000)).subscribe((val) => {
       if (val != null) {
+        
         if (this.task.entityType === EntityType.TASK) {
           this.taskService.updateTask(this.task.id, {
             ...this.task,
@@ -116,20 +126,13 @@ export class TaskItemComponent {
     });
   }
 
-  openFolderMenu(
-    event: MouseEvent,
-    id: string,
-    entityType: any,
-    isPinned: boolean,
-    isArchived: boolean = false,
-  ) {
+  openFolderMenu(event: MouseEvent, task: Task) {
     event.stopPropagation();
     event.preventDefault();
 
     const context = this.contextMenuService.getContextMenu(
-      entityType,
-      isPinned,
-      isArchived,
+      task.entityType,
+      task.isPinned,
     );
 
     this.contextMenu = context.map((item): MenuItem => {
@@ -137,16 +140,22 @@ export class TaskItemComponent {
       return {
         ...item,
         // mark move-to items so the template can identify them
-        id: item.action === 'shareUnshareTag' ? 'move-to-item' : item.action,
-        command: () => this.handleAction(entityType, item.action, id),
+        // id: item.action === 'shareUnshareTag' ? 'move-to-item' : item.action,
+        command: () => this.handleAction(task, item.action),
       };
     });
 
     this.contextMenuOptions.toggle(event);
   }
 
-  handleAction(entityType: EntityType, action: string, id: string) {
-    console.log('action:', action, 'entityType:', entityType, 'id:', id);
+  handleAction(task: Task, action: string) {
+    console.log('action:', action, 'entityType:', task.entityType);
+    this.contextMenuEvent.emit({
+      action: action,
+      entityType: task.entityType,
+      entityId: task.id,
+      payload: task
+    });
   }
 
   onMoveToEnter(event: MouseEvent, item: MenuItem) {

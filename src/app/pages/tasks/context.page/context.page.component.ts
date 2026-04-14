@@ -72,7 +72,20 @@ export class ContextPageComponent implements OnInit {
         console.log('Project data::', data);
         this.entityData.set(data);
       });
-    }
+    }else if (
+  [
+    EntityType.ALL,
+    EntityType.TODAY,
+    EntityType.TOMORROW,
+    EntityType.NEXT_SEVEN_DAYS,
+    EntityType.INBOX
+  ].includes(entityType)
+){
+  this.projectService.fetchProjectById('inbox').subscribe((data) => {
+        console.log('Project data::', data);
+        this.entityData.set(data);
+      });
+}
   }
 
   sortEventHandler(event: any): void {

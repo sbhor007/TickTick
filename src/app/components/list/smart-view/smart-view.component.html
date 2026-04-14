@@ -2,8 +2,9 @@
     
   @for (s of smartView(); track s.id) {
     <li
+    [routerLink]="[`${s.entityType}`, s.id]"
       class="group py-3 hover:bg-[#1c1c1f] rounded-xl cursor-pointer px-4 flex items-center justify-between relative"
-      (click)="navigate(s.id,s.name)"
+      
       (contextmenu)="contextMenuAction($event,s.id,s.entityType)"
     >
     <p-menu

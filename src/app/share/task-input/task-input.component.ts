@@ -109,7 +109,7 @@ export class TaskInputComponent implements OnInit {
       completedAt: null,
     };
     console.log('task-Data: ', taskData);
-    // this.taskService.crateTask(this.project.id, taskData);
+    this.taskService.crateTask(this.project.id, taskData);
 
     if (event.key === 'Escape') {
       this.isDateTimePikerVisible = false;

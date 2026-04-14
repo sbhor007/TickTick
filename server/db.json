@@ -52,7 +52,7 @@
   ],
   "projects": [
     {
-      "id": "all",
+      "id": "p-1",
       "folderId": null,
       "entityType": "ALL",
       "name": "All",
@@ -69,7 +69,7 @@
       "order": 1
     },
     {
-      "id": "today",
+      "id": "p-2",
       "folderId": null,
       "entityType": "TODAY",
       "name": "Today",
@@ -86,24 +86,7 @@
       "order": 2
     },
     {
-      "id": "inbox",
-      "folderId": null,
-      "entityType": "INBOX",
-      "name": "Inbox",
-      "icon": "pi pi-inbox",
-      "color": "#6366f1",
-      "isPinned": false,
-      "isArchived": false,
-      "tasks": [],
-      "viewType": "list",
-      "isSmartView": true,
-      "createdAt": "2026-04-01T00:00:00.000Z",
-      "updatedAt": "2026-04-01T00:00:00.000Z",
-      "isSystem": true,
-      "order": 3
-    },
-    {
-      "id": "tomorrow",
+      "id": "p-3",
       "folderId": null,
       "entityType": "TOMORROW",
       "name": "Tomorrow",
@@ -120,12 +103,29 @@
       "order": 2
     },
     {
-      "id": "next-seven-days",
+      "id": "p-4",
       "folderId": null,
       "entityType": "NEXT_SEVEN_DAYS",
       "name": "Next 7 Days",
       "icon": "pi pi-calendar-clock",
       "color": "#3b82f6",
+      "isPinned": false,
+      "isArchived": false,
+      "tasks": [],
+      "viewType": "list",
+      "isSmartView": true,
+      "createdAt": "2026-04-01T00:00:00.000Z",
+      "updatedAt": "2026-04-01T00:00:00.000Z",
+      "isSystem": true,
+      "order": 3
+    },
+    {
+      "id": "inbox",
+      "folderId": null,
+      "entityType": "INBOX",
+      "name": "Inbox",
+      "icon": "pi pi-inbox",
+      "color": "#6366f1",
       "isPinned": false,
       "isArchived": false,
       "tasks": [],
@@ -545,7 +545,7 @@
       "status": "PENDING",
       "priority": "LOW",
       "sortOrder": 2,
-      "isPinned": true,
+      "isPinned": false,
       "parentId": null,
       "subtasks": [
         {
@@ -606,7 +606,7 @@
       "dueDate": "2026-04-22T00:00:00Z",
       "dueDateTime": "09:00",
       "createdAt": "2026-04-09T06:35:00Z",
-      "updatedAt": "2026-04-13T19:31:09.166Z",
+      "updatedAt": "2026-04-14T07:18:41.528Z",
       "completedAt": null
     },
     {
@@ -717,31 +717,7 @@
       "sortOrder": 2,
       "isPinned": false,
       "parentId": null,
-      "subtasks": [
-        {
-          "id": "subtask-004-1",
-          "userId": "user-123",
-          "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-          "title": "Create login form UI",
-          "description": "",
-          "status": "COMPLETED",
-          "priority": "MEDIUM",
-          "sortOrder": 1,
-          "isPinned": false,
-          "parentId": "task-004",
-          "subtasks": [],
-          "tags": [],
-          "comments": [],
-          "attachmentId": null,
-          "entityType": "SUBTASK",
-          "reminder": null,
-          "repeat": null,
-          "dueDate": "2026-04-20T00:00:00Z",
-          "createdAt": "2026-04-08T11:15:00Z",
-          "updatedAt": "2026-04-13T19:32:11.758Z",
-          "completedAt": null
-        }
-      ],
+      "subtasks": [],
       "tags": [],
       "comments": [],
       "attachmentId": null,
@@ -751,7 +727,7 @@
       "dueDate": "2026-04-25T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-08T11:10:00Z",
-      "updatedAt": "2026-04-13T19:32:11.758Z",
+      "updatedAt": "2026-04-14T07:08:56.510Z",
       "completedAt": null
     },
     {
@@ -799,7 +775,7 @@
       "dueDate": "2026-04-11T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-06T12:20:00Z",
-      "updatedAt": "2026-04-13T12:36:54.591Z",
+      "updatedAt": "2026-04-14T04:31:52.405Z",
       "completedAt": null
     },
     {
@@ -808,7 +784,7 @@
       "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
       "title": "Plan content calendar for April & May",
       "description": "Schedule 20 blog posts and social media content",
-      "status": "COMPLETED",
+      "status": "PENDING",
       "priority": "LOW",
       "sortOrder": 1,
       "isPinned": false,
@@ -823,7 +799,7 @@
       "dueDate": "2026-04-12T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-05T09:30:00Z",
-      "updatedAt": "2026-04-13T19:32:07.866Z",
+      "updatedAt": "2026-04-14T00:47:26.982Z",
       "completedAt": "2026-04-10T16:00:00Z"
     },
     {
@@ -976,7 +952,7 @@
       "projectId": "e1f2a3b4-c5d6-7890-4567-123456789012",
       "title": "Update stock levels in inventory system",
       "description": "Sync physical stock with database",
-      "status": "COMPLETED",
+      "status": "PENDING",
       "priority": "HIGH",
       "sortOrder": 1,
       "isPinned": false,
@@ -991,7 +967,7 @@
       "dueDate": "2026-04-14T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-07T17:00:00Z",
-      "updatedAt": "2026-04-11T15:30:00Z",
+      "updatedAt": "2026-04-14T07:49:44.313Z",
       "completedAt": "2026-04-11T15:30:00Z"
     },
     {
@@ -1099,7 +1075,7 @@
       "status": "PENDING",
       "priority": "MEDIUM",
       "sortOrder": 1,
-      "isPinned": false,
+      "isPinned": true,
       "parentId": null,
       "subtasks": [],
       "tags": [],
@@ -1111,7 +1087,7 @@
       "dueDate": "2026-05-05T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-02T10:40:00Z",
-      "updatedAt": "2026-04-11T17:00:00Z",
+      "updatedAt": "2026-04-14T07:18:35.182Z",
       "completedAt": null
     },
     {
@@ -1136,32 +1112,6 @@
       "dueDateTime": null,
       "createdAt": "2026-04-01T14:10:00Z",
       "updatedAt": "2026-04-12T14:30:00Z",
-      "completedAt": null
-    },
-    {
-      "id": "125d7b95-c825-4f52-957e-2f0454efa37f",
-      "userId": null,
-      "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
-      "title": "testing-2",
-      "description": "",
-      "status": "PENDING",
-      "priority": "NONE",
-      "isPinned": false,
-      "parentId": null,
-      "subtasks": [],
-      "tags": [],
-      "comments": [],
-      "attachmentId": null,
-      "entityType": "TASK",
-      "reminder": {
-        "type": "daily"
-      },
-      "repeat": {
-        "type": "on-the-day"
-      },
-      "dueDate": "2026-04-12T18:30:00.000Z",
-      "createdAt": "2026-04-13T10:29:52.332Z",
-      "updatedAt": "2026-04-13T10:29:52.332Z",
       "completedAt": null
     }
   ],
@@ -1224,6 +1174,115 @@
       "isPinned": false,
       "createdAt": "2026-04-10T09:40:05.588Z",
       "updatedAt": "2026-04-11T21:11:34.509Z"
+    }
+  ],
+  "trash": [
+    {
+      "id": "de76d79e-a64f-4509-9360-aaa5557c6a56",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "testing",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "dueDate": null,
+      "createdAt": "2026-04-14T09:29:33.677Z",
+      "updatedAt": "2026-04-14T09:29:33.677Z",
+      "completedAt": null
+    },
+    {
+      "id": "6380e902-8827-4a73-9f51-5f9f2af98600",
+      "userId": null,
+      "projectId": "inbox",
+      "parentId": "9f98b59e-3f7d-483b-a14b-ee25c8972356",
+      "title": "Todo",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "reminder": null,
+      "repeat": null,
+      "dueDate": null,
+      "dueDateTime": null,
+      "createdAt": "2026-04-14T10:28:19.085Z",
+      "updatedAt": "2026-04-14T10:28:31.411Z",
+      "completedAt": null
+    },
+    {
+      "id": "db27ba00-4433-4b1e-9576-262776fc9c78",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "testing",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "dueDate": null,
+      "createdAt": "2026-04-14T10:35:55.283Z",
+      "updatedAt": "2026-04-14T10:35:55.283Z",
+      "completedAt": null
+    },
+    {
+      "id": "9f98b59e-3f7d-483b-a14b-ee25c8972356",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "nothing to do anything",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [
+        {
+          "id": "ce2749b0-5d6c-4a1e-a499-c775a3d1aa65",
+          "userId": null,
+          "projectId": "inbox",
+          "parentId": "9f98b59e-3f7d-483b-a14b-ee25c8972356",
+          "title": "teting",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "TRASHED",
+          "reminder": null,
+          "repeat": null,
+          "dueDate": null,
+          "dueDateTime": null,
+          "createdAt": "2026-04-14T10:34:46.108Z",
+          "updatedAt": "2026-04-14T10:34:49.809Z",
+          "completedAt": null
+        }
+      ],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "dueDate": null,
+      "createdAt": "2026-04-14T09:29:41.678Z",
+      "updatedAt": "2026-04-14T10:34:49.809Z",
+      "completedAt": null
     }
   ]
 }

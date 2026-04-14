@@ -11,5 +11,6 @@ export enum EntityType {
   TAG = 'TAG',
   CHILD_TAG = 'CHILD_TAG',
   TASK = 'TASK',
-  SUBTASK='SUBTASK'
+  SUBTASK='SUBTASK',
+  TRASHED='TRASHED',
 }
