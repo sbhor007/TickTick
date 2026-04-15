@@ -111,7 +111,7 @@ export class ContextMenuBarService {
         isSectionHeader: true,
         action: 'date_section',
         renderType: 'icon-grid',
-        children: [
+        items: [
           { label: 'Today', icon: 'pi pi-sun', action: 'set_date_today' },
           {
             label: 'Tomorrow',
@@ -136,7 +136,7 @@ export class ContextMenuBarService {
         isSectionHeader: true,
         action: 'priority_section',
         renderType: 'icon-grid',
-        children: [
+        items: [
           {
             label: 'High',
             icon: 'pi pi-flag-fill',
@@ -282,6 +282,55 @@ export class ContextMenuBarService {
       { label: 'Restore', icon: 'pi pi-replay', action: 'restore' },
       // { label: 'Pin', icon: 'pin', action: 'pin' },
       { label: 'Delete forever', icon: 'pi pi-trash', action: 'delete_forever' },
+    ],
+    [EntityType.TASK_INPUT]:[
+      {
+        label: 'Priority',
+        icon: '',
+        isSectionHeader: true,
+        action: 'priority_section',
+        renderType: 'icon-grid',
+        items: [
+          {
+            label: 'High',
+            icon: 'pi pi-flag-fill',
+            action: 'set_priority_high',
+            color: '#ef4444',
+          },
+          {
+            label: 'Medium',
+            icon: 'pi pi-flag-fill',
+            action: 'set_priority_medium',
+            color: '#eab308',
+          },
+          {
+            label: 'Low',
+            icon: 'pi pi-flag-fill',
+            action: 'set_priority_low',
+            color: '#3b82f6',
+          },
+          {
+            label: 'None',
+            icon: 'pi pi-flag-fill',
+            action: 'set_priority_none',
+            color: '#6b7280',
+          },
+        ],
+      },
+      {
+        label: 'Move to',
+        icon: 'folder_open',
+        action: 'move_to',
+        hasSubmenu: true,
+      },
+      { label: 'Tags', icon: 'label', action: 'manage_tags' },
+      { label: 'Attachment', icon: 'label', action: 'attachment' },
+      { label: 'Add From Template', icon: 'label', action: 'add_from_template' },
+      { label: '', icon: '', action: 'divider', isDivider: true },
+
+      { label: 'Input Box Setting', icon: '', action: 'input_box_setting'},
+
+
     ]
   };
   getContextMenu(
@@ -313,7 +362,7 @@ export class ContextMenuBarService {
       ].includes(type)
     ) {
       const pinItem: ContextMenuItem = isPinned
-        ? { label: 'Unpin', icon: 'push_pin_off', action: 'unpin' }
+        ? { label: 'Unpin', icon: 'push_pin', action: 'unpin' }
         : { label: 'Pin', icon: 'push_pin', action: 'pin' };
 
       insertAfterEdit(pinItem);

@@ -1,5 +1,59 @@
 <div class="relative">
+<!-- Option/Context menu -->
+ <p-popover
+    #contextMenuPopover
+    [dismissable]="true"
+    [appendTo]="'body'"
+    styleClass="task-context-popover"
+  >
+    <div class="ctx-menu">
+      <!-- Date & Priority Sections -->
+      @for (section of menuSections; track section.action) {
+        <div class="ctx-section">
+          <span class="ctx-section-label">{{ section.label }}</span>
+          <div class="ctx-icon-grid">
+            @for (child of section.items; track child.action) {
+              <button
+                class="ctx-icon-btn"
+                [title]="child.label"
+                (click)="onSectionItemClick(section.action, child.action)"
+              >
+                @if (child.color) {
+                  <i [class]="child.icon" [style.color]="child.color"></i>
+                } @else {
+                  <i [class]="child.icon"></i>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Regular Menu Items -->
+      @for (item of menuRegularItems; track item.action) {
+        @if (item.isDivider) {
+          <div class="ctx-divider"></div>
+        } @else {
+          <button
+            class="ctx-menu-item"
+            [class.ctx-danger]="item.isDanger"
+            (click)="onRegularItemClick(item)"
+          >
+            <span class="material-symbols-outlined ctx-item-icon" [class.ctx-danger-icon]="item.isDanger">
+              {{ item.icon }}
+            </span>
+            <span class="ctx-item-label">{{ item.label }}</span>
+            @if (item.hasSubmenu) {
+              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+            }
+          </button>
+        }
+      }
+    </div>
+  </p-popover>
+
   <!-- Input Wrapper -->
+
   <div
     class="relative bg-neutral-900 border border-white/10 rounded-xl focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all"
   >
@@ -30,6 +84,7 @@
       >
         <i class="pi pi-calendar text-[13px]"></i>
       </button>
+      <i (click)="openFolderMenu($event)" class="pi pi-angle-up cursor-pointer"></i>
     </div>
 
     <!-- Selected Date/Time Badge (shown inside input area when date is selected) -->

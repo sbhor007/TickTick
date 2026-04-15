@@ -1,15 +1,58 @@
 <div
   class="flex items-center gap-3 px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors group mb-0.5 w-full"
 >
-  <!-- Context Menu -->
-  <p-menu
-    #contextMenuOptions
-    [model]="contextMenu"
-    [popup]="true"
-    appendTo="body"
+  <!-- Context Menu Popover -->
+  <p-popover
+    #contextMenuPopover
+    [dismissable]="true"
+    [appendTo]="'body'"
+    styleClass="task-context-popover"
   >
-  <ng-template #start></ng-template>
-  </p-menu>
+    <div class="ctx-menu">
+      <!-- Date & Priority Sections -->
+      @for (section of menuSections; track section.action) {
+        <div class="ctx-section">
+          <span class="ctx-section-label">{{ section.label }}</span>
+          <div class="ctx-icon-grid">
+            @for (child of section.items; track child.action) {
+              <button
+                class="ctx-icon-btn"
+                [title]="child.label"
+                (click)="onSectionItemClick(section.action, child.action)"
+              >
+                @if (child.color) {
+                  <i [class]="child.icon" [style.color]="child.color"></i>
+                } @else {
+                  <i [class]="child.icon"></i>
+                }
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Regular Menu Items -->
+      @for (item of menuRegularItems; track item.action) {
+        @if (item.isDivider) {
+          <div class="ctx-divider"></div>
+        } @else {
+          <button
+            class="ctx-menu-item"
+            [class.ctx-danger]="item.isDanger"
+            (click)="onRegularItemClick(item)"
+          >
+            <span class="material-symbols-outlined ctx-item-icon" [class.ctx-danger-icon]="item.isDanger">
+              {{ item.icon }}
+            </span>
+            <span class="ctx-item-label">{{ item.label }}</span>
+            @if (item.hasSubmenu) {
+              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+            }
+          </button>
+        }
+      }
+    </div>
+  </p-popover>
 
   <!-- Subtask toggle slot (projected from parent) -->
   <ng-content select="[subtaskToggle]" />

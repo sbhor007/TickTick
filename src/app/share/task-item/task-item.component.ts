@@ -13,7 +13,8 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { ShortDatePipe } from '../../pipe/short-date.pipe';
 import { ContextMenuBarService } from '../../config/context-menu-bar.service';
-import { Menu } from 'primeng/menu';
+import { ContextMenuItem } from '../../models/context-menu-item';
+import { Popover } from 'primeng/popover';
 import { MenuItem } from 'primeng/api';
 import { EntityType } from '../../enums/entity-type';
 import { TooltipModule } from 'primeng/tooltip';
@@ -21,7 +22,6 @@ import { TaskPriority } from '../../enus/task-priority';
 import { debounceTime } from 'rxjs';
 import { TaskStatus } from '../../enus/task-status';
 import { Task } from '../../models/task';
-import { Base } from 'primeng/base';
 
 export type TaskActionType =
   | 'update'
@@ -66,7 +66,7 @@ export interface ContextMenuI {
     InputTextModule,
     ShortDatePipe,
     TooltipModule,
-    Menu,
+    Popover,
   ],
   templateUrl: './task-item.component.html',
   styleUrl: './task-item.component.css',
@@ -83,8 +83,16 @@ export class TaskItemComponent {
   isCompleted = new FormControl();
   taskTitle = new FormControl('');
 
-  @ViewChild('contextMenuOptions') contextMenuOptions!: Menu;
+  activeDate: string | null = null;
+  activePriority: string | null = null;
+
+  @ViewChild('contextMenuPopover') contextMenuPopover!: Popover;
   contextMenu: MenuItem[] = [];
+
+  // Structured context menu data
+  menuSections: ContextMenuItem[] = [];
+  menuRegularItems: ContextMenuItem[] = [];
+  private currentTask!: Task;
 
   // tracks which menu item is currently hovered
   hoveredItemId: string | null = null;
@@ -95,7 +103,6 @@ export class TaskItemComponent {
     /**update title(task and sub task) */
     this.taskTitle.valueChanges.pipe(debounceTime(1000)).subscribe((val) => {
       if (val != null) {
-        
         if (this.task.entityType === EntityType.TASK) {
           this.taskService.updateTask(this.task.id, {
             ...this.task,
@@ -130,22 +137,35 @@ export class TaskItemComponent {
     event.stopPropagation();
     event.preventDefault();
 
+    this.currentTask = task;
+
     const context = this.contextMenuService.getContextMenu(
       task.entityType,
       task.isPinned,
     );
 
-    this.contextMenu = context.map((item): MenuItem => {
-      if (item.isDivider) return { separator: true };
-      return {
-        ...item,
-        // mark move-to items so the template can identify them
-        // id: item.action === 'shareUnshareTag' ? 'move-to-item' : item.action,
-        command: () => this.handleAction(task, item.action),
-      };
-    });
+    // Split into sections (Date/Priority) and regular items
+    this.menuSections = context.filter(i => i.isSectionHeader);
+    this.menuRegularItems = context.filter(i => !i.isSectionHeader);
 
-    this.contextMenuOptions.toggle(event);
+    this.contextMenuPopover.toggle(event);
+  }
+
+  onSectionItemClick(sectionAction: string, itemAction: string) {
+    if (this.currentTask) {
+      this.handleAction(this.currentTask, itemAction);
+    }
+    this.contextMenuPopover.hide();
+  }
+
+  onRegularItemClick(item: ContextMenuItem) {
+    if (item.isDivider) return;
+    if (this.currentTask) {
+      this.handleAction(this.currentTask, item.action);
+    }
+    if (!item.hasSubmenu) {
+      this.contextMenuPopover.hide();
+    }
   }
 
   handleAction(task: Task, action: string) {
@@ -154,8 +174,16 @@ export class TaskItemComponent {
       action: action,
       entityType: task.entityType,
       entityId: task.id,
-      payload: task
+      payload: task,
     });
+  }
+
+  getPrioritySection() {
+  return this.contextMenu.find(i => i['action'] === 'priority_section');
+}
+
+  onMenuAction(action: string) {
+    // your existing handleAction logic
   }
 
   onMoveToEnter(event: MouseEvent, item: MenuItem) {

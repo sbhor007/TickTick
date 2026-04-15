@@ -19,3 +19,137 @@ body {
     display: none;
   }
 }
+
+
+.task-context-popover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.task-context-popover .p-popover-content {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* Main menu container */
+.ctx-menu {
+  background: #1e1e22;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 6px 0;
+  min-width: 200px;
+  max-width: 240px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Section (Date / Priority) */
+.ctx-section {
+  padding: 4px 12px 6px;
+}
+
+.ctx-section-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+/* Icon grid row */
+.ctx-icon-grid {
+  display: flex;
+  gap: 2px;
+}
+
+.ctx-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 30px;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 15px;
+}
+
+.ctx-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ctx-icon-btn i {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* Divider */
+.ctx-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 0;
+}
+
+/* Regular menu item */
+.ctx-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.ctx-menu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Item icon (Material Symbols) */
+.ctx-item-icon {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+/* Item label */
+.ctx-item-label {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Submenu arrow */
+.ctx-submenu-arrow {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* Danger item (Delete) */
+.ctx-menu-item.ctx-danger {
+  color: #f87171;
+}
+
+.ctx-menu-item.ctx-danger .ctx-item-icon,
+.ctx-danger-icon {
+  color: #f87171 !important;
+}

@@ -25,6 +25,11 @@ import { TaskStatus } from '../../enus/task-status';
 import { TaskPriority } from '../../enus/task-priority';
 import { EntityType } from '../../enums/entity-type';
 import { Task } from '../../models/task';
+import { MenuItem } from 'primeng/api';
+import { ContextMenuItem } from '../../models/context-menu-item';
+import { ContextMenuBarService } from '../../config/context-menu-bar.service';
+import { Popover } from 'primeng/popover';
+import { Project } from '../../models/project';
 
 @Component({
   selector: 'app-task-input',
@@ -35,12 +40,14 @@ import { Task } from '../../models/task';
     DatePipe,
     ReactiveFormsModule,
     DateTimePickerComponent,
-  ],
+    Popover
+],
   templateUrl: './task-input.component.html',
   styles: ``,
 })
 export class TaskInputComponent implements OnInit {
   private taskService = inject(TaskService);
+  private contextMenuService = inject(ContextMenuBarService)
   @Input() project!: any;
 
   taskTitle = '';
@@ -58,6 +65,14 @@ export class TaskInputComponent implements OnInit {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
 
+
+  @ViewChild('contextMenuPopover') contextMenuPopover!: Popover;
+  contextMenu: MenuItem[] = [];
+
+  // Structured context menu data
+  menuSections: ContextMenuItem[] = [];
+  menuRegularItems: ContextMenuItem[] = [];
+
   @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 
   selectedDateTime: Date | null = null;
@@ -71,6 +86,52 @@ export class TaskInputComponent implements OnInit {
     
     
   }
+
+
+  /**context menu option */
+  openFolderMenu(event: MouseEvent) {
+      event.stopPropagation();
+      event.preventDefault();
+  
+      // this.currentTask = task;
+  
+      const context = this.contextMenuService.getContextMenu(
+       EntityType.TASK_INPUT
+      );
+  
+      // Split into sections (Date/Priority) and regular items
+      this.menuSections = context.filter(i => i.isSectionHeader);
+      this.menuRegularItems = context.filter(i => !i.isSectionHeader);
+  
+      this.contextMenuPopover.toggle(event);
+    }
+  
+    onSectionItemClick(sectionAction: string, itemAction: string) {
+      if (this.project) {
+        this.handleAction(this.project, itemAction);
+      }
+      this.contextMenuPopover.hide();
+    }
+  
+    onRegularItemClick(item: ContextMenuItem) {
+      if (item.isDivider) return;
+      if (this.project) {
+        this.handleAction(this.project, item.action);
+      }
+      if (!item.hasSubmenu) {
+        this.contextMenuPopover.hide();
+      }
+    }
+  
+    handleAction(project: Project, action: string) {
+      console.log('action:', action, 'entityType:', project.entityType);
+      // this.contextMenuEvent.emit({
+      //   action: action,
+      //   entityType: task.entityType,
+      //   entityId: task.id,
+      //   payload: task,
+      // });
+    }
 
   toggeleDateTimePiker() {
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;

@@ -13,4 +13,5 @@ export enum EntityType {
   TASK = 'TASK',
   SUBTASK='SUBTASK',
   TRASHED='TRASHED',
+  TASK_INPUT = 'TASK_INPUT'
 }
