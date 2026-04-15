@@ -26,6 +26,7 @@
         @for (task of group.tasks; track task.id) {
           <!-- Task Row with inline subtask toggle -->
           <app-task-item
+          (click)="navigateToTaskDetails(task.id,task.entityType)"
             [task]="task"
             (contextMenuEvent)="taskItemEventHandler($event)"
           >

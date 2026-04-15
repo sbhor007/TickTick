@@ -73,7 +73,6 @@ export interface ContextMenuI {
 })
 export class TaskItemComponent {
   private taskService = inject(TaskService);
-
   private contextMenuService = inject(ContextMenuBarService);
 
   @Input() task!: any;
@@ -166,6 +165,11 @@ export class TaskItemComponent {
     if (!item.hasSubmenu) {
       this.contextMenuPopover.hide();
     }
+  }
+
+  onMouse(event:any){
+    console.log("----",event);
+    
   }
 
   handleAction(task: Task, action: string) {

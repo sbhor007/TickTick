@@ -1,0 +1,111 @@
+@if (task) {
+  <div class="px-5">
+    <p-popover
+      #priorityMenuPopover
+      [dismissable]="true"
+      [appendTo]="'body'"
+      styleClass="task-context-popover"
+    >
+      <div class="ctx-menu">
+        @for (section of priorityMenu; track section.action) {
+          <div
+            class="ctx-section flex gap-4 cursor-pointer"
+            (click)="onPrioritySelected(section.action)"
+          >
+            <i [ngClass]="section.icon" [style.color]="section.color"></i>
+            <span class="ctx-section-label text-2xl">{{ section.label }}</span>
+            <!-- <div class="ctx-icon-grid"></div> -->
+          </div>
+        }
+      </div>
+    </p-popover>
+    <!-- header section -->
+    <!-- check box -->
+    <div
+      class="flex items-center gap-2 flex-1 min-w-0 px-2 py-5 border-b border-gray-400/20"
+    >
+      <label class="relative flex items-center cursor-pointer">
+        <input
+          type="checkbox"
+          [formControl]="isCompleted"
+          [class]="getCheckboxClass(task.priority)"
+        />
+        @if (isCompleted.value) {
+          <span
+            class="absolute inset-0 flex items-center justify-center pointer-events-none"
+          >
+            <svg
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              class="w-2.5 h-2.5 text-white"
+            >
+              <path
+                d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+              />
+            </svg>
+          </span>
+        }
+      </label>
+      <!-- Due Date -->
+      <span
+        class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
+        [class]="
+          isCompleted.value ? 'text-gray-600' : getDueDateColor(task.dueDate)
+        "
+      >
+        @if (task.dueDate) {
+          {{ task.dueDate | shortDate }}
+        } @else {
+          <i
+            class="pi pi-calendar text-[11px] group-hover:opacity-40 transition-opacity"
+          ></i>
+          <span>Due Date</span>
+        }
+      </span>
+
+      <!-- priority flag -->
+      <i class="pi pi-flag" (click)="openPriorityMenu($event)"></i>
+    </div>
+
+    <!-- title section -->
+    <div class="py-2 border-b border-gray-200/20">
+      <div class="">
+        <input
+          type="text"
+          [formControl]="taskTitle"
+          class="w-full outline-none font-semibold"
+        />
+      </div>
+      <input
+        type="text"
+        [formControl]="taskDescription"
+        class="w-full outline-none text-gray-500"
+      />
+      <!-- description section -->
+      <div class="py-2"></div>
+
+      <!-- tags section -->
+      @if (task.tags) {
+        @for (tag of task.tags; track $index) {
+          <span class="bg-white/5 px-2 py-1 rounded-xl mr-2.5"
+            >{{ tag.name }}
+          </span>
+        }
+
+        <span class="bg-white/5 px-2 py-1 rounded-xl mr-2.5 cursor-pointer"
+          >+
+        </span>
+      }
+    </div>
+    <!-- image section -->
+
+    <!-- subtask section -->
+    @if (task.subtasks?.length) {
+      <div>
+        @for (subtask of task.subtasks; track $index) {
+          <app-task-item [task]="subtask"> </app-task-item>
+        }
+      </div>
+    }
+  </div>
+}

@@ -5,6 +5,7 @@ import { TaskListComponent } from './components/context/task-list/task-list.comp
 import { ContextPageComponent } from './pages/tasks/context.page/context.page.component';
 import { EntityType } from './enums/entity-type';
 import { TrashedComponent } from './components/trashed/trashed.component';
+import { TaskDetailsComponent } from './components/task-details/task-details.component';
 
 export const routes: Routes = [
   {
@@ -23,7 +24,13 @@ export const routes: Routes = [
           {
             path: 'project/:id',
             component:ContextPageComponent,
-            data: { entityType: EntityType.PROJECT }
+            data: { entityType: EntityType.PROJECT },
+            children:[
+              {
+                path:':entityType/:id',
+                component: TaskDetailsComponent
+              }
+            ]
           },
           {
             path: 'ALL/:id',

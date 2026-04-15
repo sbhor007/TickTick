@@ -52,6 +52,15 @@ export class TaskService {
       console.log('SubTask Created');
     }
   }
+
+  fetchTaskById(taskId:string): Observable<Task>{
+    return this.http.get<Task>(`${environment.API}/tasks/${taskId}`).pipe(
+      catchError((err) => {
+        console.error('Error get all tasks:', err);
+        return of();
+      }),
+    )
+  }
   /**update task */
   updateTask(taskId: string, updatedTask: Partial<Task>) {
     console.log('updateTask called::', taskId, updatedTask);
@@ -85,6 +94,7 @@ export class TaskService {
 
     this.updateTask(parentId, { ...parentTask, subtasks: updatedSubTasks });
   }
+
 
   /**delete Task */
   deleteTask(taskId: string) {

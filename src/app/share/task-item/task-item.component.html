@@ -33,15 +33,36 @@
 
       <!-- Regular Menu Items -->
       @for (item of menuRegularItems; track item.action) {
+        <!-- TODO:updated -->
         @if (item.isDivider) {
           <div class="ctx-divider"></div>
+        } @else if (item.label == "Move to") {
+          <button
+            class="ctx-menu-item"
+            [class.ctx-danger]="item.isDanger"
+            (mouseenter)="onMouse($event)"
+          >
+            <span
+              class="material-symbols-outlined ctx-item-icon"
+              [class.ctx-danger-icon]="item.isDanger"
+            >
+              {{ item.icon }}
+            </span>
+            <span class="ctx-item-label">{{ item.label }}</span>
+            @if (item.hasSubmenu) {
+              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+            }
+          </button>
         } @else {
           <button
             class="ctx-menu-item"
             [class.ctx-danger]="item.isDanger"
             (click)="onRegularItemClick(item)"
           >
-            <span class="material-symbols-outlined ctx-item-icon" [class.ctx-danger-icon]="item.isDanger">
+            <span
+              class="material-symbols-outlined ctx-item-icon"
+              [class.ctx-danger-icon]="item.isDanger"
+            >
               {{ item.icon }}
             </span>
             <span class="ctx-item-label">{{ item.label }}</span>
@@ -69,7 +90,6 @@
         <span
           class="absolute inset-0 flex items-center justify-center pointer-events-none"
         >
-
           <svg
             viewBox="0 0 16 16"
             fill="currentColor"
@@ -106,7 +126,7 @@
               : 'bg-white/10 text-gray-400'
           "
         >
-          {{ tag }}
+          {{ $any(tag).name }}
         </span>
       }
       @if (task.tags.length > 2) {
@@ -152,7 +172,7 @@
           tooltipPosition="top"
         ></i>
       }
-      @if (task.description) {
+      @if (task.description && task.description != '') {
         <i
           class="pi pi-align-left text-[11px]"
           pTooltip="Description"

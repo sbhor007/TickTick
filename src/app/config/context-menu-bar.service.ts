@@ -278,12 +278,16 @@ export class ContextMenuBarService {
 
       { label: 'Delete', icon: 'delete', action: 'delete', isDanger: true },
     ],
-    [EntityType.TRASHED]:[
+    [EntityType.TRASHED]: [
       { label: 'Restore', icon: 'pi pi-replay', action: 'restore' },
       // { label: 'Pin', icon: 'pin', action: 'pin' },
-      { label: 'Delete forever', icon: 'pi pi-trash', action: 'delete_forever' },
+      {
+        label: 'Delete forever',
+        icon: 'pi pi-trash',
+        action: 'delete_forever',
+      },
     ],
-    [EntityType.TASK_INPUT]:[
+    [EntityType.TASK_INPUT]: [
       {
         label: 'Priority',
         icon: '',
@@ -325,13 +329,41 @@ export class ContextMenuBarService {
       },
       { label: 'Tags', icon: 'label', action: 'manage_tags' },
       { label: 'Attachment', icon: 'label', action: 'attachment' },
-      { label: 'Add From Template', icon: 'label', action: 'add_from_template' },
+      {
+        label: 'Add From Template',
+        icon: 'label',
+        action: 'add_from_template',
+      },
       { label: '', icon: '', action: 'divider', isDivider: true },
 
-      { label: 'Input Box Setting', icon: '', action: 'input_box_setting'},
-
-
-    ]
+      { label: 'Input Box Setting', icon: '', action: 'input_box_setting' },
+    ],
+    [EntityType.PRIORITY]: [
+      {
+        label: 'High',
+        icon: 'pi pi-flag-fill',
+        action: 'set_priority_high',
+        color: '#ef4444',
+      },
+      {
+        label: 'Medium',
+        icon: 'pi pi-flag-fill',
+        action: 'set_priority_medium',
+        color: '#eab308',
+      },
+      {
+        label: 'Low',
+        icon: 'pi pi-flag-fill',
+        action: 'set_priority_low',
+        color: '#3b82f6',
+      },
+      {
+        label: 'None',
+        icon: 'pi pi-flag-fill',
+        action: 'set_priority_none',
+        color: '#6b7280',
+      },
+    ],
   };
   getContextMenu(
     type: EntityType,
@@ -358,7 +390,7 @@ export class ContextMenuBarService {
         EntityType.TAG,
         EntityType.CHILD_TAG,
         EntityType.TASK,
-        EntityType.SUBTASK
+        EntityType.SUBTASK,
       ].includes(type)
     ) {
       const pinItem: ContextMenuItem = isPinned

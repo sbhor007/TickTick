@@ -557,7 +557,7 @@
       "dueDate": "2026-04-25T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-08T11:10:00Z",
-      "updatedAt": "2026-04-14T07:08:56.510Z",
+      "updatedAt": "2026-04-15T09:41:56.778Z",
       "completedAt": null
     },
     {
@@ -581,14 +581,14 @@
       "dueDate": "2026-04-18T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-07T09:00:00Z",
-      "updatedAt": "2026-04-13T12:36:57.065Z",
+      "updatedAt": "2026-04-15T10:12:35.231Z",
       "completedAt": null
     },
     {
       "id": "task-006",
       "userId": "user-123",
       "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
-      "title": "Design expense tracking dashboard",
+      "title": "Design",
       "description": "Create UI for adding and viewing monthly expenses",
       "status": "PENDING",
       "priority": "MEDIUM",
@@ -605,14 +605,14 @@
       "dueDate": "2026-04-11T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-06T12:20:00Z",
-      "updatedAt": "2026-04-14T04:31:52.405Z",
+      "updatedAt": "2026-04-15T09:41:52.546Z",
       "completedAt": null
     },
     {
       "id": "task-007",
       "userId": "user-123",
       "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
-      "title": "Plan content calendar for April & May",
+      "title": "Plan content calentask-details works!</p>dar for April & May",
       "description": "Schedule 20 blog posts and social media content",
       "status": "PENDING",
       "priority": "LOW",
@@ -629,7 +629,7 @@
       "dueDate": "2026-04-12T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-05T09:30:00Z",
-      "updatedAt": "2026-04-14T00:47:26.982Z",
+      "updatedAt": "2026-04-15T09:41:30.798Z",
       "completedAt": "2026-04-10T16:00:00Z"
     },
     {
@@ -653,14 +653,14 @@
       "dueDate": "2026-04-19T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-04T15:00:00Z",
-      "updatedAt": "2026-04-13T12:07:05.992Z",
+      "updatedAt": "2026-04-15T09:41:31.834Z",
       "completedAt": null
     },
     {
       "id": "task-009",
       "userId": "user-123",
       "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
-      "title": "Finalize product launch landing page copy",
+      "title": "Finalize product  gh",
       "description": "Write compelling headlines and benefits section",
       "status": "PENDING",
       "priority": "NONE",
@@ -677,7 +677,7 @@
       "dueDate": "2026-04-23T00:00:00Z",
       "dueDateTime": null,
       "createdAt": "2026-04-03T07:40:00Z",
-      "updatedAt": "2026-04-13T12:36:55.865Z",
+      "updatedAt": "2026-04-15T09:41:59.448Z",
       "completedAt": null
     },
     {
@@ -1122,7 +1122,96 @@
       "dueDate": "2026-04-22T00:00:00Z",
       "dueDateTime": "09:00",
       "createdAt": "2026-04-09T06:35:00Z",
-      "updatedAt": "2026-04-14T22:50:41.289Z",
+      "updatedAt": "2026-04-15T10:04:09.754Z",
+      "completedAt": null
+    },
+    {
+      "id": "e1be7122-db75-4fcc-8be7-5b85a3babb9d",
+      "userId": null,
+      "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+      "title": "testing",
+      "description": "tet",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "dueDate": null,
+      "createdAt": "2026-04-15T09:17:37.157Z",
+      "updatedAt": "2026-04-15T09:20:54.309Z",
+      "completedAt": null
+    },
+    {
+      "id": "73499e8c-ef1f-450b-b8e2-3b7937e755c8",
+      "userId": null,
+      "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+      "title": "new",
+      "description": "new tiesting ",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [
+        {
+          "name": "testing-update",
+          "color": "",
+          "parentId": null,
+          "entityType": "TAG",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-10T09:20:30.895Z",
+          "updatedAt": "2026-04-10T12:01:07.894Z",
+          "id": "1cy2EcI",
+          "isShared": true
+        },
+        {
+          "name": "test",
+          "color": "",
+          "parentId": null,
+          "entityType": "TAG",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-10T09:39:03.354Z",
+          "updatedAt": "2026-04-11T21:11:31.743Z",
+          "id": "WATcGxJ"
+        },
+        {
+          "id": "tag_001",
+          "parentId": null,
+          "name": "Work-1-its-worked",
+          "color": "#3B82F6",
+          "entityType": "TAG",
+          "childTag": [
+            {
+              "name": "Work-1-its-worked---",
+              "color": "#3B82F6",
+              "parentId": "tag_001",
+              "entityType": "CHILD_TAG",
+              "id": "365c4461-07bb-4fa1-b701-5cbcc6abae4c",
+              "childTag": [],
+              "isPinned": false,
+              "createdAt": "2026-04-10T11:42:44.812Z",
+              "updatedAt": "2026-04-11T21:11:38.423Z"
+            }
+          ],
+          "createdAt": "2025-12-01T10:15:00Z",
+          "updatedAt": "2026-04-11T21:11:38.423Z",
+          "isPinned": false,
+          "count": 45,
+          "isShared": true
+        }
+      ],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "dueDate": null,
+      "createdAt": "2026-04-15T09:20:58.790Z",
+      "updatedAt": "2026-04-15T09:43:13.923Z",
       "completedAt": null
     }
   ],
@@ -1513,6 +1602,26 @@
       "dueDateTime": "09:00",
       "createdAt": "2026-04-09T06:35:00Z",
       "updatedAt": "2026-04-14T22:50:41.289Z",
+      "completedAt": null
+    },
+    {
+      "id": "86c28317-bc1a-4586-8d2f-bebaf776f6f6",
+      "userId": null,
+      "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+      "title": "new one",
+      "description": "",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "dueDate": null,
+      "createdAt": "2026-04-15T05:55:27.966Z",
+      "updatedAt": "2026-04-15T07:46:58.251Z",
       "completedAt": null
     }
   ]

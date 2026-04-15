@@ -28,6 +28,7 @@ import {
 import { ShortDatePipe } from '../../../pipe/short-date.pipe';
 import { TagSelectorComponent } from '../../../share/tag-selector/tag-selector.component';
 import { TrashService } from '../../../services/trash.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
@@ -45,6 +46,8 @@ export class TaskListComponent implements OnInit {
   private projectService = inject(ProjectService);
   private taskService = inject(TaskService);
   private trashService = inject(TrashService);
+  private router = inject(Router)
+  private route = inject(ActivatedRoute)
 
   @Input() routeData!: any;
   // @Input() sortGroupData: any = { groupBy: 'none', sortBy: 'Title' };
@@ -485,7 +488,12 @@ export class TaskListComponent implements OnInit {
       );
     }
   }
-  // linkToParent(currentTaskId:string){
 
-  // }
+  /**navigate to task details */
+  navigateToTaskDetails(id: string, entityType: string) {
+  this.router.navigate(
+    [entityType.toLowerCase(), id],
+    { relativeTo: this.route }
+  );
+}
 }
