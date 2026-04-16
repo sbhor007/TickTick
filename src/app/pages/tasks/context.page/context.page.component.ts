@@ -43,6 +43,7 @@ export class ContextPageComponent implements OnInit {
   sortGroupData = signal<any>({ groupBy: 'none', sortBy: 'Title' });
 
   ngOnInit(): void {
+    // this.projectService.loadAllProjects()
     this.route.paramMap
       .pipe(
         switchMap((params) =>
@@ -66,6 +67,8 @@ export class ContextPageComponent implements OnInit {
     const { entityType, id } = this.routeData();
 
     if (entityType === EntityType.FOLDER) {
+     const data =  this.projectService.projects$().find(p => p.folderId === id)
+     this.entityData.set(data)
       
     } else if (entityType === EntityType.PROJECT) {
       this.projectService.fetchProjectById(id ?? '').subscribe((data) => {

@@ -7,7 +7,7 @@ export interface Task {
   userId: string | null;
   projectId: string ;
   title: string | null | undefined;
-  description: string;
+  description: string | null |undefined;
   status: TaskStatus;
   priority: TaskPriority;
   sortOrder?: number;

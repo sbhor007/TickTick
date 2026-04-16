@@ -46,14 +46,24 @@ export class TaskListComponent implements OnInit {
   private projectService = inject(ProjectService);
   private taskService = inject(TaskService);
   private trashService = inject(TrashService);
-  private router = inject(Router)
-  private route = inject(ActivatedRoute)
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   @Input() routeData!: any;
   // @Input() sortGroupData: any = { groupBy: 'none', sortBy: 'Title' };
 
   /**taskId for link to parent */
-  allTasks = this.taskService.allTasks$();
+  private searchTerm = signal<string>('');
+  allTasks = computed(() => {
+    const tasks = this.taskService.allTasks$();
+    const query = this.searchTerm();
+    if (query) {
+      return tasks.filter((t) =>
+        t.title?.toLowerCase()?.includes(query.toLowerCase()),
+      );
+    }
+    return tasks;
+  });
   isOpenLinkToParent = false;
   selectedTaskToLink!: Task;
 
@@ -68,28 +78,20 @@ export class TaskListComponent implements OnInit {
     this.taskService.loadAllTasks();
     this.loadRouteData();
 
-    this.allTasks = this.taskService.allTasks$();
-
-    /**search */
+    /**search*/
     this.searchQuery.valueChanges.subscribe((val) => {
-      console.log(val);
-      if (val) {
-        this.allTasks = this.taskService
-          .allTasks$()
-          .filter((t) => t.title?.toLowerCase()?.includes(val.toLowerCase()));
-      } else {
-        this.allTasks = this.taskService.allTasks$();
-      }
+      this.searchTerm.set(val ?? '');
     });
   }
 
   allTaskInsideProject: any;
-/**task as per there entity type */
+  /**task as per there entity type */
   groupedTasks = computed(() => {
     const routerData = this.routeData();
     const { groupBy, sortBy } = this.sortGroupData();
 
     let data: Task[] = this.getTaskData(routerData);
+      
 
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
 
@@ -105,7 +107,7 @@ export class TaskListComponent implements OnInit {
     const isCompleted = (t: Task) =>
       t.status === TaskStatus.COMPLETED ||
       t.subtasks?.every((st) => st.status === TaskStatus.COMPLETED);
-
+    // debugger;
     return [
       {
         key: 'pinned',
@@ -131,13 +133,24 @@ export class TaskListComponent implements OnInit {
   /**getData */
   getTaskData(routerData: any) {
     if (routerData.entityType === EntityType.FOLDER) {
-      const projects = this.projectService.projects$().filter(p => p.folderId === routerData.id)
-      if(projects){
-        return projects.map(p => ({...p,tasks:this.taskService.allTasks$().filter(pr => p.id === pr.projectId)}))
-      }
-      return []
+      // return this.projectService
+      //   .projects$()
+      //   .filter((p) => p.folderId === routerData.id)
+      //   .map((p) => ({
+      //     ...p,
+      //     tasks: this.taskService
+      //       .allTasks$()
+      //       .filter((task) => task.projectId === p.id),
+      //   }));
+
+      const projectIds = this.projectService.projects$().map((p) => {
+        if (p.folderId === routerData.id) {
+          return p.id;
+        }
+      });
       return this.taskService
-      .allTasks$()
+        .allTasks$()
+        .filter((t) => projectIds.includes(t.projectId));
     } else if (routerData.entityType === EntityType.PROJECT) {
       return this.taskService
         .allTasks$()
@@ -255,17 +268,75 @@ export class TaskListComponent implements OnInit {
     }
   }
 
+  /**get pinned task with subtasks */
+  getPinnedTasks = (tasks: any[]): any[] => {
+    let result: any[] = [];
+
+    for (const task of tasks) {
+      // check current task
+      if (task.isPinned && task.status !== TaskStatus.COMPLETED) {
+        result.push(task);
+      }
+
+      // recurse into subtasks
+      if (task.subtasks && task.subtasks.length > 0) {
+        result = result.concat(this.getPinnedTasks(task.subtasks));
+      }
+    }
+
+    return result;
+  };
+  /**get Completed tasks */
+  getCompletedTasks = (tasks: any[]): any[] => {
+    let result: any[] = [];
+
+    for (const task of tasks) {
+      // check current task
+      if (task.status === TaskStatus.COMPLETED) {
+        result.push(task);
+      }
+
+      // recurse into subtasks
+      if (task.subtasks && task.subtasks.length > 0) {
+        result = result.concat(this.getCompletedTasks(task.subtasks));
+      }
+    }
+
+    return result;
+  };
+  /**task that does not completed and pinned */
+  getRestTasks = (tasks: any[]): any[] => {
+  let result: any[] = [];
+
+  for (const task of tasks) {
+    // condition for "rest"
+    if (!task.isPinned && task.status !== TaskStatus.COMPLETED) {
+      result.push(task);
+    }
+
+    // recurse into subtasks
+    if (task.subtasks?.length) {
+      result = result.concat(this.getRestTasks(task.subtasks));
+    }
+  }
+
+  return result;
+};
+
   groupByFn(data: any[], groupBy: string) {
     const groups = new Map<string, any[]>();
 
-    const pinned = data.filter(
-      (t) => t.isPinned && t.status !== TaskStatus.COMPLETED,
-    );
-    const completed = data.filter((t) => t.status === TaskStatus.COMPLETED);
-    const rest = data.filter(
-      (t) => !t.isPinned && t.status !== TaskStatus.COMPLETED,
-    );
-
+    // const pinned = data.filter(
+    //   (t) => t.isPinned && t.status !== TaskStatus.COMPLETED,
+    // );
+    const pinned = this.getPinnedTasks(data);
+    // const completed = data.filter((t) => t.status === TaskStatus.COMPLETED);
+    const completed = this.getCompletedTasks(data);
+    // const rest = data.filter(
+    //   (t) => !t.isPinned && t.status !== TaskStatus.COMPLETED,
+    // );
+    const rest = this.getRestTasks(data);
+    // debugger;
     rest.forEach((t) => {
       let key: string;
       switch (groupBy) {
@@ -382,68 +453,149 @@ export class TaskListComponent implements OnInit {
   /**task-item-event-handler */
   taskItemEventHandler(event: any) {
     console.log('Task Item Event Handler::', event);
+    const task: Task = event.payload;
+    const isSubtask = event.entityType === EntityType.SUBTASK;
+
     switch (event.action) {
       case 'add_subtask':
-        this.createSubTask(event.entityId, event.payload);
+        this.createSubTask(event.entityId, task);
         break;
       case 'link_parent':
         this.isOpenLinkToParent = true;
-        this.selectedTaskToLink = event.payload;
+        this.selectedTaskToLink = task;
         break;
       case 'pin':
-        this.taskService.updateTask(event.entityId, {
-          ...event.payload,
-          isPinned: !event.payload.isPinned,
-        });
-        break;
       case 'unpin':
-        this.taskService.updateTask(event.entityId, {
-          ...event.payload,
-          isPinned: !event.payload.isPinned,
+        this.updateTaskOrSubTask(event, {
+          isPinned: !task.isPinned,
         });
         break;
-      case 'wont_do':
-        break;
-      case 'add_tags_to_task':
-        break;
-      case 'duplicate':
-        this.taskService.crateTask(event.payload.projectId, {
-          ...event.payload,
-          id: crypto.randomUUID(),
-          title: event.payload.title + ' copied',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        });
-        break;
-      case 'copy_link':
-        break;
-      case 'convert_to_note':
-        break;
-      case 'delete':
-        if (EntityType.TASK === event.entityType) {
-          this.trashService.addTrash({
-            ...event.payload,
-            entityType: EntityType.TRASHED,
-          });
-          this.taskService.deleteTask(event.entityId);
-        } else if (EntityType.SUBTASK === event.entityType) {
-          this.trashService.addTrash({
-            ...event.payload,
-            entityType: EntityType.TRASHED,
-          });
 
-          // ✅ parentId must come from the subtask's own field
-          this.taskService.deleteSubTask(
-            event.payload.parentId,
-            event.entityId,
-          );
+      case 'set_date_today':
+        this.updateTaskOrSubTask(event, {
+          dueDate: this.getDateISO(0),
+        });
+        break;
+      case 'set_date_tomorrow':
+        this.updateTaskOrSubTask(event, {
+          dueDate: this.getDateISO(1),
+        });
+        break;
+      case 'set_date_next_week':
+        this.updateTaskOrSubTask(event, {
+          dueDate: this.getDateISO(7),
+        });
+        break;
+      case 'set_date_custom':
+        // TODO: open date picker dialog
+        break;
+
+      case 'set_priority_high':
+        this.updateTaskOrSubTask(event, { priority: TaskPriority.HIGH });
+        break;
+      case 'set_priority_medium':
+        this.updateTaskOrSubTask(event, { priority: TaskPriority.MEDIUM });
+        break;
+      case 'set_priority_low':
+        this.updateTaskOrSubTask(event, { priority: TaskPriority.LOW });
+        break;
+      case 'set_priority_none':
+        this.updateTaskOrSubTask(event, { priority: TaskPriority.NONE });
+        break;
+
+      case 'wont_do':
+        this.updateTaskOrSubTask(event, {
+          status: TaskStatus.WONT_DO,
+        });
+        break;
+
+      case 'move_to':
+        // TODO: open move-to dialog
+        break;
+
+      case 'add_tags_to_task':
+      case 'manage_tags':
+        // TODO: open tag selector dialog
+        break;
+
+      case 'duplicate':
+        if (isSubtask) {
+          this.taskService.createSubTask(task.parentId!, {
+            ...task,
+            id: crypto.randomUUID(),
+            title: task.title + ' copied',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          });
+        } else {
+          this.taskService.crateTask(task.projectId!, {
+            ...task,
+            id: crypto.randomUUID(),
+            title: task.title + ' copied',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          });
         }
         break;
+
+      case 'copy_link':
+        const url = `${window.location.origin}/${task.entityType.toLowerCase()}/${task.id}`;
+        navigator.clipboard.writeText(url).then(() => {
+          console.log('Link copied to clipboard:', url);
+        });
+        break;
+
+      case 'convert_to_note':
+        // TODO: implement note conversion
+        break;
+
+      case 'delete':
+        this.trashService.addTrash({
+          ...task,
+          entityType: EntityType.TRASHED,
+        });
+        if (isSubtask) {
+          this.taskService.deleteSubTask(task.parentId!, event.entityId);
+        } else {
+          this.taskService.deleteTask(event.entityId);
+        }
+        break;
+
       case 'restore':
         console.log('Task Item Event Handler::', event);
         this.trashService.restoreTask(event.entityId);
         break;
+
+      case 'delete_forever':
+        this.trashService.deleteTrash(event.entityId);
+        break;
     }
+  }
+
+  /** Helper: update task or subtask based on entity type */
+  private updateTaskOrSubTask(event: any, updates: Partial<Task>) {
+    const task: Task = event.payload;
+    if (event.entityType === EntityType.SUBTASK && task.parentId) {
+      this.taskService.updateSubTask(task.parentId, task.id, {
+        ...task,
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      this.taskService.updateTask(event.entityId, {
+        ...task,
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+  }
+
+  /** Helper: get ISO date string offset by N days from today */
+  private getDateISO(daysFromToday: number): string {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromToday);
+    date.setHours(0, 0, 0, 0);
+    return date.toISOString();
   }
   // create a sub task
   createSubTask(taskId: string, task: Task) {
@@ -491,9 +643,8 @@ export class TaskListComponent implements OnInit {
 
   /**navigate to task details */
   navigateToTaskDetails(id: string, entityType: string) {
-  this.router.navigate(
-    [entityType.toLowerCase(), id],
-    { relativeTo: this.route }
-  );
-}
+    this.router.navigate([entityType.toLowerCase(), id], {
+      relativeTo: this.route,
+    });
+  }
 }

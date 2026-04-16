@@ -1,6 +1,7 @@
 import {
   Component,
   ElementRef,
+  HostListener,
   inject,
   Input,
   input,
@@ -30,6 +31,7 @@ import { ContextMenuItem } from '../../models/context-menu-item';
 import { ContextMenuBarService } from '../../config/context-menu-bar.service';
 import { Popover } from 'primeng/popover';
 import { Project } from '../../models/project';
+import { AttachmentService } from '../../services/attachment.service';
 
 @Component({
   selector: 'app-task-input',
@@ -40,14 +42,16 @@ import { Project } from '../../models/project';
     DatePipe,
     ReactiveFormsModule,
     DateTimePickerComponent,
-    Popover
-],
+    Popover,
+  ],
   templateUrl: './task-input.component.html',
   styles: ``,
 })
 export class TaskInputComponent implements OnInit {
   private taskService = inject(TaskService);
-  private contextMenuService = inject(ContextMenuBarService)
+  private contextMenuService = inject(ContextMenuBarService);
+  private attachmentService = inject(AttachmentService);
+
   @Input() project!: any;
 
   taskTitle = '';
@@ -55,6 +59,9 @@ export class TaskInputComponent implements OnInit {
   taskAttachmentId: string | null = null;
   taskDueDate: Date | string | null = null;
   taskDueDateTime: Date | string | null = null;
+
+  /** Attachment files */
+  attachedFiles: File | null = null;
 
   isExpanded = false;
 
@@ -65,8 +72,8 @@ export class TaskInputComponent implements OnInit {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
 
-
   @ViewChild('contextMenuPopover') contextMenuPopover!: Popover;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   contextMenu: MenuItem[] = [];
 
   // Structured context menu data
@@ -77,119 +84,166 @@ export class TaskInputComponent implements OnInit {
 
   selectedDateTime: Date | null = null;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    console.log("Test Priorities");
-    const priority = TaskPriority
+    console.log('Test Priorities');
+    const priority = TaskPriority;
     console.log(priority);
-    
-    
   }
-
 
   /**context menu option */
   openFolderMenu(event: MouseEvent) {
-      event.stopPropagation();
-      event.preventDefault();
-  
-      // this.currentTask = task;
-  
-      const context = this.contextMenuService.getContextMenu(
-       EntityType.TASK_INPUT
-      );
-  
-      // Split into sections (Date/Priority) and regular items
-      this.menuSections = context.filter(i => i.isSectionHeader);
-      this.menuRegularItems = context.filter(i => !i.isSectionHeader);
-  
-      this.contextMenuPopover.toggle(event);
+    event.stopPropagation();
+    event.preventDefault();
+
+    // this.currentTask = task;
+
+    const context = this.contextMenuService.getContextMenu(
+      EntityType.TASK_INPUT,
+    );
+
+    // Split into sections (Date/Priority) and regular items
+    this.menuSections = context.filter((i) => i.isSectionHeader);
+    this.menuRegularItems = context.filter((i) => !i.isSectionHeader);
+
+    this.contextMenuPopover.toggle(event);
+  }
+
+  onSectionItemClick(sectionAction: string, itemAction: string) {
+    if (this.project) {
+      this.handleAction(this.project, itemAction);
     }
-  
-    onSectionItemClick(sectionAction: string, itemAction: string) {
-      if (this.project) {
-        this.handleAction(this.project, itemAction);
-      }
+    this.contextMenuPopover.hide();
+  }
+
+  onRegularItemClick(item: ContextMenuItem) {
+    if (item.isDivider) return;
+    if (this.project) {
+      this.handleAction(this.project, item.action);
+    }
+    if (!item.hasSubmenu) {
       this.contextMenuPopover.hide();
     }
-  
-    onRegularItemClick(item: ContextMenuItem) {
-      if (item.isDivider) return;
-      if (this.project) {
-        this.handleAction(this.project, item.action);
-      }
-      if (!item.hasSubmenu) {
-        this.contextMenuPopover.hide();
-      }
-    }
-  
-    handleAction(project: Project, action: string) {
-      console.log('action:', action, 'entityType:', project.entityType);
-      // this.contextMenuEvent.emit({
-      //   action: action,
-      //   entityType: task.entityType,
-      //   entityId: task.id,
-      //   payload: task,
-      // });
-    }
+  }
 
-  toggeleDateTimePiker() {
+  handleAction(project: Project, action: string) {
+    console.log('action:', action, 'entityType:', project.entityType);
+    switch (action) {
+      case 'set_priority_high':
+        this.taskPriority = TaskPriority.HIGH;
+        break;
+      case 'set_priority_medium':
+        this.taskPriority = TaskPriority.MEDIUM;
+        break;
+      case 'set_priority_low':
+        this.taskPriority = TaskPriority.LOW;
+        break;
+      case 'set_priority_none':
+        this.taskPriority = TaskPriority.NONE;
+        break;
+      case 'move_to':
+        break;
+      case 'attachment':
+        this.openFileSelector();
+        break;
+      case 'manage_tags':
+        break;
+      case 'add_from_template':
+        break;
+      case 'input_box_setting':
+        break;
+    }
+  }
+
+  toggeleDateTimePiker(event:any) {
+    event.stopPropagation()
+    console.log("Toggele Date time piker...");
+    
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
   }
- 
 
   clearDateTime(): void {
     this.selectedDateTime = null;
   }
 
   /**for form submition */
-  onInputKeydown(event: any): void {
-    console.log('event triggered: ', this.taskTitle);
+ onInputKeydown(event: any): void {
+  console.log('event triggered: ', this.taskTitle);
 
-    const taskData: Task = {
-      id: crypto.randomUUID(),
-      userId: null,
-      projectId: this.project.id ?? null,
-      title: this.taskTitle,
-      description: '',
-      status: TaskStatus.PENDING,
-      priority: this.taskPriority,
-      isPinned: false,
-      parentId: null,
-      subtasks: [],
-      tags: [],
-      comments: [],
-      attachmentId: this.taskAttachmentId,
-      entityType: EntityType.TASK,
-      reminder: this.lastSelection()?.reminder,
-      repeat: this.lastSelection()?.repeat,
-      dueDate: this.lastSelection()?.date?.toISOString() ?? null,
-      dueDateTime: this.lastSelection()?.time?.toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      completedAt: null,
-    };
-    console.log('task-Data: ', taskData);
-    this.taskService.crateTask(this.project.id, taskData);
-
-    if (event.key === 'Escape') {
-      this.isDateTimePikerVisible = false;
-      this.isExpanded = false;
-    }
+  if (event.key === 'Escape') {
+    this.isDateTimePikerVisible = false;
+    this.isExpanded = false;
+    return;
   }
 
- 
+  if (this.attachedFiles) {
+    this.attachmentService.uploadAttachment(this.attachedFiles).subscribe({
+      next: (attachmentId) => {
+        this.taskAttachmentId = attachmentId;
+        this.buildAndCreateTask();
+      },
+      error: (err) => {
+        console.error('Upload failed:', err);
+        this.buildAndCreateTask(); // create task without attachment on error
+      },
+    });
+  } else {
+    this.buildAndCreateTask();
+  }
+}
 
+private buildAndCreateTask(): void {
+  const taskData: Task = {
+    id: crypto.randomUUID(),
+    userId: null,
+    projectId: this.project.id ?? null,
+    title: this.taskTitle,
+    description: '',
+    status: TaskStatus.PENDING,
+    priority: this.taskPriority,
+    isPinned: false,
+    parentId: null,
+    subtasks: [],
+    tags: [],
+    comments: [],
+    attachmentId: this.taskAttachmentId ?? null,  // ✅ now set correctly
+    entityType: EntityType.TASK,
+    reminder: this.lastSelection()?.reminder,
+    repeat: this.lastSelection()?.repeat,
+    dueDate: this.lastSelection()?.date?.toISOString() ?? null,
+    dueDateTime: this.lastSelection()?.time?.toString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    completedAt: null,
+  };
+
+  console.log('task-Data: ', taskData);
+  this.taskService.crateTask(this.project.id, taskData);
+  this.cleanupInputField();
+}
+
+  /**create attachment */
+  
+
+  cleanupInputField() {
+    this.taskTitle = '';
+    this.taskPriority = TaskPriority.NONE;
+    this.taskAttachmentId = null;
+    this.attachedFiles = null;
+    this.taskDueDate = null;
+    this.taskDueDateTime = null;
+    this.lastSelection.set(null);
+  }
 
   onInputChange(event: Event): void {
-    console.log("on-input-change",event);
-    
+    console.log('on-input-change', event);
+
     // handle input change
   }
 
-  selectPriorityOrTag(event:any){
-    console.log('selectPriorityOrTag::',event);
-    
+  selectPriorityOrTag(event: any) {
+    console.log('selectPriorityOrTag::', event);
   }
   /**
    * 
@@ -216,5 +270,48 @@ export class TaskInputComponent implements OnInit {
   onCleared() {
     this.lastSelection.set(null);
     console.log('DateTimePiker Cleared');
+  }
+
+  /** Open the native file picker */
+  openFileSelector() {
+    this.contextMenuPopover.hide();
+    setTimeout(() => {
+      this.fileInput?.nativeElement?.click();
+    });
+  }
+
+  /** Handle files selected from the file input */
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.attachedFiles = input.files[0];
+      console.log('Attached files:', this.attachedFiles);
+    }
+    // Reset input so the same file can be re-selected
+    input.value = '';
+  }
+
+  /** Remove an attached file by index */
+  removeAttachment(index: number) {
+    this.attachedFiles = null;
+  }
+
+  /** Get a human-readable file size */
+  formatFileSize(bytes: number): string {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  /** Check if a file is an image */
+  isImageFile(file: File): boolean {
+    return file.type.startsWith('image/');
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: any) {
+    this.isExpanded = false;
+
+    if (this.isDateTimePikerVisible) this.isDateTimePikerVisible = false;
   }
 }

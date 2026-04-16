@@ -10,9 +10,11 @@
           </app-context-header>
         </div>
 
-        <div class="mb-4">
+        @if (entityData()) {
+          <div class="mb-4">
           <app-task-input [project]="entityData()"></app-task-input>
         </div>
+        }
 
         <div class="flex-1">
           <app-task-list

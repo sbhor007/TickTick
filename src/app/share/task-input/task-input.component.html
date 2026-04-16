@@ -57,6 +57,10 @@
   <div
     class="relative bg-neutral-900 border border-white/10 rounded-xl focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all"
   >
+  <span *ngIf="taskPriority"
+        class="text-xs px-2 py-0.5 rounded  text-white">
+    {{ taskPriority }}
+  </span>
     <!-- Main Input Row -->
     <div class="flex items-center gap-1 px-3 py-1.5 min-h-[44px]">
       <input
@@ -69,9 +73,10 @@
         (onKeydown)="selectPriorityOrTag($event)"
         (focus)="isExpanded = true"
       />
+ 
 
       <!-- Calendar Icon -->
-      <p class="text-[10px] text-blue-400">
+      <p class="text-[10px] text-blue-400" (click)="toggeleDateTimePiker($event)">
         {{ lastSelection()?.date | date }}
       </p>
       <button
@@ -80,36 +85,35 @@
         [class.text-blue-500]="isDateTimePikerVisible"
         [class.text-neutral-500]="!isDateTimePikerVisible"
         [class.hover:text-neutral-300]="!isDateTimePikerVisible"
-        (click)="toggeleDateTimePiker()"
+        (click)="toggeleDateTimePiker($event)"
       >
-        <i class="pi pi-calendar text-[13px]"></i>
+        <i class="pi pi-calendar text-[13px]" (click)="toggeleDateTimePiker($event)"></i>
       </button>
       <i (click)="openFolderMenu($event)" class="pi pi-angle-up cursor-pointer"></i>
     </div>
 
-    <!-- Selected Date/Time Badge (shown inside input area when date is selected) -->
-    <!-- @if (selectedDateTime) {
-      <div class="flex items-center gap-1.5 px-3 pb-2">
-        <span
-          class="flex items-center gap-1 text-[11px] text-blue-400 bg-blue-500/10 border border-blue-500/20 rounded-md px-2 py-0.5"
-        >
-          <i class="pi pi-clock text-[10px]"></i>
-          {{ selectedDateTime | date: "MMM d, y · h:mm a" }}
+    <!-- Attachment Preview -->
+    @if (attachedFiles) {
+      <div class="flex items-center gap-2 px-3 pb-2 pt-1">
+        <div class="flex items-center gap-1.5 bg-neutral-800 border border-white/10 rounded-lg px-2 py-1 text-xs text-neutral-300">
+          <span class="material-symbols-outlined text-[14px] text-blue-400">image</span>
+          <span class="max-w-[120px] truncate">{{ attachedFiles.name }}</span>
+          <span class="text-neutral-500 text-[10px]">({{ formatFileSize(attachedFiles.size) }})</span>
           <button
             type="button"
-            class="ml-1 text-blue-400/60"
-            (click)="clearDateTime()"
+            class="ml-0.5 text-neutral-500 hover:text-red-400 transition-colors"
+            (click)="removeAttachment(0)"
           >
-            <i class="pi pi-times cursor-pointer text-[9px]">i</i>
+            <i class="pi pi-times text-[9px]"></i>
           </button>
-        </span>
+        </div>
       </div>
-    } -->
-  </div>
+    }
 
-  <!-- Date Time Picker Dropdown -->
+    </div>
+    <!-- Date Time Picker Dropdown -->
   @if (isDateTimePikerVisible) {
-    <div class="absolute top-full left-0 mt-2 z-50 w-full min-w-[300px]">
+    <div class="absolute top-full right-0 mt-2 z-50 w-full min-w-[300px]">
       <app-date-time-picker
         [initialDate]="initialDate()"
         [initialTime]="initialTime()"
@@ -118,4 +122,20 @@
       />
     </div>
   }
-</div>
+
+
+    
+  </div>
+
+  <!-- Hidden File Input for Attachment (image only, single file) -->
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    class="hidden"
+    (change)="onFileSelected($event)"
+  />
+
+  
+
+  

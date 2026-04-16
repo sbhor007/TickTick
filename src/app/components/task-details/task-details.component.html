@@ -1,3 +1,4 @@
+
 @if (task) {
   <div class="px-5">
     <p-popover
@@ -48,6 +49,7 @@
       </label>
       <!-- Due Date -->
       <span
+        (click)="toggleDateTime()"
         class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
         [class]="
           isCompleted.value ? 'text-gray-600' : getDueDateColor(task.dueDate)
@@ -64,11 +66,22 @@
       </span>
 
       <!-- priority flag -->
-      <i class="pi pi-flag" (click)="openPriorityMenu($event)"></i>
+
+      <i
+        [ngClass]="getFlagClass(task.priority)"
+        (click)="openPriorityMenu($event)"
+      ></i>
     </div>
 
     <!-- title section -->
     <div class="py-2 border-b border-gray-200/20">
+      @if (parentTask) {
+        <span
+          (click)="navigateTo(parentTask.entityType, parentTask.id)"
+          class="text-sm py-2 text-gray-400/60 cursor-pointer"
+          >{{ parentTask.title }} ></span
+        >
+      }
       <div class="">
         <input
           type="text"
@@ -76,36 +89,49 @@
           class="w-full outline-none font-semibold"
         />
       </div>
-      <input
-        type="text"
-        [formControl]="taskDescription"
-        class="w-full outline-none text-gray-500"
-      />
-      <!-- description section -->
-      <div class="py-2"></div>
+      <!-- image section -->
+      <div>
+        @if (imageUrl) {
+          <img [src]="imageUrl" alt="preview" />
+        }
+        <input
+          type="text"
+          [formControl]="taskDescription"
+          class="w-full outline-none text-gray-500"
+        />
+        <!-- description section -->
+        <div class="py-2"></div>
 
-      <!-- tags section -->
-      @if (task.tags) {
-        @for (tag of task.tags; track $index) {
-          <span class="bg-white/5 px-2 py-1 rounded-xl mr-2.5"
-            >{{ tag.name }}
+        <!-- tags section -->
+        @if (task.tags?.length) {
+          @for (tag of task.tags; track $index) {
+            <span class="bg-white/5 px-2 py-1 rounded-xl mr-2.5"
+              >{{ tag.name }}
+            </span>
+          }
+
+          <span class="bg-white/5 px-2 py-1 rounded-xl mr-2.5 cursor-pointer"
+            >+
           </span>
         }
-
-        <span class="bg-white/5 px-2 py-1 rounded-xl mr-2.5 cursor-pointer"
-          >+
-        </span>
-      }
+      </div>
     </div>
-    <!-- image section -->
-
     <!-- subtask section -->
     @if (task.subtasks?.length) {
       <div>
         @for (subtask of task.subtasks; track $index) {
-          <app-task-item [task]="subtask"> </app-task-item>
+          <app-task-item
+            [task]="subtask"
+            (contextMenuEvent)="taskItemEventHandler($event)"
+          >
+          </app-task-item>
         }
+        <button class="text-blue-500 cursor-pointer" (click)="addSubtask()">
+          + Add Sub Task
+        </button>
       </div>
     }
+    <!-- Date Time Picker Dropdown -->
   </div>
 }
+

@@ -1,10 +1,13 @@
 import { CommonModule, JsonPipe, SlicePipe } from '@angular/common';
 import {
   Component,
+  computed,
   EventEmitter,
   inject,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -19,9 +22,12 @@ import { MenuItem } from 'primeng/api';
 import { EntityType } from '../../enums/entity-type';
 import { TooltipModule } from 'primeng/tooltip';
 import { TaskPriority } from '../../enus/task-priority';
-import { debounceTime } from 'rxjs';
+import { combineLatest, debounceTime, map } from 'rxjs';
 import { TaskStatus } from '../../enus/task-status';
 import { Task } from '../../models/task';
+import { FolderService } from '../../services/folder.service';
+import { ProjectService } from '../../services/project.service';
+import { Folder } from '../../models/folder';
 
 export type TaskActionType =
   | 'update'
@@ -71,13 +77,30 @@ export interface ContextMenuI {
   templateUrl: './task-item.component.html',
   styleUrl: './task-item.component.css',
 })
-export class TaskItemComponent {
+export class TaskItemComponent implements OnChanges {
   private taskService = inject(TaskService);
+  private folderService = inject(FolderService);
+  private projectService = inject(ProjectService);
   private contextMenuService = inject(ContextMenuBarService);
 
   @Input() task!: any;
   @Output() taskEvent = new EventEmitter<TaskEventPayload>();
   @Output() contextMenuEvent = new EventEmitter<ContextMenuI>();
+
+  folders = computed(() => {
+    const folder = this.folderService.allFolders$().map((folder) => ({
+      ...folder,
+      projects: this.projectService
+        .projects$()
+        .filter((project) => project.folderId == folder.id),
+    }));
+    const project = this.projectService
+      .projects$()
+      .filter((project) => project.folderId == null && !project.isSmartView);
+    return [...folder, ...project];
+  });
+
+  isVisibleFolderMenu = false;
 
   isCompleted = new FormControl();
   taskTitle = new FormControl('');
@@ -95,6 +118,26 @@ export class TaskItemComponent {
 
   // tracks which menu item is currently hovered
   hoveredItemId: string | null = null;
+
+  hoveredFolderId: string | null = null;
+
+  onFolderHover(folderId: string) {
+    this.hoveredFolderId = folderId;
+  }
+
+  onFolderLeave() {
+    this.hoveredFolderId = null;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['task'] && !changes['task'].firstChange) {
+      const t = changes['task'].currentValue;
+      this.taskTitle.setValue(t?.title ?? '', { emitEvent: false });
+      this.isCompleted.setValue(t?.status === 'COMPLETED', {
+        emitEvent: false,
+      });
+    }
+  }
 
   ngOnInit(): void {
     this.taskTitle.setValue(this.task?.title ?? '');
@@ -144,8 +187,8 @@ export class TaskItemComponent {
     );
 
     // Split into sections (Date/Priority) and regular items
-    this.menuSections = context.filter(i => i.isSectionHeader);
-    this.menuRegularItems = context.filter(i => !i.isSectionHeader);
+    this.menuSections = context.filter((i) => i.isSectionHeader);
+    this.menuRegularItems = context.filter((i) => !i.isSectionHeader);
 
     this.contextMenuPopover.toggle(event);
   }
@@ -167,9 +210,9 @@ export class TaskItemComponent {
     }
   }
 
-  onMouse(event:any){
-    console.log("----",event);
-    
+  onMouse(event: any) {
+    console.log('----', event);
+    this.isVisibleFolderMenu = !this.isVisibleFolderMenu;
   }
 
   handleAction(task: Task, action: string) {
@@ -183,8 +226,8 @@ export class TaskItemComponent {
   }
 
   getPrioritySection() {
-  return this.contextMenu.find(i => i['action'] === 'priority_section');
-}
+    return this.contextMenu.find((i) => i['action'] === 'priority_section');
+  }
 
   onMenuAction(action: string) {
     // your existing handleAction logic

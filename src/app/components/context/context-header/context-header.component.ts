@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  effect,
   EventEmitter,
   HostListener,
   inject,
   Input,
-  OnChanges,
   OnInit,
   Output,
   Signal,
-  SimpleChanges,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FolderService } from '../../../services/folder.service';
@@ -31,7 +30,7 @@ export type SubMenuType = 'group' | 'sort' | null;
     }
   `],
 })
-export class ContextHeaderComponent implements OnInit, OnChanges {
+export class ContextHeaderComponent implements OnInit {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
 
@@ -51,12 +50,13 @@ export class ContextHeaderComponent implements OnInit, OnChanges {
   activeSub: SubMenuType = null;
   titleControl = new FormControl({ value: '', disabled: false });
 
-  constructor() {}
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['routeData()'] && this.routeData()) {
-      this.loadRoutData();
-    }
+  constructor() {
+    effect(() => {
+      const route = this.routeData?.();
+      if (route) {
+        this.loadRoutData();
+      }
+    });
   }
 
   ngOnInit() {
@@ -76,22 +76,42 @@ export class ContextHeaderComponent implements OnInit, OnChanges {
 
   /**load route data */
   loadRoutData() {
-    if (this.routeData().entityType === EntityType.FOLDER) {
+    const route = this.routeData?.();
+    if (!route) return;
+
+    if (route.entityType === EntityType.FOLDER) {
       this.folderService
-        .fetchFolderById(this.routeData().id)
+        .fetchFolderById(route.id)
         .subscribe((folder) => {
           console.table(folder);
           this.data = folder;
           this.titleControl.setValue(folder.name);
         });
-    } else if (this.routeData().entityType === EntityType.PROJECT) {
+    } else if (route.entityType === EntityType.PROJECT) {
       this.projectService
-        .fetchProjectById(this.routeData().id)
+        .fetchProjectById(route.id)
         .subscribe((project) => {
           console.table(project);
           this.data = project;
           this.titleControl.setValue(project.name);
         });
+    } else {
+      // For non-editable views (ALL, TODAY, TOMORROW, INBOX, etc.)
+      const nameMap: Record<string, string> = {
+        [EntityType.ALL]: 'All',
+        [EntityType.TODAY]: 'Today',
+        [EntityType.TOMORROW]: 'Tomorrow',
+        [EntityType.NEXT_SEVEN_DAYS]: 'Next 7 Days',
+        [EntityType.INBOX]: 'Inbox',
+        [EntityType.ASSIGNED_TO_ME]: 'Assigned to Me',
+        [EntityType.SUMMARY]: 'Summary',
+        [EntityType.TRASHED]: 'Trash',
+      };
+      this.data = {
+        entityType: route.entityType,
+        name: nameMap[route.entityType] ?? route.entityType,
+      };
+      this.titleControl.setValue(this.data.name);
     }
   }
   /**update title for only project and folder */

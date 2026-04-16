@@ -33,26 +33,73 @@
 
       <!-- Regular Menu Items -->
       @for (item of menuRegularItems; track item.action) {
-        <!-- TODO:updated -->
         @if (item.isDivider) {
           <div class="ctx-divider"></div>
-        } @else if (item.label == "Move to") {
-          <button
-            class="ctx-menu-item"
-            [class.ctx-danger]="item.isDanger"
-            (mouseenter)="onMouse($event)"
-          >
-            <span
-              class="material-symbols-outlined ctx-item-icon"
-              [class.ctx-danger-icon]="item.isDanger"
+        } @else if (item.label === "Move to") {
+          <div class="relative">
+            <button
+              class="ctx-menu-item"
+              [class.ctx-danger]="item.isDanger"
+              (mouseenter)="onMouse($event)"
             >
-              {{ item.icon }}
-            </span>
-            <span class="ctx-item-label">{{ item.label }}</span>
-            @if (item.hasSubmenu) {
-              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+              <span
+                class="material-symbols-outlined ctx-item-icon"
+                [class.ctx-danger-icon]="item.isDanger"
+              >
+                {{ item.icon }}
+              </span>
+              <span class="ctx-item-label">{{ item.label }}</span>
+              @if (item.hasSubmenu) {
+                <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+              }
+            </button>
+
+            @if (isVisibleFolderMenu) {
+              <div
+                class="absolute left-full top-0 z-50 w-[180px] bg-[#1c1c1e] rounded-lg shadow-lg py-1"
+              >
+                @for (folder of folders(); track folder.id) {
+                  <div
+                    class="relative"
+                    (mouseenter)="onFolderHover(folder.id)"
+                    (mouseleave)="onFolderLeave()"
+                  >
+                    <!-- Folder Button -->
+                    <button
+                      class="ctx-menu-item w-full flex justify-between items-center"
+                    >
+                      @if (folder.entityType === "FOLDER") {
+                        <i class="pi pi-folder"></i>
+                      } @else {
+                        <i class="pi pi-align-justify"></i>
+                      }
+
+                      <span>{{ folder.name }}</span>
+
+                      @if (folder.projects?.length) {
+                        <i class="pi pi-angle-right"></i>
+                      }
+                    </button>
+
+                    <!--  Submenu -->
+                    @if (
+                      hoveredFolderId === folder.id && folder.projects?.length
+                    ) {
+                      <div
+                        class="absolute left-full top-0 ml-1 w-[180px] bg-[#1c1c1e] rounded-lg shadow-lg py-1"
+                      >
+                        @for (project of folder.projects; track project.id) {
+                            <button class="ctx-menu-item w-full text-left">
+                            {{ project.name }}
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
             }
-          </button>
+          </div>
         } @else {
           <button
             class="ctx-menu-item"
@@ -172,7 +219,7 @@
           tooltipPosition="top"
         ></i>
       }
-      @if (task.description && task.description != '') {
+      @if (task.description && task.description != "") {
         <i
           class="pi pi-align-left text-[11px]"
           pTooltip="Description"

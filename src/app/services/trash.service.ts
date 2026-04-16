@@ -112,4 +112,18 @@ removeFromTrash(taskId: string) {
     },
   });
 }
+
+  /**permanently delete from trash */
+  deleteTrash(taskId: string) {
+    this.http.delete<void>(`${environment.API}/trash/${taskId}`).subscribe({
+      next: () => {
+        this.loadAllTrash();
+        console.log('Permanently deleted from trash');
+      },
+      error: (err) => {
+        this.loadAllTrash();
+        console.error('Error permanently deleting from trash:', err);
+      },
+    });
+  }
 }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { Task } from '../models/task';
-import { catchError, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { EntityType } from '../enums/entity-type';
 
@@ -12,18 +12,25 @@ export class TaskService {
   private _allTasks = signal<Task[]>([]);
   readonly allTasks$ = this._allTasks;
 
+  
+
   constructor(protected http: HttpClient) {}
+
+  totalTasks(){
+    
+  }
 
   fetchAllTasks(): Observable<any> {
     return this.http.get<any>(`${environment.API}/tasks`).pipe(
       catchError((err) => {
         console.error('Error get all tasks:', err);
-        return of();
+        return of([]);
       }),
     );
   }
 
   /**Load All Tasks */
+
   loadAllTasks() {
     this.fetchAllTasks().subscribe((tasks) => {
       this.allTasks$.set(tasks);
@@ -56,11 +63,38 @@ export class TaskService {
   fetchTaskById(taskId:string): Observable<Task>{
     return this.http.get<Task>(`${environment.API}/tasks/${taskId}`).pipe(
       catchError((err) => {
-        console.error('Error get all tasks:', err);
-        return of();
+        console.error('Error get task by id:', err);
+        return of(null as any);
       }),
     )
   }
+
+  /**Get subtask by parent ID and subtask ID */
+  getSubTaskById(parentId: string, subTaskId: string): Observable<Task | undefined> {
+    return this.fetchTaskById(parentId).pipe(
+      map((parentTask) => {
+        return parentTask?.subtasks?.find((st) => st.id === subTaskId);
+      }),
+      catchError((err) => {
+        console.error('Error getting subtask:', err);
+        return of(undefined);
+      }),
+    );
+  }
+
+  /**Find a subtask by its ID by searching through all loaded tasks */
+  findSubTaskById(subTaskId: string): { subtask: Task; parentTask: Task } | undefined {
+    const allTasks = this._allTasks();
+    for (const task of allTasks) {
+      const subtask = task.subtasks?.find((st) => st.id === subTaskId);
+      if (subtask) {
+        return { subtask, parentTask: task };
+      }
+    }
+    return undefined;
+  }
+
+  
   /**update task */
   updateTask(taskId: string, updatedTask: Partial<Task>) {
     console.log('updateTask called::', taskId, updatedTask);
