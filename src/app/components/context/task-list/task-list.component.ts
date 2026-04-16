@@ -29,7 +29,10 @@ import { ShortDatePipe } from '../../../pipe/short-date.pipe';
 import { TagSelectorComponent } from '../../../share/tag-selector/tag-selector.component';
 import { TrashService } from '../../../services/trash.service';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { DateTimePickerComponent } from '../../../share/date-time-picker/date-time-picker.component';
+import { DateTimeSelection } from '../../../models/date';
+// import { DropdownModule } from 'primeng/dropdown';
+// import { AutoCompleteModule } from 'primeng/autocomplete';
 @Component({
   selector: 'app-task-list',
   imports: [
@@ -38,6 +41,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     ReactiveFormsModule,
     ShortDatePipe,
     TagSelectorComponent,
+    DateTimePickerComponent,
   ],
   templateUrl: './task-list.component.html',
 })
@@ -49,7 +53,18 @@ export class TaskListComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
+
+  x = 0;
+y = 0;
+
   @Input() routeData!: any;
+
+  isDateTimePikerVisible = false;
+  initialDate = signal<Date | null>(null);
+  initialTime = signal<string | null>(null);
+  lastSelection = signal<DateTimeSelection | null>(null);
+  selectedTask: Task | null = null;
+
   // @Input() sortGroupData: any = { groupBy: 'none', sortBy: 'Title' };
 
   /**taskId for link to parent */
@@ -91,7 +106,6 @@ export class TaskListComponent implements OnInit {
     const { groupBy, sortBy } = this.sortGroupData();
 
     let data: Task[] = this.getTaskData(routerData);
-      
 
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
 
@@ -306,22 +320,22 @@ export class TaskListComponent implements OnInit {
   };
   /**task that does not completed and pinned */
   getRestTasks = (tasks: any[]): any[] => {
-  let result: any[] = [];
+    let result: any[] = [];
 
-  for (const task of tasks) {
-    // condition for "rest"
-    if (!task.isPinned && task.status !== TaskStatus.COMPLETED) {
-      result.push(task);
+    for (const task of tasks) {
+      // condition for "rest"
+      if (!task.isPinned && task.status !== TaskStatus.COMPLETED) {
+        result.push(task);
+      }
+
+      // recurse into subtasks
+      if (task.subtasks?.length) {
+        result = result.concat(this.getRestTasks(task.subtasks));
+      }
     }
 
-    // recurse into subtasks
-    if (task.subtasks?.length) {
-      result = result.concat(this.getRestTasks(task.subtasks));
-    }
-  }
-
-  return result;
-};
+    return result;
+  };
 
   groupByFn(data: any[], groupBy: string) {
     const groups = new Map<string, any[]>();
@@ -487,7 +501,10 @@ export class TaskListComponent implements OnInit {
         });
         break;
       case 'set_date_custom':
-        // TODO: open date picker dialog
+        this.x = event.clientX;
+        this.y = event.clientY;
+        this.selectedTask = task;
+        this.toggleDateTime();
         break;
 
       case 'set_priority_high':
@@ -647,4 +664,58 @@ export class TaskListComponent implements OnInit {
       relativeTo: this.route,
     });
   }
+
+  /**dateTimePiker */
+  handleDateTimeEvent(selection: any) {
+    selection.stopPropagation
+    if (!this.selectedTask) {
+      alert()
+      this.isDateTimePikerVisible = false;
+      return
+    };
+    console.log('event handle::', selection);
+
+
+    if (
+      this.selectedTask.entityType === EntityType.SUBTASK &&
+      this.selectedTask.parentId
+    ) {
+      this.taskService.updateSubTask(
+        this.selectedTask.parentId,
+        this.selectedTask.id,
+        {
+          ...this.selectedTask,
+          dueDate: selection.date,
+          dueDateTime: selection.time ?? this.selectedTask.dueDateTime,
+          repeat: selection.repeat,
+          reminder: selection.reminder,
+          updatedAt: new Date().toISOString(),
+        },
+      );
+    } else {
+      this.taskService.updateTask(this.selectedTask.id, {
+        ...this.selectedTask,
+        dueDate: selection.date,
+        dueDateTime: selection.time ?? this.selectedTask.dueDateTime,
+        repeat: selection.repeat,
+        reminder: selection.reminder,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+    this.isDateTimePikerVisible = false;
+  }
+
+  toggleDateTime() {
+    this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
+    console.log(this.isDateTimePikerVisible);
+  }
+
+ filteredCities: any[] = [];
+
+// search(event: any) {
+//   const query = event.query.toLowerCase();
+//   this.filteredCities = this.allTasks().filter(c =>
+//     c.name.toLowerCase().includes(query)
+//   );
+// }
 }

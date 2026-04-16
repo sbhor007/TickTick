@@ -226,10 +226,11 @@
           tooltipPosition="top"
         ></i>
       }
-    </div>
+    
 
     <!-- Due Date -->
     <span
+    (click)="toggleDateTime()"    
       class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
       [class]="
         isCompleted.value ? 'text-gray-600' : getDueDateColor(task.dueDate)
@@ -243,6 +244,27 @@
         ></i>
       }
     </span>
+    @if (isDateTimePikerVisible) {
+      
+        <div class="relative -left-56 w-0 h-0 bg-gray-200">
+          <div class="absolute top-0 -left-3 mt-2 z-50 w-full min-w-[300px]">
+            <app-date-time-picker
+              [initialDate]="initialDate()"
+              [initialTime]="initialTime()"
+              (confirmed)="handleDateTimeEvent($event)"
+              (closed)="isDateTimePikerVisible = false"
+            />
+          </div>
+        </div>
+      }
+    @if (task?.subtasks?.length > 0) {
+        <i
+          class="pi pi-list text-[11px]"
+          pTooltip="Subtasks"
+          tooltipPosition="top"
+        ></i>
+      }
+      </div>
 
     <!-- Ellipsis Button -->
     <button

@@ -367,43 +367,6 @@
       "completedAt": null
     },
     {
-      "id": "task-002",
-      "userId": "user-123",
-      "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
-      "title": "Backend data",
-      "description": "Design modern homepage layout with improved navigation",
-      "status": "PENDING",
-      "priority": "HIGH",
-      "sortOrder": 2,
-      "isPinned": false,
-      "parentId": null,
-      "subtasks": [],
-      "tags": [
-        {
-          "name": "testing-update",
-          "color": "",
-          "parentId": null,
-          "entityType": "TAG",
-          "childTag": [],
-          "isPinned": false,
-          "createdAt": "2026-04-10T09:20:30.895Z",
-          "updatedAt": "2026-04-10T12:01:07.894Z",
-          "id": "1cy2EcI",
-          "isShared": true
-        }
-      ],
-      "comments": [],
-      "attachmentId": null,
-      "entityType": "TASK",
-      "reminder": null,
-      "repeat": null,
-      "dueDate": "2026-04-22T00:00:00Z",
-      "dueDateTime": "09:00",
-      "createdAt": "2026-04-09T06:35:00Z",
-      "updatedAt": "2026-04-16T12:56:05.008Z",
-      "completedAt": null
-    },
-    {
       "id": "b294ae12-051b-492c-96d7-09c1a0e7c03c",
       "userId": null,
       "projectId": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
@@ -543,15 +506,49 @@
       "priority": "NONE",
       "isPinned": false,
       "parentId": null,
-      "subtasks": [],
+      "subtasks": [
+        {
+          "id": "f45f10a5-ba9a-4909-8451-732ed7b18e7f",
+          "userId": null,
+          "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+          "parentId": "1fa70502-6508-4c03-a02e-3586a8676739",
+          "title": "its ok",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "SUBTASK",
+          "reminder": {
+            "type": "daily"
+          },
+          "repeat": {
+            "type": "on-the-day"
+          },
+          "dueDate": "2026-04-22T18:30:00.000Z",
+          "dueDateTime": null,
+          "createdAt": "2026-04-16T14:16:58.024Z",
+          "updatedAt": "2026-04-16T14:17:36.894Z",
+          "completedAt": null
+        }
+      ],
       "tags": [],
       "comments": [],
       "attachmentId": null,
       "entityType": "TASK",
-      "dueDate": null,
+      "dueDate": "2026-04-23T18:30:00.000Z",
       "createdAt": "2026-04-16T12:56:12.092Z",
-      "updatedAt": "2026-04-16T12:56:12.092Z",
-      "completedAt": null
+      "updatedAt": "2026-04-16T14:17:36.895Z",
+      "completedAt": null,
+      "repeat": {
+        "type": "on-the-day"
+      },
+      "reminder": {
+        "type": "daily"
+      }
     }
   ],
   "tags": [
@@ -832,6 +829,194 @@
       "dueDateTime": null,
       "createdAt": "2026-04-16T10:33:20.060Z",
       "updatedAt": "2026-04-16T10:33:20.060Z",
+      "completedAt": null
+    },
+    {
+      "id": "task-002",
+      "userId": "user-123",
+      "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+      "title": "Backend data",
+      "description": "Design modern homepage layout with improved navigation",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "sortOrder": 2,
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [
+        {
+          "id": "e2f24444-3915-48c6-8a0b-d6fb56194988",
+          "userId": null,
+          "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+          "parentId": "task-002",
+          "title": "new one added abds",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "TRASHED",
+          "reminder": {
+            "type": "daily"
+          },
+          "repeat": {
+            "type": "on-the-day"
+          },
+          "dueDate": "2026-04-20T18:30:00.000Z",
+          "dueDateTime": null,
+          "createdAt": "2026-04-16T13:11:36.080Z",
+          "updatedAt": "2026-04-16T13:48:07.080Z",
+          "completedAt": null
+        },
+        {
+          "id": "f1bb5806-d214-4d7a-b3d4-b36700289af7",
+          "userId": null,
+          "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+          "parentId": "task-002",
+          "title": "new one added abds copied",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "TRASHED",
+          "reminder": {
+            "type": "daily"
+          },
+          "repeat": {
+            "type": "on-the-day"
+          },
+          "dueDate": "2026-04-23T18:30:00.000Z",
+          "dueDateTime": null,
+          "createdAt": "2026-04-16T13:25:42.120Z",
+          "updatedAt": "2026-04-16T14:16:27.152Z",
+          "completedAt": null
+        }
+      ],
+      "tags": [
+        {
+          "name": "testing-update",
+          "color": "",
+          "parentId": null,
+          "entityType": "TAG",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-10T09:20:30.895Z",
+          "updatedAt": "2026-04-10T12:01:07.894Z",
+          "id": "1cy2EcI",
+          "isShared": true
+        }
+      ],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "reminder": {
+        "type": "daily"
+      },
+      "repeat": {
+        "type": "on-the-day"
+      },
+      "dueDate": "2026-04-16T18:30:00.000Z",
+      "dueDateTime": "09:00",
+      "createdAt": "2026-04-09T06:35:00Z",
+      "updatedAt": "2026-04-16T14:16:27.154Z",
+      "completedAt": null
+    },
+    {
+      "id": "cb758910-911e-437d-bf31-f0ed76d31aba",
+      "userId": "user-123",
+      "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+      "title": "Backend data copied",
+      "description": "Design modern homepage layout with improved navigation",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "sortOrder": 2,
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [
+        {
+          "id": "e2f24444-3915-48c6-8a0b-d6fb56194988",
+          "userId": null,
+          "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+          "parentId": "task-002",
+          "title": "new one added abds",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "TRASHED",
+          "reminder": {
+            "type": "daily"
+          },
+          "repeat": {
+            "type": "on-the-day"
+          },
+          "dueDate": "2026-04-20T18:30:00.000Z",
+          "dueDateTime": null,
+          "createdAt": "2026-04-16T13:11:36.080Z",
+          "updatedAt": "2026-04-16T13:48:07.080Z",
+          "completedAt": null
+        },
+        {
+          "id": "f1bb5806-d214-4d7a-b3d4-b36700289af7",
+          "userId": null,
+          "projectId": "fa0b381b-a6f9-43c4-819e-e59ce566e7d6",
+          "parentId": "task-002",
+          "title": "new one added abds copied",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "TRASHED",
+          "reminder": null,
+          "repeat": null,
+          "dueDate": null,
+          "dueDateTime": null,
+          "createdAt": "2026-04-16T13:25:42.120Z",
+          "updatedAt": "2026-04-16T13:35:27.843Z",
+          "completedAt": null
+        }
+      ],
+      "tags": [
+        {
+          "name": "testing-update",
+          "color": "",
+          "parentId": null,
+          "entityType": "TAG",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-10T09:20:30.895Z",
+          "updatedAt": "2026-04-10T12:01:07.894Z",
+          "id": "1cy2EcI",
+          "isShared": true
+        }
+      ],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "reminder": {
+        "type": "daily"
+      },
+      "repeat": {
+        "type": "on-the-day"
+      },
+      "dueDate": "2026-04-16T18:30:00.000Z",
+      "dueDateTime": "09:00",
+      "createdAt": "2026-04-16T14:13:13.272Z",
+      "updatedAt": "2026-04-16T14:13:13.272Z",
       "completedAt": null
     }
   ]

@@ -26,6 +26,7 @@ import { TaskItemComponent } from '../../share/task-item/task-item.component';
 import { AttachmentService } from '../../services/attachment.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { DateTimePickerComponent } from '../../share/date-time-picker/date-time-picker.component';
+import { DateTimeSelection } from '../../models/date';
 
 @Component({
   selector: 'app-task-details',
@@ -57,9 +58,11 @@ export class TaskDetailsComponent implements OnInit {
   parentTask!: any;
   attachment: any = null;
   imageUrl: SafeUrl | null = null;
+
   isDateTimePikerVisible = false;
   initialDate = signal<Date | null>(null);
   initialTime = signal<string | null>(null);
+  lastSelection = signal<DateTimeSelection | null>(null);
 
   priorityOptions = Object.values(TaskPriority);
 
@@ -320,6 +323,11 @@ export class TaskDetailsComponent implements OnInit {
       this.taskDescription.setValue(result.subtask.description, {
         emitEvent: false,
       });
+      const due = this.task.dueDate;
+      this.initialDate.set(
+        typeof due === 'string' ? new Date(due) : (due ?? null),
+      );
+      this.initialTime.set(result.subtask?.dueDateTime ?? null)
     } else {
       this.taskService.fetchAllTasks().subscribe((tasks) => {
         this.taskService.allTasks$.set(tasks);
@@ -346,6 +354,11 @@ export class TaskDetailsComponent implements OnInit {
         } else {
           console.warn('Subtask not found for subtaskId:', subtaskId);
         }
+        const due = this.task.dueDate;
+      this.initialDate.set(
+        typeof due === 'string' ? new Date(due) : (due ?? null),
+      );
+      this.initialTime.set(retryResult?.subtask?.dueDateTime ?? null)
       });
     }
     if (result) {
@@ -485,7 +498,7 @@ export class TaskDetailsComponent implements OnInit {
         updatedAt: new Date().toISOString(),
       });
     } else {
-      this.taskService.updateTask(event.entityId, {
+      this.taskService.updateTask(event.entityId || task.id, {
         ...task,
         ...updates,
         updatedAt: new Date().toISOString(),
@@ -546,10 +559,39 @@ export class TaskDetailsComponent implements OnInit {
     });
   }
 
+  /**dateTimePiker */
+  handleDateTimeEvent(selection: DateTimeSelection){
+    const event ={
+      entityType:this.task.entityType,
+      payload:this.task
+
+    }
+    console.log('DateTimePiker Event:: ', selection);
+    this.updateTaskOrSubTask(event,{...this.task,
+      dueDate:selection.date,
+      dueDateTime: selection.time ?? this.task.dueDateTime,
+      repeat:selection.repeat,
+      reminder: selection.reminder
+    })
+    this.isDateTimePikerVisible = false;
+  }
 
   toggleDateTime(){
     
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible
     console.log(this.isDateTimePikerVisible);
   }
+
+  /**
+   * {
+  "date": "2026-04-15T18:30:00.000Z",
+  "time": null,
+  "repeat": {
+    "type": "on-the-day"
+  },
+  "reminder": {
+    "type": "daily"
+  }
+}
+   */
 }

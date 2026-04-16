@@ -7,6 +7,7 @@ import {
   Input,
   OnChanges,
   Output,
+  signal,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -22,12 +23,14 @@ import { MenuItem } from 'primeng/api';
 import { EntityType } from '../../enums/entity-type';
 import { TooltipModule } from 'primeng/tooltip';
 import { TaskPriority } from '../../enus/task-priority';
-import { combineLatest, debounceTime, map } from 'rxjs';
+import { combineLatest, debounceTime, map, sequenceEqual } from 'rxjs';
 import { TaskStatus } from '../../enus/task-status';
 import { Task } from '../../models/task';
 import { FolderService } from '../../services/folder.service';
 import { ProjectService } from '../../services/project.service';
 import { Folder } from '../../models/folder';
+import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.component';
+import { DateTimeSelection } from '../../models/date';
 
 export type TaskActionType =
   | 'update'
@@ -73,6 +76,7 @@ export interface ContextMenuI {
     ShortDatePipe,
     TooltipModule,
     Popover,
+    DateTimePickerComponent,
   ],
   templateUrl: './task-item.component.html',
   styleUrl: './task-item.component.css',
@@ -86,6 +90,11 @@ export class TaskItemComponent implements OnChanges {
   @Input() task!: any;
   @Output() taskEvent = new EventEmitter<TaskEventPayload>();
   @Output() contextMenuEvent = new EventEmitter<ContextMenuI>();
+
+  isDateTimePikerVisible = false;
+  initialDate = signal<Date | null>(null);
+  initialTime = signal<string | null>(null);
+  lastSelection = signal<DateTimeSelection | null>(null);
 
   folders = computed(() => {
     const folder = this.folderService.allFolders$().map((folder) => ({
@@ -281,5 +290,37 @@ export class TaskItemComponent implements OnChanges {
     const due = new Date(dueDate);
     due.setHours(0, 0, 0, 0);
     return due < today ? 'text-red-400' : 'text-blue-400';
+  }
+
+  /**dateTimePiker */
+  handleDateTimeEvent(selection: DateTimeSelection) {
+    console.log("event handle::",selection);
+    
+
+    if (this.task.entityType === EntityType.SUBTASK && this.task.parentId) {
+      this.taskService.updateSubTask(this.task.parentId, this.task.id, {
+        ...this.task,
+        dueDate: selection.date,
+        dueDateTime: selection.time ?? this.task.dueDateTime,
+        repeat: selection.repeat,
+        reminder: selection.reminder,
+        updatedAt: new Date().toISOString(),
+      });
+    } else {
+      this.taskService.updateTask(this.task.id, {
+        ...this.task,
+        dueDate: selection.date,
+        dueDateTime: selection.time ?? this.task.dueDateTime,
+        repeat: selection.repeat,
+        reminder: selection.reminder,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+    this.isDateTimePikerVisible = false;
+  }
+
+  toggleDateTime() {
+    this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
+    console.log(this.isDateTimePikerVisible);
   }
 }
