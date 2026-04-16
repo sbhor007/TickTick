@@ -31,6 +31,7 @@ import { ProjectService } from '../../services/project.service';
 import { Folder } from '../../models/folder';
 import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.component';
 import { DateTimeSelection } from '../../models/date';
+import { Project } from '../../models/project';
 
 export type TaskActionType =
   | 'update'
@@ -96,8 +97,10 @@ export class TaskItemComponent implements OnChanges {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
 
-  folders = computed(() => {
-    const folder = this.folderService.allFolders$().map((folder) => ({
+  folderProject = computed(() => {
+    const folder = this.folderService.allFolders$()
+    
+    .map((folder) => ({
       ...folder,
       projects: this.projectService
         .projects$()
@@ -224,6 +227,7 @@ export class TaskItemComponent implements OnChanges {
     this.isVisibleFolderMenu = !this.isVisibleFolderMenu;
   }
 
+  /*task item handle actions*/
   handleAction(task: Task, action: string) {
     console.log('action:', action, 'entityType:', task.entityType);
     this.contextMenuEvent.emit({
@@ -233,6 +237,18 @@ export class TaskItemComponent implements OnChanges {
       payload: task,
     });
   }
+  moveTO(project:Project,action:string){
+
+     console.log('action:', action, 'entityType:', this.task.entityType,'project:', project);
+    this.contextMenuEvent.emit({
+      action: action,
+      entityType: this.task.entityType,
+      entityId: project.id,
+      payload: this.task,
+    });
+  }
+
+
 
   getPrioritySection() {
     return this.contextMenu.find((i) => i['action'] === 'priority_section');

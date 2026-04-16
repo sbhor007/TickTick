@@ -31,6 +31,8 @@ import { TrashService } from '../../../services/trash.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DateTimePickerComponent } from '../../../share/date-time-picker/date-time-picker.component';
 import { DateTimeSelection } from '../../../models/date';
+import { Project } from '../../../models/project';
+import { every } from 'rxjs';
 // import { DropdownModule } from 'primeng/dropdown';
 // import { AutoCompleteModule } from 'primeng/autocomplete';
 @Component({
@@ -53,9 +55,8 @@ export class TaskListComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-
   x = 0;
-y = 0;
+  y = 0;
 
   @Input() routeData!: any;
 
@@ -288,7 +289,11 @@ y = 0;
 
     for (const task of tasks) {
       // check current task
-      if (task.isPinned && task.status !== TaskStatus.COMPLETED) {
+      if (
+        task.isPinned &&
+        (task.status !== TaskStatus.COMPLETED ||
+          task.status !== TaskStatus.WONT_DO)
+      ) {
         result.push(task);
       }
 
@@ -306,7 +311,10 @@ y = 0;
 
     for (const task of tasks) {
       // check current task
-      if (task.status === TaskStatus.COMPLETED) {
+      if (
+        task.status === TaskStatus.COMPLETED ||
+        task.status === TaskStatus.WONT_DO
+      ) {
         result.push(task);
       }
 
@@ -324,7 +332,11 @@ y = 0;
 
     for (const task of tasks) {
       // condition for "rest"
-      if (!task.isPinned && task.status !== TaskStatus.COMPLETED) {
+      if (
+        !task.isPinned &&
+        (task.status !== TaskStatus.COMPLETED ||
+          task.status !== TaskStatus.WONT_DO)
+      ) {
         result.push(task);
       }
 
@@ -527,7 +539,22 @@ y = 0;
         break;
 
       case 'move_to':
-        // TODO: open move-to dialog
+        if (event.entityType == EntityType.TASK) {
+          this.taskService.deleteTask(event.payload.id);
+          this.taskService.crateTask(event.entityId, {
+            ...event.payload,
+            projectId: event.entityId,
+          });
+        } else if (event.entityType == EntityType.SUBTASK) {
+          this.taskService.deleteSubTask(event.payload.parentId,event.payload.id)
+          this.taskService.crateTask(event.entityId, {
+            ...event.payload,
+            projectId: event.entityId,
+            entityType: EntityType.TASK,
+            parentId:null
+          });
+        }
+
         break;
 
       case 'add_tags_to_task':
@@ -667,14 +694,13 @@ y = 0;
 
   /**dateTimePiker */
   handleDateTimeEvent(selection: any) {
-    selection.stopPropagation
+    selection.stopPropagation;
     if (!this.selectedTask) {
-      alert()
+      alert();
       this.isDateTimePikerVisible = false;
-      return
-    };
+      return;
+    }
     console.log('event handle::', selection);
-
 
     if (
       this.selectedTask.entityType === EntityType.SUBTASK &&
@@ -710,12 +736,12 @@ y = 0;
     console.log(this.isDateTimePikerVisible);
   }
 
- filteredCities: any[] = [];
+  //  filteredCities: any[] = [];
 
-// search(event: any) {
-//   const query = event.query.toLowerCase();
-//   this.filteredCities = this.allTasks().filter(c =>
-//     c.name.toLowerCase().includes(query)
-//   );
-// }
+  // search(event: any) {
+  //   const query = event.query.toLowerCase();
+  //   this.filteredCities = this.allTasks().filter(c =>
+  //     c.name.toLowerCase().includes(query)
+  //   );
+  // }
 }

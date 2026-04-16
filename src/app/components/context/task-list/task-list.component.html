@@ -11,9 +11,7 @@
           [class.pi-chevron-right]="isCollapsed(group.key)"
           [class.pi-chevron-down]="!isCollapsed(group.key)"
         ></i>
-        <span
-          class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider"
-        >
+        <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
           {{ group.label }}
         </span>
         <span class="text-[10px] text-gray-600 font-normal">
@@ -23,85 +21,59 @@
 
       <!-- Tasks -->
       @if (!isCollapsed(group.key)) {
+
+        <!-- Date Time Picker (once per group, anchored via fixed position) -->
         @if (isDateTimePikerVisible) {
-          <div class="relative left-56 w-0 h-0 bg-gray-200">
-            <div class="fixed z-50" [style.left.px]="x" [style.top.px]="y">
-              <app-date-time-picker
-                [initialDate]="initialDate()"
-                [initialTime]="initialTime()"
-                (confirmed)="handleDateTimeEvent($event)"
-                (closed)="isDateTimePikerVisible = false"
-              />
-            </div>
+          <div
+            class="fixed z-50"
+            [style.left.px]="x"
+            [style.top.px]="y"
+          >
+            <app-date-time-picker
+              [initialDate]="initialDate()"
+              [initialTime]="initialTime()"
+              (confirmed)="handleDateTimeEvent($event)"
+              (closed)="isDateTimePikerVisible = false"
+            />
           </div>
         }
 
         @for (task of group.tasks; track task.id) {
-          @if (task.entityType === "TASK") {
-            <!-- ── Parent Task Row ── -->
-            <app-task-item
-              (click)="navigateToTaskDetails(task.id, task.entityType)"
-              [task]="task"
-              (contextMenuEvent)="taskItemEventHandler($event)"
-            >
-              @if (task.subtasks && task.subtasks.length > 0) {
-                <button
-                  subtaskToggle
-                  class="flex items-center justify-center w-3.5 h-3.5 flex-shrink-0"
-                  (click)="
-                    $event.stopPropagation(); toggleGroup('sub_' + task.id)
-                  "
-                >
-                  <i
-                    class="pi text-[10px] text-gray-500 transition-transform duration-200"
-                    [class.pi-chevron-right]="isCollapsed('sub_' + task.id)"
-                    [class.pi-chevron-down]="!isCollapsed('sub_' + task.id)"
-                  ></i>
-                </button>
-              } @else {
-                <span
-                  subtaskToggle
-                  class="w-3.5 h-3.5 flex-shrink-0 block"
-                ></span>
-              }
-            </app-task-item>
-
-            <!-- Subtask rows (from task.subtasks — NOT from group) -->
-            @if (
-              task.subtasks &&
-              task.subtasks.length > 0 &&
-              !isCollapsed("sub_" + task.id)
-            ) {
-              <div class="ml-4 pl-2 border-l border-gray-200/30">
-                @for (subtask of task.subtasks; track subtask.id) {
-                  <app-task-item
-                    (click)="
-                      navigateToTaskDetails(subtask.id, subtask.entityType)
-                    "
-                    [task]="subtask"
-                    (contextMenuEvent)="taskItemEventHandler($event)"
-                  >
-                    <span
-                      subtaskToggle
-                      class="w-3.5 h-3.5 flex-shrink-0 block"
-                    ></span>
-                  </app-task-item>
-                }
-              </div>
-            }
-          } @else {
-            <!-- ── Orphaned Subtask Row (pinned/completed subtask without parent shown) ── -->
-            <div class="ml-4 pl-2 border-l border-gray-200/30">
-              <app-task-item
-                (click)="navigateToTaskDetails(task.id, task.entityType)"
-                [task]="task"
-                (contextMenuEvent)="taskItemEventHandler($event)"
+          <!-- ── Parent Task Row ── -->
+          <app-task-item
+            (click)="navigateToTaskDetails(task.id, task.entityType)"
+            [task]="task"
+            (contextMenuEvent)="taskItemEventHandler($event)"
+          >
+            @if (task.subtasks && task.subtasks.length > 0) {
+              <button
+                subtaskToggle
+                class="flex items-center justify-center w-3.5 h-3.5 flex-shrink-0"
+                (click)="$event.stopPropagation(); toggleGroup('sub_' + task.id)"
               >
-                <span
-                  subtaskToggle
-                  class="w-3.5 h-3.5 flex-shrink-0 block"
-                ></span>
-              </app-task-item>
+                <i
+                  class="pi text-[10px] text-gray-500 transition-transform duration-200"
+                  [class.pi-chevron-right]="isCollapsed('sub_' + task.id)"
+                  [class.pi-chevron-down]="!isCollapsed('sub_' + task.id)"
+                ></i>
+              </button>
+            } @else {
+              <span subtaskToggle class="w-3.5 h-3.5 flex-shrink-0 block"></span>
+            }
+          </app-task-item>
+
+          <!-- Subtask rows -->
+          @if (task.subtasks && task.subtasks.length > 0 && !isCollapsed('sub_' + task.id)) {
+            <div class="ml-4 pl-2 border-l border-gray-200/30">
+              @for (subtask of task.subtasks; track subtask.id) {
+                <app-task-item
+                  (click)="navigateToTaskDetails(subtask.id, subtask.entityType)"
+                  [task]="subtask"
+                  (contextMenuEvent)="taskItemEventHandler($event)"
+                >
+                  <span subtaskToggle class="w-3.5 h-3.5 flex-shrink-0 block"></span>
+                </app-task-item>
+              }
             </div>
           }
         }
@@ -110,6 +82,7 @@
   }
 </div>
 
+<!-- Link to Parent Dialog -->
 @if (isOpenLinkToParent) {
   <!-- Backdrop -->
   <div
@@ -118,16 +91,12 @@
   ></div>
 
   <!-- Dialog -->
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
-  >
+  <div class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
     <div
       class="w-[26rem] bg-white dark:bg-neutral-900 rounded-xl border border-gray-200/60 dark:border-white/10 pointer-events-auto overflow-hidden flex flex-col p-2"
     >
-      <!-- search -->
-      <div
-        class="border-b border-b-blue-500 py-1 flex items-center justify-center gap-2"
-      >
+      <!-- Search -->
+      <div class="border-b border-b-blue-500 py-1 flex items-center justify-center gap-2">
         <i class="pi pi-search text-gray-500"></i>
         <input
           type="search"
@@ -136,6 +105,7 @@
           class="outline-none border-b-blue-500 w-full"
         />
       </div>
+
       <!-- Task list -->
       <div class="px-2 py-1.5 max-h-64 overflow-y-auto">
         @if (allTasks().length === 0) {
@@ -152,21 +122,19 @@
               class="w-3 h-3 rounded-full border-[1.5px] flex-shrink-0"
               [class]="getCheckboxClass(task.priority)"
             ></span>
-            <!-- title -->
-            <span
-              class="flex-1 text-[13px] text-gray-700 dark:text-gray-200 truncate"
-            >
+            <span class="flex-1 text-[13px] text-gray-700 dark:text-gray-200 truncate">
               {{ task.title }}
             </span>
             <span
               class="text-[11px] flex-shrink-0 w-10 text-right"
               [class]="getDueDateColor(task.dueDate)"
-              >{{ task?.dueDate || "" | shortDate }}</span
             >
+              {{ task?.dueDate || "" | shortDate }}
+            </span>
           </div>
         }
       </div>
-      <!-- Content slot -->
+
       <ng-content />
     </div>
   </div>

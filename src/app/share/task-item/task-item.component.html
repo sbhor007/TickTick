@@ -58,38 +58,44 @@
               <div
                 class="absolute left-full top-0 z-50 w-[180px] bg-[#1c1c1e] rounded-lg shadow-lg py-1"
               >
-                @for (folder of folders(); track folder.id) {
+                @for (fp of folderProject(); track fp.id) {
                   <div
                     class="relative"
-                    (mouseenter)="onFolderHover(folder.id)"
+                    (mouseenter)="onFolderHover(fp.id)"
                     (mouseleave)="onFolderLeave()"
                   >
                     <!-- Folder Button -->
                     <button
                       class="ctx-menu-item w-full flex justify-between items-center"
                     >
-                      @if (folder.entityType === "FOLDER") {
-                        <i class="pi pi-folder"></i>
-                      } @else {
+                      @if (fp.entityType === "FOLDER" && fp.projects.length > 0) {
+                        <!-- <div> -->
+                          <i class="pi pi-folder"></i>
+                        <span>{{ fp.name }}</span>
+                        <i class="pi pi-angle-right"></i>
+                        <!-- </div> -->
+                      } @else if(fp.entityType === "PROJECT") {
                         <i class="pi pi-align-justify"></i>
+                        <span (click)="moveTO(fp,item.action)">{{ fp.name }}</span>
                       }
 
-                      <span>{{ folder.name }}</span>
-
-                      @if (folder.projects?.length) {
-                        <i class="pi pi-angle-right"></i>
+                    
+                      @if (fp.projects?.length) {
+                        
                       }
                     </button>
 
                     <!--  Submenu -->
                     @if (
-                      hoveredFolderId === folder.id && folder.projects?.length
+                      hoveredFolderId === fp.id && fp.projects?.length
                     ) {
                       <div
                         class="absolute left-full top-0 ml-1 w-[180px] bg-[#1c1c1e] rounded-lg shadow-lg py-1"
                       >
-                        @for (project of folder.projects; track project.id) {
-                            <button class="ctx-menu-item w-full text-left">
+                        @for (project of fp.projects; track project.id) {
+                            <button
+                            (click)="moveTO(project,item.action)"
+                             class="ctx-menu-item w-full text-left">
                             {{ project.name }}
                           </button>
                         }
