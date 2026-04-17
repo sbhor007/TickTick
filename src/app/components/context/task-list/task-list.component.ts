@@ -112,7 +112,52 @@ export class TaskListComponent implements OnInit {
     const routerData = this.routeData();
     const { groupBy, sortBy } = this.sortGroupData();
 
-    let data: Task[] = this.getTaskData(routerData);
+    let data: Task[] = []
+
+    if (routerData.entityType === EntityType.FOLDER) {
+    const projectIds = this.projectService
+      .projects$()
+      .filter((p) => p.folderId === routerData.id)
+      .map((p) => p.id);
+
+    data = this.taskService
+      .allTasks$()
+      .filter((t) => projectIds.includes(t.projectId));
+
+  } else if (routerData.entityType === EntityType.PROJECT) {
+    data = this.taskService
+      .allTasks$()
+      .filter((t) => t.projectId === routerData.id);
+
+  } else if (routerData.entityType === EntityType.ALL) {
+    data = this.taskService.allTasks$();
+
+  } else if (routerData.entityType === EntityType.TODAY) {
+    data = this.taskService
+      .allTasks$()
+      .filter((t) => this.isToday(t?.dueDate ?? ''));
+
+  } else if (routerData.entityType === EntityType.TOMORROW) {
+    data = this.taskService
+      .allTasks$()
+      .filter((t) => this.isTomorrow(t?.dueDate ?? ''));
+
+  } else if (routerData.entityType === EntityType.NEXT_SEVEN_DAYS) {
+    data = this.taskService
+      .allTasks$()
+      .filter((t) => this.isWithinNext7Days(t?.dueDate ?? ''));
+
+  } else if (routerData.entityType === EntityType.INBOX) {
+    data = this.taskService
+      .allTasks$()
+      .filter((t) => t.projectId === routerData.id);
+
+  } else if (routerData.entityType === EntityType.TRASHED) {
+    const trash = this.trashService.allTrash$();
+    // Trash handles its own structure, filter parentId there too
+    data =  trash.filter((t) => !t.parentId);
+  }
+
 
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
 
@@ -121,14 +166,14 @@ export class TaskListComponent implements OnInit {
     }
 
     // Helper flags (inline — no need for separate methods)
+    
     const hasPinnedContent = (t: Task) =>
-      (t.isPinned || t.subtasks?.some((st) => st.isPinned)) &&
-      t.status !== TaskStatus.COMPLETED;
+  (t.isPinned || t.subtasks?.some((st) => st.isPinned)) &&
+  !isCompleted(t); 
 
     const isCompleted = (t: Task) =>
-      t.status === TaskStatus.COMPLETED ||
-      t.subtasks?.every((st) => st.status === TaskStatus.COMPLETED);
-    // debugger;
+  t.status === TaskStatus.COMPLETED ||
+  (!!t.subtasks?.length && t.subtasks.every((st) => st.status === TaskStatus.COMPLETED));
     return [
       {
         key: 'pinned',
@@ -152,56 +197,57 @@ export class TaskListComponent implements OnInit {
   });
 
   /**getData */
-  getTaskData(routerData: any) {
-    if (routerData.entityType === EntityType.FOLDER) {
-      // return this.projectService
-      //   .projects$()
-      //   .filter((p) => p.folderId === routerData.id)
-      //   .map((p) => ({
-      //     ...p,
-      //     tasks: this.taskService
-      //       .allTasks$()
-      //       .filter((task) => task.projectId === p.id),
-      //   }));
+  // getTaskData(routerData: any) {
+  //   if (routerData.entityType === EntityType.FOLDER) {
+  //     // return this.projectService
+  //     //   .projects$()
+  //     //   .filter((p) => p.folderId === routerData.id)
+  //     //   .map((p) => ({
+  //     //     ...p,
+  //     //     tasks: this.taskService
+  //     //       .allTasks$()
+  //     //       .filter((task) => task.projectId === p.id),
+  //     //   }));
 
-      const projectIds = this.projectService.projects$().map((p) => {
-        if (p.folderId === routerData.id) {
-          return p.id;
-        }
-      });
-      return this.taskService
-        .allTasks$()
-        .filter((t) => projectIds.includes(t.projectId));
-    } else if (routerData.entityType === EntityType.PROJECT) {
-      return this.taskService
-        .allTasks$()
-        .filter((t) => t.projectId === routerData.id);
-    } else if (routerData.entityType === EntityType.ALL) {
-      return this.taskService.allTasks$();
-    } else if (routerData.entityType === EntityType.TODAY) {
-      return this.taskService
-        .allTasks$()
-        .filter((t) => this.isToday(t?.dueDate ?? ''));
-    } else if (routerData.entityType === EntityType.TOMORROW) {
-      return this.taskService
-        .allTasks$()
-        .filter((t) => this.isTomorrow(t?.dueDate ?? ''));
-    } else if (routerData.entityType === EntityType.NEXT_SEVEN_DAYS) {
-      return this.taskService
-        .allTasks$()
-        .filter((t) => this.isWithinNext7Days(t?.dueDate ?? ''));
-    } else if (routerData.entityType === EntityType.INBOX) {
-      return this.taskService
-        .allTasks$()
-        .filter((t) => t.projectId === routerData.id);
-    } else if (routerData.entityType === EntityType.TRASHED) {
-      const trash = this.trashService.allTrash$();
+  //     const projectIds = this.projectService.projects$().map((p) => {
+  //       if (p.folderId === routerData.id) {
+  //         return p.id;
+  //       }
+  //     });
+  //     return this.taskService
+  //       .allTasks$()
+  //       .filter((t) => projectIds.includes(t.projectId));
+  //   } else if (routerData.entityType === EntityType.PROJECT) {
+  //     return this.taskService
+  //       .allTasks$()
+  //       .filter((t) => t.projectId === routerData.id);
+  //   } else if (routerData.entityType === EntityType.ALL) {
+  //     return this.taskService.allTasks$();
+  //   } else if (routerData.entityType === EntityType.TODAY) {
+  //     return this.taskService
+  //       .allTasks$()
+  //       .filter((t) => this.isToday(t?.dueDate ?? ''));
+  //   } else if (routerData.entityType === EntityType.TOMORROW) {
+  //     return this.taskService
+  //       .allTasks$()
+  //       .filter((t) => this.isTomorrow(t?.dueDate ?? ''));
+  //   } else if (routerData.entityType === EntityType.NEXT_SEVEN_DAYS) {
+  //     return this.taskService
+  //       .allTasks$()
+  //       .filter((t) => this.isWithinNext7Days(t?.dueDate ?? ''));
+  //   } else if (routerData.entityType === EntityType.INBOX) {
+  //     return this.taskService
+  //       .allTasks$()
+  //       .filter((t) => t.projectId === routerData.id);
+  //   } else if (routerData.entityType === EntityType.TRASHED) {
+  //     const trash = this.trashService.allTrash$();
 
-      console.log('Trashed Data:', trash);
-      return trash;
-    }
-    return [];
-  }
+  //     console.log('Trashed Data:', trash);
+  //     return trash;
+  //   }
+  //   return [];
+  // }
+
 
   /**compare due date */
   isToday(dueDate: any): boolean {
@@ -224,15 +270,16 @@ export class TaskListComponent implements OnInit {
   }
 
   isWithinNext7Days(dueDate: any): boolean {
-    if (!dueDate) return false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const next7Days = new Date();
-    next7Days.setDate(next7Days.getDate() + 7);
-    next7Days.setHours(23, 59, 59, 999);
-    const due = new Date(dueDate);
-    return due >= today && due <= next7Days;
-  }
+  if (!dueDate) return false;
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);          // start from tomorrow
+  const next7Days = new Date();
+  next7Days.setDate(next7Days.getDate() + 7);
+  next7Days.setHours(23, 59, 59, 999);
+  const due = new Date(dueDate);
+  return due >= tomorrow && due <= next7Days;
+}
   /**priority color */
   getCheckboxClass(priority: TaskPriority): string {
     switch (priority) {
@@ -334,26 +381,24 @@ export class TaskListComponent implements OnInit {
   };
   /**task that does not completed and pinned */
   getRestTasks = (tasks: any[]): any[] => {
-    let result: any[] = [];
+  let result: any[] = [];
 
-    for (const task of tasks) {
-      // condition for "rest"
-      if (
-        !task.isPinned &&
-        (task.status !== TaskStatus.COMPLETED ||
-          task.status !== TaskStatus.WONT_DO)
-      ) {
-        result.push(task);
-      }
-
-      // recurse into subtasks
-      if (task.subtasks?.length) {
-        result = result.concat(this.getRestTasks(task.subtasks));
-      }
+  for (const task of tasks) {
+    if (
+      !task.isPinned &&
+      task.status !== TaskStatus.COMPLETED &&  
+      task.status !== TaskStatus.WONT_DO       
+    ) {
+      result.push(task);
     }
 
-    return result;
-  };
+    if (task.subtasks?.length) {
+      result = result.concat(this.getRestTasks(task.subtasks));
+    }
+  }
+
+  return result;
+};
 
   groupByFn(data: any[], groupBy: string) {
     const groups = new Map<string, any[]>();

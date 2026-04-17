@@ -48,6 +48,17 @@ export class CreateProjectComponent implements OnInit {
   @Input() projectId: string | null = null;
   @Output() formHandler = new EventEmitter<FormHandlerEvent>();
 
+  colorOptions = [
+  '#ef4444', // red
+  '#f97316', // orange
+  '#eab308', // yellow
+  '#22c55e', // green
+  '#3b82f6', // blue
+  '#8b5cf6', // purple
+  '#ec4899', // pink
+  '#64748b', // slate
+];
+
   isShowFolderDialog = signal(false);
 
   allFolders = this.folderService.allFolders$;

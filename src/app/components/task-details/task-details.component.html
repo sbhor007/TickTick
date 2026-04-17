@@ -116,15 +116,62 @@
 
         <!-- tags section -->
         @if (task.tags?.length) {
-          @for (tag of task.tags; track $index) {
-            <span class="bg-white/5 px-2 py-1 rounded-xl mr-2.5"
-              >{{ tag.name }}
-            </span>
+         <!-- tags section -->
+<div class="flex flex-wrap items-center gap-2 py-2">
+
+  @for (tag of task.tags; track $index) {
+    <span class="relative inline-flex items-center gap-1.5 bg-blue-500/10 text-blue-400 px-2.5 py-0.5 rounded-full text-xs group">
+      {{ tag.name }}
+      <span
+        class="cursor-pointer text-sm leading-none text-white/30 hover:text-white/80 transition-colors"
+        (click)="removeTag($index)"
+      >&times;</span>
+    </span>
+  }
+
+  @if (!showTagInput) {
+    <span
+      class="bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-full text-xs text-gray-400 cursor-pointer hover:bg-white/10 transition-colors"
+      (click)="showTagInput = true"
+    >+ Add tag</span>
+  }
+
+  @if (showTagInput) {
+    <div class="relative">
+      <input
+        #tagInput
+        type="text"
+        placeholder="Type a tag..."
+        [ngModel]="tagQuery()"
+        (ngModelChange)="tagQuery.set($event)"
+        (keydown)="onTagKeydown($event)"
+        (blur)="onTagInputBlur()"
+        class="bg-[#1c1c1f] border border-white/10 rounded-full px-3 py-0.5 text-xs text-white placeholder-gray-600 outline-none focus:border-blue-600 w-36"
+      />
+
+      @if (tagDropdownItems().length) {
+        <div class="absolute top-7 left-0 min-w-[160px] bg-[#1a1a1d] border border-white/10 rounded-xl z-50 overflow-hidden shadow-xl">
+
+          @for (tag of filteredTags(); track tag.name) {
+            <div
+              class="px-3 py-2 text-[13px] text-white/80 hover:bg-white/5 cursor-pointer"
+              (mousedown)="selectTag(tag.name)"
+            >{{ tag.name }}</div>
           }
 
-          <span class="bg-white/5 px-2 py-1 rounded-xl mr-2.5 cursor-pointer"
-            >+
-          </span>
+          @if (showCreateOption()) {
+            <div
+              class="px-3 py-2 text-[13px] text-blue-400 hover:bg-white/5 cursor-pointer border-t border-white/5"
+              (mousedown)="createAndSelectTag()"
+            >Create tag "{{ tagQuery() }}"</div>
+          }
+
+        </div>
+      }
+    </div>
+  }
+
+</div>
         }
       </div>
     </div>

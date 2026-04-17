@@ -32,12 +32,37 @@
           />
         </div>
         <!-- COLOR -->
-        <div class="flex items-center justify-between mb-[18px]">
-          <label class="text-[13px] text-[#888]">List Color</label>
-          <div class="flex gap-[7px] items-center">
-            <!-- TODO:integrate color piker -->
-          </div>
-        </div>
+        <!-- COLOR -->
+<div class="flex items-center justify-between mb-[18px]">
+  <label class="text-[13px] text-[#888]">List Color</label>
+
+  <div class="flex gap-[7px] items-center">
+    <!-- No color / clear -->
+    <button
+      type="button"
+      (click)="projectForm.get('color')?.setValue('')"
+      class="w-[22px] h-[22px] rounded-full border border-[#444] flex items-center justify-center text-[#555] hover:border-[#888] transition-colors"
+      [class.ring-2]="!projectForm.get('color')?.value"
+      [class.ring-blue-600]="!projectForm.get('color')?.value"
+    >
+      <i class="pi pi-ban text-[10px]"></i>
+    </button>
+
+    @for (color of colorOptions; track color) {
+      <button
+        type="button"
+        (click)="projectForm.get('color')?.setValue(color)"
+        class="w-[22px] h-[22px] rounded-full transition-transform hover:scale-110"
+        [style.background-color]="color"
+        [class.ring-2]="projectForm.get('color')?.value === color"
+        [class.ring-offset-1]="projectForm.get('color')?.value === color"
+        [class.ring-offset-[#141414]]="projectForm.get('color')?.value === color"
+        [class.ring-blue-500]="projectForm.get('color')?.value === color"
+      >
+      </button>
+    }
+  </div>
+</div>
         <!-- VIEW TYPE -->
         <div class="flex items-center justify-between mb-[18px]">
           <label class="text-[13px] text-[#888]">View Type</label>

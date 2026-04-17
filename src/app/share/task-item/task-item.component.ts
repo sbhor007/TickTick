@@ -32,7 +32,7 @@ import { Folder } from '../../models/folder';
 import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.component';
 import { DateTimeSelection } from '../../models/date';
 import { Project } from '../../models/project';
-import { TagSelectorComponent } from "../tag-selector/tag-selector.component";
+import { TagSelectorComponent } from '../tag-selector/tag-selector.component';
 
 export type TaskActionType =
   | 'update'
@@ -79,8 +79,8 @@ export interface ContextMenuI {
     TooltipModule,
     Popover,
     DateTimePickerComponent,
-    TagSelectorComponent
-],
+    TagSelectorComponent,
+  ],
   templateUrl: './task-item.component.html',
   styleUrl: './task-item.component.css',
 })
@@ -102,21 +102,20 @@ export class TaskItemComponent implements OnChanges {
   /**move to */
   isVisibleFolderMenu = false;
   folderProject = computed(() => {
-    const folder = this.folderService.allFolders$()
-    
-    .map((folder) => ({
-      ...folder,
-      projects: this.projectService
-        .projects$()
-        .filter((project) => project.folderId == folder.id),
-    }));
+    const folder = this.folderService
+      .allFolders$()
+
+      .map((folder) => ({
+        ...folder,
+        projects: this.projectService
+          .projects$()
+          .filter((project) => project.folderId == folder.id),
+      }));
     const project = this.projectService
       .projects$()
       .filter((project) => project.folderId == null && !project.isSmartView);
     return [...folder, ...project];
   });
-
-  
 
   isCompleted = new FormControl();
   taskTitle = new FormControl('');
@@ -177,10 +176,19 @@ export class TaskItemComponent implements OnChanges {
     /**update task status */
     this.isCompleted.valueChanges.subscribe((val) => {
       console.log('checkBox Value :', this.task.entityType);
+
       if (this.task.entityType === EntityType.TASK) {
+        const updatedSubtasks = val
+          ? this.task.subtasks.map((st: Task) => ({
+              ...st,
+              status: TaskStatus.COMPLETED,
+            }))
+          : this.task.subtasks;
+
         this.taskService.updateTask(this.task.id, {
           ...this.task,
-          status: val == true ? TaskStatus.COMPLETED : TaskStatus.PENDING,
+          subtasks: updatedSubtasks,
+          status: val ? TaskStatus.COMPLETED : TaskStatus.PENDING,
         });
       } else if (this.task.entityType === EntityType.SUBTASK) {
         this.taskService.updateSubTask(this.task.parentId, this.task.id, {
@@ -241,9 +249,15 @@ export class TaskItemComponent implements OnChanges {
       payload: task,
     });
   }
-  moveTO(project:Project,action:string){
-
-     console.log('action:', action, 'entityType:', this.task.entityType,'project:', project);
+  moveTO(project: Project, action: string) {
+    console.log(
+      'action:',
+      action,
+      'entityType:',
+      this.task.entityType,
+      'project:',
+      project,
+    );
     this.contextMenuEvent.emit({
       action: action,
       entityType: this.task.entityType,
@@ -251,8 +265,6 @@ export class TaskItemComponent implements OnChanges {
       payload: this.task,
     });
   }
-
-
 
   getPrioritySection() {
     return this.contextMenu.find((i) => i['action'] === 'priority_section');
@@ -314,8 +326,7 @@ export class TaskItemComponent implements OnChanges {
 
   /**dateTimePiker */
   handleDateTimeEvent(selection: DateTimeSelection) {
-    console.log("event handle::",selection);
-    
+    console.log('event handle::', selection);
 
     if (this.task.entityType === EntityType.SUBTASK && this.task.parentId) {
       this.taskService.updateSubTask(this.task.parentId, this.task.id, {

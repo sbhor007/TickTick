@@ -3,6 +3,7 @@ import {
   computed,
   effect,
   inject,
+  Injector,
   OnInit,
   signal,
   ViewChild,
@@ -13,7 +14,7 @@ import { EntityType } from '../../enums/entity-type';
 import { Task } from '../../models/task';
 import { JsonPipe, NgClass } from '@angular/common';
 import { TaskPriority } from '../../enus/task-priority';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TaskStatus } from '../../enus/task-status';
 import { ShortDatePipe } from '../../pipe/short-date.pipe';
 import { ContextMenuBarService } from '../../config/context-menu-bar.service';
@@ -27,6 +28,8 @@ import { AttachmentService } from '../../services/attachment.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { DateTimePickerComponent } from '../../share/date-time-picker/date-time-picker.component';
 import { DateTimeSelection } from '../../models/date';
+import { TagsService } from '../../config/tags.service';
+import { Tag } from '../../models/tag';
 
 @Component({
   selector: 'app-task-details',
@@ -39,6 +42,7 @@ import { DateTimeSelection } from '../../models/date';
     JsonPipe,
     RouterLink,
     DateTimePickerComponent,
+    FormsModule,
   ],
   templateUrl: './task-details.component.html',
   styles: ``,
@@ -51,6 +55,8 @@ export class TaskDetailsComponent implements OnInit {
   private attachmentService = inject(AttachmentService);
   private sanitizer = inject(DomSanitizer);
   private trashService = inject(TrashService);
+  private tagService = inject(TagsService);
+  private injector = inject(Injector);
 
   entityType!: any;
   entityId!: any;
@@ -134,10 +140,25 @@ export class TaskDetailsComponent implements OnInit {
     /**update task status */
     this.isCompleted.valueChanges.subscribe((val) => {
       if (this.task.entityType == EntityType.TASK) {
-        this.taskService.updateTask(this.task.id, {
-          ...this.task,
-          status: val == true ? TaskStatus.COMPLETED : TaskStatus.PENDING,
-        });
+        if (this.task.subtasks) {
+          const updatedSubtasks = val
+            ? this.task.subtasks.map((st: Task) => ({
+                ...st,
+                status: TaskStatus.COMPLETED,
+              }))
+            : this.task.subtasks;
+
+          this.taskService.updateTask(this.task.id, {
+            ...this.task,
+            subtasks: updatedSubtasks,
+            status: val ? TaskStatus.COMPLETED : TaskStatus.PENDING,
+          });
+        } else {
+          this.taskService.updateTask(this.task.id, {
+            ...this.task,
+            status: val == true ? TaskStatus.COMPLETED : TaskStatus.PENDING,
+          });
+        }
       } else if (
         this.task.entityType === EntityType.SUBTASK &&
         this.task.parentId
@@ -595,16 +616,112 @@ export class TaskDetailsComponent implements OnInit {
     console.log(this.isDateTimePikerVisible);
   }
 
-  /**
-   * {
-  "date": "2026-04-15T18:30:00.000Z",
-  "time": null,
-  "repeat": {
-    "type": "on-the-day"
-  },
-  "reminder": {
-    "type": "daily"
+  /**tags */
+  // ── Tag state ─────────────────────────────────────────────────
+  showTagInput = false;
+  tagQuery = signal('');
+
+  filteredTags = computed(() => {
+    const q = this.tagQuery().toLowerCase().trim();
+    const taskTagNames = new Set(
+      this.task?.tags?.map((t: Tag) => t.name) ?? [],
+    );
+
+    return this.tagService
+      .allTags$()
+      .filter(
+        (t) => t.name.toLowerCase().includes(q) && !taskTagNames.has(t.name),
+      );
+  });
+
+  showCreateOption = computed(() => {
+    const q = this.tagQuery().trim();
+    return (
+      !!q &&
+      !this.tagService
+        .allTags$()
+        .some((t) => t.name.toLowerCase() === q.toLowerCase())
+    );
+  });
+
+  tagDropdownItems = computed(() => [
+    ...this.filteredTags(),
+    ...(this.showCreateOption() ? [{ name: '__create__' }] : []),
+  ]);
+
+  onTagKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      this.showTagInput = false;
+      this.tagQuery.set('');
+    }
+    if (e.key === 'Enter') {
+      const match = this.filteredTags()[0];
+      match ? this.selectTag(match.name) : this.createAndSelectTag();
+    }
   }
+
+  onTagInputBlur() {
+    setTimeout(() => {
+      this.showTagInput = false;
+      this.tagQuery.set('');
+    }, 150);
+  }
+
+  selectTag(name: string) {
+    const already = this.task?.tags?.some((t: Tag) => t.name === name);
+    if (already) return;
+    if (!this.task.tags) this.task.tags = [];
+    this.task.tags.push({ name });
+    this.saveTagsToTask();
+    this.tagQuery.set('');
+    this.showTagInput = false;
+  }
+
+  createAndSelectTag() {
+  const name = this.tagQuery().trim();
+  if (!name) return;
+
+  this.tagService.createTags({ name });
+
+  const ref = effect(() => {
+    const tag = this.tagService.allTags$().find((t) => t.name === name);
+    if (!tag) return; // not yet loaded — wait for next signal update
+
+    const updatedTags = this.task.tags ? [...this.task.tags, tag] : [tag];
+
+    if (this.task.entityType === EntityType.TASK) {
+      this.taskService.updateTask(this.task.id, {
+        ...this.task,
+        tags: updatedTags,
+      });
+    } else if (this.task.entityType === EntityType.SUBTASK) {
+      this.taskService.updateSubTask(this.task.parentId ?? '', this.task.id, {
+        ...this.task,
+        tags: updatedTags,
+      });
+    }
+
+    ref.destroy(); 
+  }, { injector: this.injector });;
+
+  this.selectTag(name);
 }
-   */
+
+  removeTag(index: number) {
+    this.task.tags?.splice(index, 1);
+    this.saveTagsToTask();
+  }
+
+  private saveTagsToTask() {
+    if (this.task.entityType === EntityType.TASK) {
+      this.taskService.updateTask(this.task.id, { ...this.task });
+    } else if (
+      this.task.entityType === EntityType.SUBTASK &&
+      this.task.parentId
+    ) {
+      this.taskService.updateSubTask(this.task.parentId, this.task.id, {
+        ...this.task,
+      });
+    }
+  }
 }
