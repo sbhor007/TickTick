@@ -354,4 +354,18 @@ export class TaskItemComponent implements OnChanges {
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
     console.log(this.isDateTimePikerVisible);
   }
+
+  updateTaskOrSubTaskStatus(task:Task){
+    if(task.entityType == EntityType.TASK){
+      this.taskService.updateTask(task.id,{
+        ...task,status:TaskStatus.PENDING,
+        updatedAt: new Date().toISOString(),
+      })
+    }else if(task.entityType == EntityType.SUBTASK){
+      this.taskService.updateSubTask(task.parentId ?? '',task.id,{
+        ...task,status:TaskStatus.PENDING,
+        updatedAt: new Date().toISOString(),
+      })
+    }
+  }
 }

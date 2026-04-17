@@ -15,6 +15,7 @@ import { FolderService } from '../../../services/folder.service';
 import { EntityType } from '../../../enums/entity-type';
 import { ProjectService } from '../../../services/project.service';
 import { debounceTime } from 'rxjs';
+import { UiStateService } from '../../../services/ui-state.service';
 
 export type GroupByOption = 'Date' | 'Tag' | 'Priority' | 'None';
 export type SortByOption = 'Date' | 'Title' | 'Tag' | 'Priority';
@@ -33,6 +34,7 @@ export type SubMenuType = 'group' | 'sort' | null;
 export class ContextHeaderComponent implements OnInit {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
+  private ui = inject(UiStateService);
 
   @Input() routeData!: Signal<any>;
   
@@ -74,6 +76,10 @@ export class ContextHeaderComponent implements OnInit {
     console.log('RouteData:', this.routeData);
   }
 
+  /**toggele */
+  togglePanel() {
+  this.ui.detailPanelVisible.update(v => !v);
+}
   /**load route data */
   loadRoutData() {
     const route = this.routeData?.();

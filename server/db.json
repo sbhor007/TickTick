@@ -28,26 +28,6 @@
       "projects": [],
       "createdAt": "17/04/2026",
       "updatedAt": "17/04/2026"
-    },
-    {
-      "id": "726acd66-8b50-45e1-adfe-0add6b7cc709",
-      "userId": null,
-      "name": "Three",
-      "isPinned": false,
-      "entityType": "FOLDER",
-      "projects": [],
-      "createdAt": "17/04/2026",
-      "updatedAt": "17/04/2026"
-    },
-    {
-      "id": "48f564af-192b-460b-aad7-8da1810b0b7f",
-      "userId": null,
-      "name": "Four",
-      "isPinned": false,
-      "entityType": "FOLDER",
-      "projects": [],
-      "createdAt": "17/04/2026",
-      "updatedAt": "17/04/2026"
     }
   ],
   "projects": [
@@ -182,7 +162,7 @@
       "createdAt": "2026-04-10T07:15:33.654Z",
       "updatedAt": "2026-04-14T16:40:19.876Z",
       "isPinned": false,
-      "isArchived": true,
+      "isArchived": false,
       "isSmartView": false,
       "icon": "pi pi-wallet",
       "tasks": []
@@ -225,7 +205,7 @@
       "name": "testProject",
       "color": "",
       "viewType": "",
-      "folderId": "726acd66-8b50-45e1-adfe-0add6b7cc709",
+      "folderId": null,
       "listType": "Task List",
       "smartList": "All Task",
       "entityType": "PROJECT",
@@ -233,7 +213,58 @@
       "createdAt": "2026-04-17T05:51:01.480Z",
       "updatedAt": "2026-04-17T05:51:01.480Z",
       "isPinned": false,
-      "isArchived": true,
+      "isArchived": false,
+      "isSmartView": false,
+      "icon": "pi pi-cog",
+      "tasks": []
+    },
+    {
+      "name": "List-5",
+      "color": "#8b5cf6",
+      "viewType": "0",
+      "folderId": null,
+      "listType": "Task List",
+      "smartList": "All Task",
+      "entityType": "PROJECT",
+      "id": "a08e87b7-c60f-465a-87c4-112aa96173f1",
+      "createdAt": "2026-04-17T13:07:25.936Z",
+      "updatedAt": "2026-04-17T13:07:25.936Z",
+      "isPinned": false,
+      "isArchived": false,
+      "isSmartView": false,
+      "icon": "pi pi-cog",
+      "tasks": []
+    },
+    {
+      "name": "new list",
+      "color": "",
+      "viewType": "0",
+      "folderId": "2ee1ea1a-e865-46b0-bee4-4317e2b9e3b4",
+      "listType": "Task List",
+      "smartList": "All Task",
+      "entityType": "PROJECT",
+      "id": "967b35c1-ffbe-4272-aa91-3167a5e45410",
+      "createdAt": "2026-04-17T14:09:05.816Z",
+      "updatedAt": "2026-04-17T14:09:05.816Z",
+      "isPinned": false,
+      "isArchived": false,
+      "isSmartView": false,
+      "icon": "pi pi-cog",
+      "tasks": []
+    },
+    {
+      "name": "testing",
+      "color": "#f97316",
+      "viewType": "",
+      "folderId": "cb2714a0-b9c3-4844-9c80-39a916dd6da6",
+      "listType": "Task List",
+      "smartList": "All Task",
+      "entityType": "PROJECT",
+      "id": "858b42ec-da5f-46d9-b974-fd53972ad232",
+      "createdAt": "2026-04-17T14:09:50.747Z",
+      "updatedAt": "2026-04-17T14:09:50.747Z",
+      "isPinned": false,
+      "isArchived": false,
       "isSmartView": false,
       "icon": "pi pi-cog",
       "tasks": []
@@ -257,7 +288,7 @@
       "entityType": "TASK",
       "dueDate": null,
       "createdAt": "2026-04-17T05:51:12.816Z",
-      "updatedAt": "2026-04-17T05:52:05.865Z",
+      "updatedAt": "2026-04-17T11:36:22.880Z",
       "completedAt": null
     },
     {
@@ -282,7 +313,30 @@
           "priority": "NONE",
           "isPinned": false,
           "subtasks": [],
-          "tags": [],
+          "tags": [
+            {
+              "name": "tag-2",
+              "id": "b282cd75-7af8-40fd-963c-a66393138e8c",
+              "parentId": null,
+              "entityType": "TAG",
+              "color": "",
+              "childTag": [],
+              "isPinned": false,
+              "createdAt": "2026-04-17T05:52:36.881Z",
+              "updatedAt": "2026-04-17T05:52:36.881Z"
+            },
+            {
+              "name": "tag-3",
+              "id": "ce3771f8-8ebb-4b9d-a444-3a05e4c490f5",
+              "parentId": null,
+              "entityType": "TAG",
+              "color": "",
+              "childTag": [],
+              "isPinned": false,
+              "createdAt": "2026-04-17T05:53:05.991Z",
+              "updatedAt": "2026-04-17T05:53:05.991Z"
+            }
+          ],
           "comments": [],
           "attachmentId": null,
           "entityType": "SUBTASK",
@@ -291,7 +345,30 @@
           "dueDate": null,
           "dueDateTime": null,
           "createdAt": "2026-04-17T05:52:09.436Z",
-          "updatedAt": "2026-04-17T06:36:16.604Z",
+          "updatedAt": "2026-04-17T07:47:18.611Z",
+          "completedAt": null
+        },
+        {
+          "id": "b1512f1f-b1d3-4e8e-8b34-72dd9479173c",
+          "userId": null,
+          "projectId": "21fc218c-766e-4207-ab1c-0e62d24d3ed8",
+          "parentId": "07949a6d-1944-47aa-b839-4d806450efef",
+          "title": "new one",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "SUBTASK",
+          "reminder": null,
+          "repeat": null,
+          "dueDate": null,
+          "dueDateTime": null,
+          "createdAt": "2026-04-17T07:37:34.501Z",
+          "updatedAt": "2026-04-17T07:42:36.166Z",
           "completedAt": null
         }
       ],
@@ -322,9 +399,9 @@
       "comments": [],
       "attachmentId": null,
       "entityType": "TASK",
-      "dueDate": null,
+      "dueDate": "2026-04-17T18:30:00.000Z",
       "createdAt": "2026-04-17T05:51:17.403Z",
-      "updatedAt": "2026-04-17T07:24:07.471Z",
+      "updatedAt": "2026-04-17T10:12:01.836Z",
       "completedAt": null
     },
     {
@@ -350,7 +427,7 @@
       },
       "dueDate": "2026-04-22T18:30:00.000Z",
       "createdAt": "2026-04-17T05:51:30.614Z",
-      "updatedAt": "2026-04-17T05:51:30.614Z",
+      "updatedAt": "2026-04-17T10:52:01.177Z",
       "completedAt": null
     },
     {
@@ -377,26 +454,6 @@
       "dueDate": null,
       "createdAt": "2026-04-17T05:51:42.494Z",
       "updatedAt": "2026-04-17T05:51:42.494Z",
-      "completedAt": null
-    },
-    {
-      "id": "9fe85713-10c2-4a34-adb2-9d5f6c0aaf10",
-      "userId": null,
-      "projectId": "21fc218c-766e-4207-ab1c-0e62d24d3ed8",
-      "title": "testing",
-      "description": "",
-      "status": "PENDING",
-      "priority": "LOW",
-      "isPinned": true,
-      "parentId": null,
-      "subtasks": [],
-      "tags": [],
-      "comments": [],
-      "attachmentId": null,
-      "entityType": "TASK",
-      "dueDate": null,
-      "createdAt": "2026-04-17T05:52:02.587Z",
-      "updatedAt": "2026-04-17T06:31:41.579Z",
       "completedAt": null
     },
     {
@@ -442,14 +499,14 @@
       },
       "dueDate": "2026-04-16T18:30:00.000Z",
       "createdAt": "2026-04-17T06:07:34.229Z",
-      "updatedAt": "2026-04-17T06:07:34.229Z",
+      "updatedAt": "2026-04-17T10:52:00.128Z",
       "completedAt": null
     },
     {
       "id": "173b7a4b-da9c-4968-979b-ebea3c3ce13d",
       "userId": null,
       "projectId": "inbox",
-      "title": "testing-3]",
+      "title": "testing-3",
       "description": "",
       "status": "PENDING",
       "priority": "NONE",
@@ -468,22 +525,11 @@
       },
       "dueDate": "2026-04-29T18:30:00.000Z",
       "createdAt": "2026-04-17T06:08:01.286Z",
-      "updatedAt": "2026-04-17T06:08:16.363Z",
+      "updatedAt": "2026-04-17T10:27:39.260Z",
       "completedAt": null
     }
   ],
   "tags": [
-    {
-      "name": "tag-2",
-      "id": "b282cd75-7af8-40fd-963c-a66393138e8c",
-      "parentId": null,
-      "entityType": "TAG",
-      "color": "",
-      "childTag": [],
-      "isPinned": false,
-      "createdAt": "2026-04-17T05:52:36.881Z",
-      "updatedAt": "2026-04-17T05:52:36.881Z"
-    },
     {
       "name": "tag-3",
       "id": "ce3771f8-8ebb-4b9d-a444-3a05e4c490f5",
@@ -504,7 +550,8 @@
       "childTag": [],
       "isPinned": false,
       "createdAt": "2026-04-17T05:53:20.367Z",
-      "updatedAt": "2026-04-17T05:53:20.367Z"
+      "updatedAt": "2026-04-17T11:37:05.771Z",
+      "isShared": false
     },
     {
       "name": "tag-5",
@@ -541,26 +588,5 @@
     }
   ],
   "attachments": [],
-  "trash": [
-    {
-      "id": "37e401a5-d42a-4d77-b565-86b331013b63",
-      "userId": null,
-      "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "title": "testing trash",
-      "description": "",
-      "status": "PENDING",
-      "priority": "NONE",
-      "isPinned": false,
-      "parentId": null,
-      "subtasks": [],
-      "tags": [],
-      "comments": [],
-      "attachmentId": null,
-      "entityType": "TRASHED",
-      "dueDate": null,
-      "createdAt": "2026-04-17T06:30:31.653Z",
-      "updatedAt": "2026-04-17T06:30:31.653Z",
-      "completedAt": null
-    }
-  ]
+  "trash": []
 }

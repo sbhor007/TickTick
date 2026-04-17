@@ -16,7 +16,8 @@ import { CommonModule } from '@angular/common';
 import { CreateFolderComponent } from '../../../share/create-folder/create-folder.component';
 import { FolderProjectService } from '../../../services/folder-project.service';
 import { Menu, MenuModule } from 'primeng/menu';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ContextMenuBarService } from '../../../config/context-menu-bar.service';
 
 @Component({
@@ -27,33 +28,38 @@ import { ContextMenuBarService } from '../../../config/context-menu-bar.service'
     CommonModule,
     CreateFolderComponent,
     Menu,
+    ConfirmDialog
   ],
+  providers: [ConfirmationService],
   templateUrl: './list.component.html',
 })
 export class ListComponent implements OnInit {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
-  // private folderWithProjectService = inject(FolderProjectService);
+  private confirmationService = inject(ConfirmationService);
   private contextMenuService = inject(ContextMenuBarService);
+  
 
   allFolders = computed(() => {
-    const data = this.folderService
-      .allFolders$()
-      .map((folder) => ({
-        ...folder,
-        entityType:folder.entityType,
-        projects: this.projectService
-          .projects$()
-          .filter((p) => p.folderId === folder.id),
-      }));
+    const data = this.folderService.allFolders$().map((folder) => ({
+      ...folder,
+      entityType: folder.entityType,
+      projects: this.projectService
+        .projects$()
+        .filter((p) => p.folderId === folder.id),
+    }));
     return data;
   });
-  allProject = this.projectService.projects$;
+  allProject = computed(() => this.projectService.projects$())
+  allArchives = computed(() =>
+    this.projectService.projects$().filter((p) => p.isArchived),
+  );
   // folderWithProjects = this.folderWithProjectService.foldersWithProjects$;
 
   isShowCreateForm = false;
   isFolderDialogOpen = false;
   openFolders = new Set<number>();
+  isArchivedExpanded = false;
 
   /**project creation and update */
   activeFolderId: string | null = null;
@@ -192,7 +198,14 @@ export class ListComponent implements OnInit {
 
   /**ungroup folder */
   ungropFolder(folderId: string) {
-    this.projectService.fetchProjectByFolderId(folderId).subscribe((data) => {
+     this.confirmationService.confirm({
+      message: 'List inside within the folder shows directly inside the folder',
+      header: 'Ungroup Folder',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger p-button-sm',
+      rejectButtonStyleClass: 'p-button-sm',
+      accept: () => {
+        this.projectService.fetchProjectByFolderId(folderId).subscribe((data) => {
       data.forEach((project) => {
         this.projectService
           .updateProject(project.id, {
@@ -203,7 +216,6 @@ export class ListComponent implements OnInit {
       });
       this.folderService.deleteFolder(folderId).subscribe({
         next: () => {
-          // this.folderWithProjectService.fetchFolderWithProjects();
           this.reinitializedIds();
         },
         error: () => {
@@ -212,6 +224,9 @@ export class ListComponent implements OnInit {
         },
       });
     });
+      }
+    });
+    
   }
 
   updateFolder(folderId: string, updatedName: any) {
@@ -347,6 +362,7 @@ export class ListComponent implements OnInit {
 
   reloaddata() {
     this.projectService.loadAllProjects();
+    this.folderService.loadAllFolders()
     // this.folderWithProjectService.fetchFolderWithProjects();
   }
 }

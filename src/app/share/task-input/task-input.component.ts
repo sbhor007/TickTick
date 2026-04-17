@@ -263,6 +263,7 @@ export class TaskInputComponent implements OnInit {
       comments: [],
       attachmentId: this.taskAttachmentId ?? null, // ✅ now set correctly
       entityType: EntityType.TASK,
+      isNote:false,
       reminder: this.lastSelection()?.reminder,
       repeat: this.lastSelection()?.repeat,
       dueDate: this.lastSelection()?.date?.toISOString() ?? null,

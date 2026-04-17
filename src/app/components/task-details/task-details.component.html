@@ -193,3 +193,10 @@
     <!-- Date Time Picker Dropdown -->
   </div>
 }
+@if (isTagSelectorVisible) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center">
+  <app-tag-selector
+  [selectedTags]="selectedTags"
+   (result)="tagsSectorEventHandler($event)"></app-tag-selector>
+</div>
+  }

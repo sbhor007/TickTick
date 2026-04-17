@@ -135,11 +135,15 @@
   <!-- Left: Checkbox + Title -->
   <div class="flex items-center gap-2 flex-1 min-w-0">
     <label class="relative flex items-center cursor-pointer">
-      <input
+      @if(task.status != 'WONT_DO'){
+        <input
         type="checkbox"
         [formControl]="isCompleted"
         [class]="getCheckboxClass(task.priority)"
       />
+      }@else {
+        <i class="pi pi-ban text-gray-400/50" (click)="updateTaskOrSubTaskStatus(task)"></i>
+      }
       @if (isCompleted.value) {
         <span
           class="absolute inset-0 flex items-center justify-center pointer-events-none"
@@ -198,13 +202,7 @@
       [class.text-gray-600]="isCompleted.value"
       [class.text-gray-500]="!isCompleted.value"
     >
-      @if (task?.subtasks?.length > 0) {
-        <i
-          class="pi pi-list text-[11px]"
-          pTooltip="Subtasks"
-          tooltipPosition="top"
-        ></i>
-      }
+      
       @if (task.attachmentId) {
         <i
           class="pi pi-paperclip text-[11px]"
@@ -236,6 +234,7 @@
     
 
     <!-- Due Date -->
+      @if (task.dueDate) {
     <span
     (click)="toggleDateTime()"    
       class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
@@ -243,14 +242,16 @@
         isCompleted.value ? 'text-gray-600' : getDueDateColor(task.dueDate)
       "
     >
-      @if (task.dueDate) {
+     
         {{ task.dueDate | shortDate }}
-      } @else {
+      
+      <!-- @else {
         <i
           class="pi pi-calendar text-[11px] opacity-0 group-hover:opacity-40 transition-opacity"
         ></i>
-      }
+      } -->
     </span>
+    } 
     @if (isDateTimePikerVisible) {
       
         <div class="relative -left-56 w-0 h-0 bg-gray-200">

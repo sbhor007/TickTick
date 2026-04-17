@@ -6,6 +6,7 @@ import { FolderService } from '../../../services/folder.service';
 import { ProjectService } from '../../../services/project.service';
 import { FolderProjectService } from '../../../services/folder-project.service';
 import { ContextMenuBarService } from '../../../config/context-menu-bar.service';
+import { UiStateService } from '../../../services/ui-state.service';
 
 @Component({
   selector: 'app-list-action.page',
@@ -13,13 +14,6 @@ import { ContextMenuBarService } from '../../../config/context-menu-bar.service'
   templateUrl: './list-action.page.component.html'
 })
 export class ListActionPageComponent  {
-  // private folderService = inject(FolderService);
-  // private projectService = inject(ProjectService);
-  // private folderWithProjectService = inject(FolderProjectService);
-  // private contextMenuService = inject(ContextMenuBarService);
-
-  // ngOnInit(): void {
-    
-  // }
+  ui = inject(UiStateService);
 
 }

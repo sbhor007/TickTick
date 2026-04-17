@@ -71,13 +71,15 @@
           @if (task.subtasks && task.subtasks.length > 0 && !isCollapsed('sub_' + task.id)) {
             <div class="ml-4 pl-2 border-l border-gray-200/30">
               @for (subtask of task.subtasks; track subtask.id) {
-                <app-task-item
+                @if (!subtask.isPinned && subtask.status !== 'COMPLETED') {
+                  <app-task-item
                   (click)="navigateToTaskDetails(subtask.id, subtask.entityType)"
                   [task]="subtask"
                   (contextMenuEvent)="taskItemEventHandler($event)"
                 >
                   <span subtaskToggle class="w-3.5 h-3.5 flex-shrink-0 block"></span>
                 </app-task-item>
+                }
               }
             </div>
           }

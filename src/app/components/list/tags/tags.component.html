@@ -72,19 +72,7 @@
             </div>
           </div>
 
-          <!-- Root context menu -->
-          <!-- @if (openMenuId === tag.id) {
-            <div (click)="$event.stopPropagation()">
-              <app-context-menu
-                [entityType]="tag.entityType"
-                [entityId]="tag.id"
-                [isPinned]="tag.isPinned"
-                [triggerEvent]="menuEvent"
-                (action)="handleTaskAction($event)"
-                (close)="closeMenu()"
-              />
-            </div>
-          } -->
+          
 
           <!-- Children -->
           @if (isTagExpanded(tag.id) && hasChildren(tag)) {
@@ -122,22 +110,10 @@
                         class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
                       ></i>
                     </div>
-                    <!-- Child context menu -->
-                    <!-- @if (openMenuId === child.id) {
-                    <div (click)="$event.stopPropagation()">
-                      <app-context-menu
-                        [entityType]="child.entityType"
-                        [entityId]="child.id"
-                        [isPinned]="child.isPinned"
-                        [triggerEvent]="menuEvent"
-                        (action)="handleSubAction($event)"
-                        (close)="closeMenu()"
-                      />
-                    </div>
-                  } -->
+                    
                   </div>
 
-                  <!-- ✅ grandchildren — uses isTagExpanded(), not toggleExpandTag() -->
+                 
                   @if (isTagExpanded(child.id) && hasChildren(child)) {
                     <div class="ml-5 border-l border-white/10 pl-3">
                       @for (grand of child.childTag; track grand.id) {

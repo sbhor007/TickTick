@@ -266,7 +266,7 @@ export class ContextMenuBarService {
         action: 'move_to',
         hasSubmenu: true,
       },
-      { label: 'Tags', icon: 'label', action: 'manage_tags' },
+      { label: 'Tags', icon: 'label', action: 'add_tags_to_task' },
 
       { label: '', icon: '', action: 'divider', isDivider: true },
 

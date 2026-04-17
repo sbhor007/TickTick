@@ -95,9 +95,19 @@ export const routes: Routes = [
             ]
           },
           {
+            path: 'completed/:id',
+            component:ContextPageComponent,
+            data: { entityType: EntityType.COMPLETED },
+            children:[
+              {
+                path:':entityType/:id',
+                component: TaskDetailsComponent
+              }
+            ]
+          },
+          {
             path: 'SUMMARY/:id',
             component:SummaryComponent,
-            
           },
           {
             path: 'trashed',

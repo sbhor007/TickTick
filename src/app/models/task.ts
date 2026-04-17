@@ -25,5 +25,6 @@ export interface Task {
   createdAt?: Date | string | null;
   updatedAt?: Date | string | null;
   completedAt?: Date | string | null;
+  isNote?:boolean
 }
 
