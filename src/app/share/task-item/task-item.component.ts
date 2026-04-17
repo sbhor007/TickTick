@@ -32,6 +32,7 @@ import { Folder } from '../../models/folder';
 import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.component';
 import { DateTimeSelection } from '../../models/date';
 import { Project } from '../../models/project';
+import { TagSelectorComponent } from "../tag-selector/tag-selector.component";
 
 export type TaskActionType =
   | 'update'
@@ -78,7 +79,8 @@ export interface ContextMenuI {
     TooltipModule,
     Popover,
     DateTimePickerComponent,
-  ],
+    TagSelectorComponent
+],
   templateUrl: './task-item.component.html',
   styleUrl: './task-item.component.css',
 })
@@ -97,6 +99,8 @@ export class TaskItemComponent implements OnChanges {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
 
+  /**move to */
+  isVisibleFolderMenu = false;
   folderProject = computed(() => {
     const folder = this.folderService.allFolders$()
     
@@ -112,7 +116,7 @@ export class TaskItemComponent implements OnChanges {
     return [...folder, ...project];
   });
 
-  isVisibleFolderMenu = false;
+  
 
   isCompleted = new FormControl();
   taskTitle = new FormControl('');

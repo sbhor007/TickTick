@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   inject,
+  Injector,
   input,
   Input,
   OnInit,
@@ -31,8 +32,9 @@ import { TrashService } from '../../../services/trash.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DateTimePickerComponent } from '../../../share/date-time-picker/date-time-picker.component';
 import { DateTimeSelection } from '../../../models/date';
-import { Project } from '../../../models/project';
-import { every } from 'rxjs';
+
+import { Tag } from '../../../models/tag';
+import { TagsService } from '../../../config/tags.service';
 // import { DropdownModule } from 'primeng/dropdown';
 // import { AutoCompleteModule } from 'primeng/autocomplete';
 @Component({
@@ -54,6 +56,8 @@ export class TaskListComponent implements OnInit {
   private trashService = inject(TrashService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private tagService = inject(TagsService);
+  private injector = inject(Injector);
 
   x = 0;
   y = 0;
@@ -81,7 +85,9 @@ export class TaskListComponent implements OnInit {
     return tasks;
   });
   isOpenLinkToParent = false;
+  isTagSelectorVisible = false;
   selectedTaskToLink!: Task;
+  selectedTags: Tag[] = [];
 
   private entityData = signal<any | null>(null);
   sortGroupData = input<any>({ groupBy: 'none', sortBy: 'Title' });
@@ -546,20 +552,24 @@ export class TaskListComponent implements OnInit {
             projectId: event.entityId,
           });
         } else if (event.entityType == EntityType.SUBTASK) {
-          this.taskService.deleteSubTask(event.payload.parentId,event.payload.id)
+          this.taskService.deleteSubTask(
+            event.payload.parentId,
+            event.payload.id,
+          );
           this.taskService.crateTask(event.entityId, {
             ...event.payload,
             projectId: event.entityId,
             entityType: EntityType.TASK,
-            parentId:null
+            parentId: null,
           });
         }
 
         break;
 
       case 'add_tags_to_task':
-      case 'manage_tags':
-        // TODO: open tag selector dialog
+        this.isTagSelectorVisible = true;
+        this.selectedTags = event.payload.tags;
+        this.selectedTask = event.payload;
         break;
 
       case 'duplicate':
@@ -736,12 +746,59 @@ export class TaskListComponent implements OnInit {
     console.log(this.isDateTimePikerVisible);
   }
 
-  //  filteredCities: any[] = [];
+  /**tag selector */
 
-  // search(event: any) {
-  //   const query = event.query.toLowerCase();
-  //   this.filteredCities = this.allTasks().filter(c =>
-  //     c.name.toLowerCase().includes(query)
-  //   );
-  // }
+  tagsSectorEventHandler(event: any) {
+    console.log('tag selector event::', event);
+    this.isTagSelectorVisible = false;
+    if (event.action == 'cancel') return;
+    const t = this.selectedTags
+    this.selectedTags = event.payload;
+    switch (event.action) {
+      case 'add':
+        if (this.selectedTask?.entityType == EntityType.TASK) {
+          this.selectedTask.tags = this.selectedTags;
+          this.taskService.updateTask(this.selectedTask.id, this.selectedTask);
+        } else if (this.selectedTask?.entityType == EntityType.SUBTASK) {
+          this.selectedTask.tags = this.selectedTags;
+          this.taskService.updateSubTask(
+            this.selectedTask.parentId ?? '',
+            this.selectedTask.id,
+            this.selectedTask,
+          );
+        }
+
+        break;
+      case 'create':
+        this.tagService.createTags({ name: event.payload });
+
+        const ref = effect(() => {
+          const tag = this.tagService
+            .allTags$()
+            .find((t) => t.name == event.payload);
+            
+          if (tag) {
+            this.selectedTags = [...t,tag];
+
+
+            if (this.selectedTask?.entityType == EntityType.TASK) {
+              this.selectedTask.tags = this.selectedTags;
+              this.taskService.updateTask(
+                this.selectedTask.id,
+                this.selectedTask,
+              );
+            } else if (this.selectedTask?.entityType == EntityType.SUBTASK) {
+              this.selectedTask.tags = this.selectedTags;
+              this.taskService.updateSubTask(
+                this.selectedTask.parentId ?? '',
+                this.selectedTask.id,
+                this.selectedTask,
+              );
+            }
+          }
+        }, { injector: this.injector });
+
+        break;
+    }
+  }
 }

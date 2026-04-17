@@ -29,26 +29,91 @@
         </div>
       }
 
-      <!-- Regular Menu Items -->
-      @for (item of menuRegularItems; track item.action) {
-        @if (item.isDivider) {
-          <div class="ctx-divider"></div>
-        } @else {
-          <button
-            class="ctx-menu-item"
-            [class.ctx-danger]="item.isDanger"
-            (click)="onRegularItemClick(item)"
-          >
-            <span class="material-symbols-outlined ctx-item-icon" [class.ctx-danger-icon]="item.isDanger">
-              {{ item.icon }}
-            </span>
-            <span class="ctx-item-label">{{ item.label }}</span>
-            @if (item.hasSubmenu) {
-              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
-            }
-          </button>
+     <!-- Regular Menu Items -->
+@for (item of menuRegularItems; track item.action) {
+  @if (item.isDivider) {
+    <div class="ctx-divider"></div>
+  } @else if (item.label === "Move to") {
+    <div class="relative">
+      <button
+        class="ctx-menu-item"
+        [class.ctx-danger]="item.isDanger"
+        (mouseenter)="onMouse($event)"
+      >
+        <span
+          class="material-symbols-outlined ctx-item-icon"
+          [class.ctx-danger-icon]="item.isDanger"
+        >
+          {{ item.icon }}
+        </span>
+        <span class="ctx-item-label">{{ item.label }}</span>
+        @if (item.hasSubmenu) {
+          <i class="pi pi-angle-right ctx-submenu-arrow"></i>
         }
+      </button>
+
+      @if (isVisibleFolderMenu) {
+        <div
+          class="absolute left-full top-0 z-50 w-[180px] bg-[#1c1c1e] rounded-lg shadow-lg py-1"
+        >
+          @for (fp of folderProject(); track fp.id) {
+            <div
+              class="relative"
+              (mouseenter)="onFolderHover(fp.id)"
+              (mouseleave)="onFolderLeave()"
+            >
+              <button
+                class="ctx-menu-item w-full flex justify-between items-center"
+              >
+                @if (fp.entityType === "FOLDER" && fp.projects.length > 0) {
+                  <i class="pi pi-folder"></i>
+                  <span>{{ fp.name }}</span>
+                  <i class="pi pi-angle-right"></i>
+                } @else if (fp.entityType === "PROJECT") {
+                  <i class="pi pi-align-justify"></i>
+                  <span (click)="assignToAnotherProject(fp, item.action)">{{ fp.name }}</span>
+                }
+              </button>
+
+              <!-- Folder's Projects Submenu -->
+              @if (hoveredFolderId === fp.id && fp.projects?.length) {
+                <div
+                  class="absolute left-full top-0 ml-1 w-[180px] bg-[#1c1c1e] rounded-lg shadow-lg py-1"
+                >
+                  @for (project of fp.projects; track project.id) {
+                    <button
+                      (click)="assignToAnotherProject(project, item.action)"
+                      class="ctx-menu-item w-full text-left"
+                    >
+                      {{ project.name }}
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
       }
+    </div>
+  } @else {
+    <button
+      class="ctx-menu-item"
+      [class.ctx-danger]="item.isDanger"
+      (click)="onRegularItemClick(item)"
+    >
+      <span
+        class="material-symbols-outlined ctx-item-icon"
+        [class.ctx-danger-icon]="item.isDanger"
+      >
+        {{ item.icon }}
+      </span>
+      <span class="ctx-item-label">{{ item.label }}</span>
+      @if (item.hasSubmenu) {
+        <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+      }
+    </button>
+  }
+}
     </div>
   </p-popover>
 
@@ -66,7 +131,7 @@
       <input
         class="flex-1 bg-transparent border-none outline-none text-neutral-200 text-sm placeholder-neutral-600 caret-blue-500"
         type="text"
-        [placeholder]="'Add task ' + project?.name"
+        [placeholder]="'Add task ' +  projectPlaceHolder"
         autocomplete="off"
         [(ngModel)]="taskTitle"
         (keydown.enter)="onInputKeydown($event)"
@@ -88,7 +153,24 @@
         (click)="toggeleDateTimePiker($event)"
       >
         <i class="pi pi-calendar text-[13px]" (click)="toggeleDateTimePiker($event)"></i>
+
       </button>
+      <!-- Date Time Picker Dropdown -->
+  @if (isDateTimePikerVisible) {
+   <div class="relative">
+     <div class="absolute top-full right-0 mt-2 z-50 w-full min-w-[300px]">
+      <app-date-time-picker
+        [initialDate]="initialDate()"
+        [initialTime]="initialTime()"
+        (confirmed)="onConfirmed($event)"
+        (cleared)="isDateTimePikerVisible = false"
+        (closed)="isDateTimePikerVisible = false"
+      />
+    </div>
+   </div>
+  }
+
+
       <i (click)="openFolderMenu($event)" class="pi pi-angle-up cursor-pointer"></i>
     </div>
 
@@ -111,21 +193,14 @@
     }
 
     </div>
-    <!-- Date Time Picker Dropdown -->
-  @if (isDateTimePikerVisible) {
-    <div class="absolute top-full right-0 mt-2 z-50 w-full min-w-[300px]">
-      <app-date-time-picker
-        [initialDate]="initialDate()"
-        [initialTime]="initialTime()"
-        (confirmed)="onConfirmed($event)"
-        (closed)="isDateTimePikerVisible = false"
-      />
-    </div>
-  }
-
-
     
+     
   </div>
+  @if (isTagSelectorVisible) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center">
+  <app-tag-selector (result)="tagsSectorEventHandler($event)"></app-tag-selector>
+</div>
+  }
 
   <!-- Hidden File Input for Attachment (image only, single file) -->
   <input
@@ -136,6 +211,7 @@
     (change)="onFileSelected($event)"
   />
 
+ 
   
 
   

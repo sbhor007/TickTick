@@ -279,11 +279,11 @@ export class ContextMenuBarService {
       { label: 'Delete', icon: 'delete', action: 'delete', isDanger: true },
     ],
     [EntityType.TRASHED]: [
-      { label: 'Restore', icon: 'pi pi-replay', action: 'restore' },
+      { label: 'Restore', icon: 'refresh', action: 'restore' },
       // { label: 'Pin', icon: 'pin', action: 'pin' },
       {
         label: 'Delete forever',
-        icon: 'pi pi-trash',
+        icon: 'delete',
         action: 'delete_forever',
       },
     ],

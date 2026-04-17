@@ -20,7 +20,13 @@ export const routes: Routes = [
           {
             path: 'folder/:id',
             component:ContextPageComponent,
-            data: { entityType: EntityType.FOLDER }
+            data: { entityType: EntityType.FOLDER },
+            children:[
+              {
+                path:':entityType/:id',
+                component: TaskDetailsComponent
+              }
+            ]
           },
           {
             path: 'project/:id',

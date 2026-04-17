@@ -70,6 +70,7 @@
               [initialDate]="initialDate()"
               [initialTime]="initialTime()"
               (confirmed)="handleDateTimeEvent($event)"
+              (cleared)="isDateTimePikerVisible = false"
               (closed)="isDateTimePikerVisible = false"
             />
           </div>

@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   ElementRef,
   HostListener,
   inject,
@@ -32,6 +33,11 @@ import { ContextMenuBarService } from '../../config/context-menu-bar.service';
 import { Popover } from 'primeng/popover';
 import { Project } from '../../models/project';
 import { AttachmentService } from '../../services/attachment.service';
+import { FolderService } from '../../services/folder.service';
+import { ProjectService } from '../../services/project.service';
+import { TagSelectorComponent } from '../tag-selector/tag-selector.component';
+import { Tag } from '../../models/tag';
+import { TagsService } from '../../config/tags.service';
 
 @Component({
   selector: 'app-task-input',
@@ -43,16 +49,22 @@ import { AttachmentService } from '../../services/attachment.service';
     ReactiveFormsModule,
     DateTimePickerComponent,
     Popover,
+    TagSelectorComponent,
   ],
   templateUrl: './task-input.component.html',
   styles: ``,
 })
 export class TaskInputComponent implements OnInit {
   private taskService = inject(TaskService);
+  private folderService = inject(FolderService);
+  private projectService = inject(ProjectService);
   private contextMenuService = inject(ContextMenuBarService);
   private attachmentService = inject(AttachmentService);
+  private tagService = inject(TagsService)
 
   @Input() project!: any;
+
+  projectPlaceHolder: string = this.project?.name;
 
   taskTitle = '';
   taskPriority: TaskPriority = TaskPriority.NONE;
@@ -62,15 +74,17 @@ export class TaskInputComponent implements OnInit {
 
   /** Attachment files */
   attachedFiles: File | null = null;
-
   isExpanded = false;
-
   isDateTimePikerVisible = false;
+  isTagSelectorVisible = false;
 
   /**date time piker */
   initialDate = signal<Date | null>(null);
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
+
+  /**selected Tags */
+  selectedTags:Tag[] = []
 
   @ViewChild('contextMenuPopover') contextMenuPopover!: Popover;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -83,13 +97,52 @@ export class TaskInputComponent implements OnInit {
   @ViewChild('inputRef') inputRef!: ElementRef<HTMLInputElement>;
 
   selectedDateTime: Date | null = null;
+  /**move to */
+  isVisibleFolderMenu = false;
+  hoveredFolderId: string | null = null;
+  selectedProject!: Project | null;
 
-  constructor(private fb: FormBuilder) { }
+  folderProject = computed(() => {
+    const folder = this.folderService
+      .allFolders$()
+
+      .map((folder) => ({
+        ...folder,
+        projects: this.projectService
+          .projects$()
+          .filter((project) => project.folderId == folder.id),
+      }));
+    const project = this.projectService
+      .projects$()
+      .filter((project) => project.folderId == null && !project.isSmartView);
+    return [...folder, ...project];
+  });
+
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    this.projectPlaceHolder = this.project?.name;
     console.log('Test Priorities');
     const priority = TaskPriority;
     console.log(priority);
+  }
+
+  /**move to */
+  onMouse(event: any) {
+    console.log('----', event);
+    this.isVisibleFolderMenu = !this.isVisibleFolderMenu;
+  }
+  onFolderHover(folderId: string) {
+    this.hoveredFolderId = folderId;
+  }
+
+  onFolderLeave() {
+    this.hoveredFolderId = null;
+  }
+  assignToAnotherProject(project: Project, action: string) {
+    this.selectedProject = project;
+    this.projectPlaceHolder = this.selectedProject.name;
+    this.isVisibleFolderMenu = false;
   }
 
   /**context menu option */
@@ -148,6 +201,7 @@ export class TaskInputComponent implements OnInit {
         this.openFileSelector();
         break;
       case 'manage_tags':
+        this.isTagSelectorVisible = true;
         break;
       case 'add_from_template':
         break;
@@ -156,10 +210,10 @@ export class TaskInputComponent implements OnInit {
     }
   }
 
-  toggeleDateTimePiker(event:any) {
-    event.stopPropagation()
-    console.log("Toggele Date time piker...");
-    
+  toggeleDateTimePiker(event: any) {
+    event.stopPropagation();
+    console.log('Toggele Date time piker...');
+
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
   }
 
@@ -168,63 +222,62 @@ export class TaskInputComponent implements OnInit {
   }
 
   /**for form submition */
- onInputKeydown(event: any): void {
-  console.log('event triggered: ', this.taskTitle);
+  onInputKeydown(event: any): void {
+    console.log('event triggered: ', this.taskTitle);
 
-  if (event.key === 'Escape') {
-    this.isDateTimePikerVisible = false;
-    this.isExpanded = false;
-    return;
+    if (event.key === 'Escape') {
+      this.isDateTimePikerVisible = false;
+      this.isExpanded = false;
+      return;
+    }
+
+    if (this.attachedFiles) {
+      this.attachmentService.uploadAttachment(this.attachedFiles).subscribe({
+        next: (attachmentId) => {
+          this.taskAttachmentId = attachmentId;
+          this.buildAndCreateTask();
+        },
+        error: (err) => {
+          console.error('Upload failed:', err);
+          this.buildAndCreateTask(); // create task without attachment on error
+        },
+      });
+    } else {
+      this.buildAndCreateTask();
+    }
   }
 
-  if (this.attachedFiles) {
-    this.attachmentService.uploadAttachment(this.attachedFiles).subscribe({
-      next: (attachmentId) => {
-        this.taskAttachmentId = attachmentId;
-        this.buildAndCreateTask();
-      },
-      error: (err) => {
-        console.error('Upload failed:', err);
-        this.buildAndCreateTask(); // create task without attachment on error
-      },
-    });
-  } else {
-    this.buildAndCreateTask();
+  private buildAndCreateTask(): void {
+    const taskData: Task = {
+      id: crypto.randomUUID(),
+      userId: null,
+      projectId: this.selectedProject?.id ?? this.project.id ?? null,
+      title: this.taskTitle,
+      description: '',
+      status: TaskStatus.PENDING,
+      priority: this.taskPriority,
+      isPinned: false,
+      parentId: null,
+      subtasks: [],
+      tags: this.selectedTags ?? [],
+      comments: [],
+      attachmentId: this.taskAttachmentId ?? null, // ✅ now set correctly
+      entityType: EntityType.TASK,
+      reminder: this.lastSelection()?.reminder,
+      repeat: this.lastSelection()?.repeat,
+      dueDate: this.lastSelection()?.date?.toISOString() ?? null,
+      dueDateTime: this.lastSelection()?.time?.toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      completedAt: null,
+    };
+
+    console.log('task-Data: ', taskData);
+    this.taskService.crateTask(this.project.id, taskData);
+    this.cleanupInputField();
   }
-}
-
-private buildAndCreateTask(): void {
-  const taskData: Task = {
-    id: crypto.randomUUID(),
-    userId: null,
-    projectId: this.project.id ?? null,
-    title: this.taskTitle,
-    description: '',
-    status: TaskStatus.PENDING,
-    priority: this.taskPriority,
-    isPinned: false,
-    parentId: null,
-    subtasks: [],
-    tags: [],
-    comments: [],
-    attachmentId: this.taskAttachmentId ?? null,  // ✅ now set correctly
-    entityType: EntityType.TASK,
-    reminder: this.lastSelection()?.reminder,
-    repeat: this.lastSelection()?.repeat,
-    dueDate: this.lastSelection()?.date?.toISOString() ?? null,
-    dueDateTime: this.lastSelection()?.time?.toString(),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    completedAt: null,
-  };
-
-  console.log('task-Data: ', taskData);
-  this.taskService.crateTask(this.project.id, taskData);
-  this.cleanupInputField();
-}
 
   /**create attachment */
-  
 
   cleanupInputField() {
     this.taskTitle = '';
@@ -234,6 +287,9 @@ private buildAndCreateTask(): void {
     this.taskDueDate = null;
     this.taskDueDateTime = null;
     this.lastSelection.set(null);
+    this.selectedProject = null;
+    this.projectPlaceHolder = this.project.name;
+    this.selectedTags = []
   }
 
   onInputChange(event: Event): void {
@@ -312,6 +368,33 @@ private buildAndCreateTask(): void {
   onDocumentClick(event: any) {
     this.isExpanded = false;
 
-    if (this.isDateTimePikerVisible) this.isDateTimePikerVisible = false;
+    // if (this.isDateTimePikerVisible) this.isDateTimePikerVisible = false;
+  }
+
+  closeDateTimeHandler(event: any) {
+    console.log('EVENT::', event);
+  }
+
+  /**tag selector */
+  tagsSectorEventHandler(event: any) {
+    console.log("tag selector event::",event);
+    this.isTagSelectorVisible = false
+    if (event.action == 'cancel') return;
+    switch (event.action) {
+      case 'add':
+        this.selectedTags = event.payload
+        break;
+      case 'create':
+        this.tagService.createTags({name:event.payload})
+        setTimeout(() =>{
+          const tag =  this.tagService.allTags$().find(t => t.name == event.payload)
+          if(tag){
+            this.selectedTags.push(tag)
+          }
+          console.log("is Tag created",tag);
+          
+        },100 )
+        break;
+    }
   }
 }

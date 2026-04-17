@@ -1,5 +1,119 @@
-<div>
+<div class="flex items-center justify-center rounded-xl ">
+  <div class="w-70 bg-[#1e1e1e] rounded-xl overflow-hidden border border-white/10">
 
-    <!-- search br -->
-     
+    <!-- Search -->
+    <div class="px-3 py-2.5 flex items-center gap-2 border-b border-white/[0.08]">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2">
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        type="text"
+        placeholder="Type in a tag"
+        class=" border-none outline-none text-[13px] text-[#ccc] w-full placeholder-[#555]"
+      />
+    </div>
+
+    <!-- Tag list -->
+<div class="px-2 py-1.5 max-h-[220px] overflow-y-auto">
+  @if (hasNoResults()) {
+    <!-- Create tag option -->
+    <div
+      (click)="createTag()"
+      class="flex items-center gap-2 px-3 py-2 rounded-md text-[13px] text-[#ccc] cursor-pointer hover:bg-white/5 transition"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" class="shrink-0">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      <span>Create <span class="text-blue-400 font-medium">"{{ searchQuery() }}"</span></span>
+    </div>
+  } @else {
+    @for (node of filteredTags(); track node.id) {
+      <ng-container
+        *ngTemplateOutlet="tagRow; context: { $implicit: node, depth: 0 }"
+      ></ng-container>
+    }
+  }
 </div>
+
+    <!-- Footer -->
+    <div class="flex gap-2 px-3 py-2.5 border-t border-white/[0.08]">
+      <button
+        (click)="cancel()"
+        class="flex-1 py-1.5 rounded-md border border-white/15  text-[#ccc] text-[13px] cursor-pointer hover:bg-white/5 transition"
+      >
+        Cancel
+      </button>
+      <button
+        (click)="confirm()"
+        class="flex-1 py-1.5 rounded-md border-none bg-blue-500 text-white text-[13px] font-medium cursor-pointer hover:bg-blue-600 transition"
+      >
+        OK
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #tagRow let-node let-depth="depth">
+  <div
+    (click)="node.childTag?.length ? toggleExpand(node.id) : toggleSelect(node.id)"
+    class="flex items-center gap-2 py-1.5 rounded-md text-[13px] text-[#ccc] cursor-pointer hover:bg-white/5 transition"
+    [style.padding-left.px]="12 + depth * 20"
+  >
+    <!-- Chevron or spacer -->
+    @if (node.childTag?.length) {
+      <svg
+        width="14" height="14" viewBox="0 0 24 24"
+        fill="none" stroke="#888" stroke-width="2"
+        class="shrink-0 transition-transform duration-150"
+        [style.transform]="isExpanded(node.id) ? 'rotate(90deg)' : 'rotate(0deg)'"
+      >
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    } @else {
+      <span class="w-3.5 shrink-0"></span>
+    }
+
+    <!-- Tag icon -->
+    <svg
+      width="14" height="14" viewBox="0 0 24 24"
+      fill="none" stroke-width="1.8"
+      class="shrink-0"
+      [attr.stroke]="isSelected(node.id) ? '#3b82f6' : '#888'"
+    >
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+      <line x1="7" y1="7" x2="7.01" y2="7" />
+    </svg>
+
+    <span class="flex-1">{{ node.name }}</span>
+
+    <!-- Checkbox -->
+    <div
+      (click)="$event.stopPropagation(); toggleSelect(node.id)"
+      class="w-4 h-4 rounded shrink-0 flex items-center justify-center transition"
+      [class.bg-blue-500]="isSelected(node.id)"
+      [class.border-blue-500]="isSelected(node.id)"
+      [class.bg-transparent]="!isSelected(node.id)"
+      [class.border-[#555]]="!isSelected(node.id)"
+      style="border-width: 1.5px; border-style: solid;"
+    >
+      @if (isSelected(node.id)) {
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      }
+    </div>
+  </div>
+
+  <!-- Children -->
+  @if (node.childTag?.length && isExpanded(node.id)) {
+    @for (child of node.childTag; track child.id) {
+      <ng-container
+        *ngTemplateOutlet="tagRow; context: { $implicit: child, depth: depth + 1 }"
+      ></ng-container>
+    }
+  }
+</ng-template>

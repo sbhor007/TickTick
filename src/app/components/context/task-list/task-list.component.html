@@ -24,8 +24,9 @@
 
         <!-- Date Time Picker (once per group, anchored via fixed position) -->
         @if (isDateTimePikerVisible) {
-          <div
-            class="fixed z-50"
+          <div class="relative">
+            <div
+            class="absolute -right-0 top-10 z-50"
             [style.left.px]="x"
             [style.top.px]="y"
           >
@@ -33,14 +34,17 @@
               [initialDate]="initialDate()"
               [initialTime]="initialTime()"
               (confirmed)="handleDateTimeEvent($event)"
+              (cleared)="isDateTimePikerVisible = false"
               (closed)="isDateTimePikerVisible = false"
             />
+          </div>
           </div>
         }
 
         @for (task of group.tasks; track task.id) {
           <!-- ── Parent Task Row ── -->
-          <app-task-item
+         
+           <app-task-item
             (click)="navigateToTaskDetails(task.id, task.entityType)"
             [task]="task"
             (contextMenuEvent)="taskItemEventHandler($event)"
@@ -61,6 +65,7 @@
               <span subtaskToggle class="w-3.5 h-3.5 flex-shrink-0 block"></span>
             }
           </app-task-item>
+
 
           <!-- Subtask rows -->
           @if (task.subtasks && task.subtasks.length > 0 && !isCollapsed('sub_' + task.id)) {
@@ -140,14 +145,10 @@
   </div>
 }
 
-@if (true) {
-  <!-- <div
-    class="fixed inset-0 z-40 bg-black/35"
-    (click)="isOpenLinkToParent = false"
-  ></div>
-  <app-tag-selector></app-tag-selector>
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
-  ></div> -->
- 
-}
+@if (isTagSelectorVisible) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center">
+  <app-tag-selector
+  [selectedTags]="selectedTags"
+   (result)="tagsSectorEventHandler($event)"></app-tag-selector>
+</div>
+  }

@@ -37,15 +37,21 @@ export class TagsService {
       this.createSubTag(payload);
       return;
     }
+    
     const body: Partial<Tag> = {
       ...payload,
       id: crypto.randomUUID(),
       parentId: payload.parentId ?? null,
+      entityType: payload.entityType ?? EntityType.TAG,
+      color: payload.color ?? '',
       childTag: [],
       isPinned: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+    if(this.allTags$().find(t => t.name == body.name)){
+      alert("tag already exist")
+    }
     this.http.post<Tag>(`${environment.API}/tags`, body).subscribe({
       next: (data) => {
         // console.info('Tag Crated...');

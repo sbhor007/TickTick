@@ -279,7 +279,7 @@ export class TaskDetailsComponent implements OnInit {
       this.initialDate.set(
         typeof due === 'string' ? new Date(due) : (due ?? null),
       );
-      this.initialTime.set(task.dueDateTime ?? null)
+      this.initialTime.set(task.dueDateTime ?? null);
     });
   }
 
@@ -327,7 +327,7 @@ export class TaskDetailsComponent implements OnInit {
       this.initialDate.set(
         typeof due === 'string' ? new Date(due) : (due ?? null),
       );
-      this.initialTime.set(result.subtask?.dueDateTime ?? null)
+      this.initialTime.set(result.subtask?.dueDateTime ?? null);
     } else {
       this.taskService.fetchAllTasks().subscribe((tasks) => {
         this.taskService.allTasks$.set(tasks);
@@ -355,10 +355,10 @@ export class TaskDetailsComponent implements OnInit {
           console.warn('Subtask not found for subtaskId:', subtaskId);
         }
         const due = this.task.dueDate;
-      this.initialDate.set(
-        typeof due === 'string' ? new Date(due) : (due ?? null),
-      );
-      this.initialTime.set(retryResult?.subtask?.dueDateTime ?? null)
+        this.initialDate.set(
+          typeof due === 'string' ? new Date(due) : (due ?? null),
+        );
+        this.initialTime.set(retryResult?.subtask?.dueDateTime ?? null);
       });
     }
     if (result) {
@@ -441,6 +441,20 @@ export class TaskDetailsComponent implements OnInit {
 
       case 'wont_do':
         this.updateTaskOrSubTask(event, { status: TaskStatus.WONT_DO });
+        break;
+      case 'move_to':
+        if (event.entityType == EntityType.SUBTASK) {
+          this.taskService.deleteSubTask(
+            event.payload.parentId,
+            event.payload.id,
+          );
+          this.taskService.crateTask(event.entityId, {
+            ...event.payload,
+            projectId: event.entityId,
+            entityType: EntityType.TASK,
+            parentId: null,
+          });
+        }
         break;
 
       case 'duplicate':
@@ -560,25 +574,24 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   /**dateTimePiker */
-  handleDateTimeEvent(selection: DateTimeSelection){
-    const event ={
-      entityType:this.task.entityType,
-      payload:this.task
-
-    }
+  handleDateTimeEvent(selection: DateTimeSelection) {
+    const event = {
+      entityType: this.task.entityType,
+      payload: this.task,
+    };
     console.log('DateTimePiker Event:: ', selection);
-    this.updateTaskOrSubTask(event,{...this.task,
-      dueDate:selection.date,
+    this.updateTaskOrSubTask(event, {
+      ...this.task,
+      dueDate: selection.date,
       dueDateTime: selection.time ?? this.task.dueDateTime,
-      repeat:selection.repeat,
-      reminder: selection.reminder
-    })
+      repeat: selection.repeat,
+      reminder: selection.reminder,
+    });
     this.isDateTimePikerVisible = false;
   }
 
-  toggleDateTime(){
-    
-    this.isDateTimePikerVisible = !this.isDateTimePikerVisible
+  toggleDateTime() {
+    this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
     console.log(this.isDateTimePikerVisible);
   }
 

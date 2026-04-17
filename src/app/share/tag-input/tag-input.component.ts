@@ -17,7 +17,12 @@ import { EntityType } from '../../enums/entity-type';
 import { InputTextModule } from 'primeng/inputtext';
 import { CommonModule } from '@angular/common';
 import { TagsService } from '../../config/tags.service';
-export type TagMode = 'create' | 'update' | 'create_subtag' | 'update_subtag' | 'close';
+export type TagMode =
+  | 'create'
+  | 'update'
+  | 'create_subtag'
+  | 'update_subtag'
+  | 'close';
 export interface TagEvent {
   action: TagMode;
   entityType?: EntityType;
@@ -52,7 +57,6 @@ export class TagInputComponent implements OnInit {
   ];
   selectedColor = this.existingTag?.color ?? '';
 
-
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -68,9 +72,9 @@ export class TagInputComponent implements OnInit {
   }
 
   private buildForm() {
-    let existingName = this.existingTag?.name
-    if(this.mode == 'create_subtag'){
-      existingName = ''
+    let existingName = this.existingTag?.name;
+    if (this.mode == 'create_subtag') {
+      existingName = '';
     }
     this.tagForm = this.fb.group({
       name: [existingName ?? '', Validators.required],
@@ -81,9 +85,9 @@ export class TagInputComponent implements OnInit {
   }
 
   selectColor(color: string) {
-  this.selectedColor = color;
-  this.tagForm.get('color')?.setValue(color);
-}
+    this.selectedColor = color;
+    this.tagForm.get('color')?.setValue(color);
+  }
 
   //  private loadParentTags(): void {
   //   // read from signal directly
@@ -117,31 +121,27 @@ export class TagInputComponent implements OnInit {
 
   onSave(): void {
     if (this.tagForm.invalid) return;
-    let payload = {}
-    if(this.mode == 'create_subtag' ){
+    let payload = {};
+    if (this.mode == 'create_subtag') {
       payload = {
-      ...this.tagForm.value,
-      
-      ...(this.isUpdate && { id: this.existingTag?.id }),
-      parentId: this.existingTag?.id ?? null
-    };
+        ...this.tagForm.value,
 
-    }else{
+        ...(this.isUpdate && { id: this.existingTag?.id }),
+        parentId: this.existingTag?.id ?? null,
+      };
+    } else {
       payload = {
-      ...this.existingTag,
-      ...this.tagForm.value,
-      ...(this.isUpdate && { id: this.existingTag?.id }),
-    };
+        ...this.existingTag,
+        ...this.tagForm.value,
+        ...(this.isUpdate && { id: this.existingTag?.id }),
+      };
     }
-    
 
-    this.tagsEventHandler.emit(
-      {
-        action: this.mode,
-        entityType: EntityType.TAG,
-        payload: payload
-      }
-    );
+    this.tagsEventHandler.emit({
+      action: this.mode,
+      entityType: EntityType.TAG,
+      payload: payload,
+    });
   }
 
   onClose() {
