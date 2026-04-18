@@ -377,21 +377,26 @@
     </div>
 
     <!-- Emoji Popover -->
-    <p-popover
-      #op
-      [style]="{
-        padding: '0',
-        border: 'none',
-        boxShadow: 'var(--p-overlay-shadow)',
-      }"
-    >
-      <emoji-mart
-        (emojiSelect)="addEmoji($event)"
-        [darkMode]="false"
-        [showPreview]="false"
-        [perLine]="8"
-      />
-    </p-popover>
+  <p-popover
+  #op
+  [style]="{
+    padding: '0',
+    border: 'none',
+    borderRadius: '12px',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+    overflow: 'hidden',
+    width: '320px'
+  }"
+>
+  <emoji-mart
+    (emojiSelect)="addEmoji($event)"
+    [darkMode]="true"
+    [showPreview]="false"
+    [perLine]="8"
+    [emojiTooltip]="false"
+    [style]="{ width: '100%' }"
+  />
+</p-popover>
   </div>
   }
     }

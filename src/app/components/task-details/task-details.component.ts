@@ -54,7 +54,26 @@ import { TaskComment } from '../../models/task-comment';
     TimeAgoPipe,
   ],
   templateUrl: './task-details.component.html',
-  styles: ``,
+  styles: [`
+    ::ng-deep emoji-mart .emoji-mart {
+      width: 100% !important;
+      height: 380px !important;
+    }
+
+    ::ng-deep emoji-mart .emoji-mart-bar:first-child {
+      display: none !important;
+    }
+
+    ::ng-deep emoji-mart .emoji-mart-scroll {
+      height: calc(380px - 90px) !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+    }
+
+    ::ng-deep emoji-mart .emoji-mart-search {
+      padding: 8px !important;
+    }
+  `]
 })
 export class TaskDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -918,11 +937,10 @@ export class TaskDetailsComponent implements OnInit {
   createComment() {
     if (this.commentAttachmentId) {
       const url = this.attachmentService
-        .getAttachmentById(this.commentAttachmentId).pipe(
-          tap(data => console.log(data))
-        )
+        .getAttachmentById(this.commentAttachmentId)
+        .pipe(tap((data) => console.log(data)))
         .subscribe((data) => data.url);
-      console.log('URL:',url);
+      console.log('URL:', url);
     }
     const comment = {
       id: crypto.randomUUID(),
