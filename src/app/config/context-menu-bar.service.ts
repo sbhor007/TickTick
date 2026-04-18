@@ -185,7 +185,11 @@ export class ContextMenuBarService {
 
       { label: 'Duplicate', icon: 'content_copy', action: 'duplicate' },
       { label: 'Copy Link', icon: 'link', action: 'copy_link' },
-      { label: 'Convert to Note', icon: 'note_alt', action: 'convert_to_note' },
+      {
+            label: 'Convert to Note',
+            icon: 'note_alt',
+            action: 'convert_to_note',
+          },
 
       { label: '', icon: '', action: 'divider', isDivider: true },
 
@@ -272,7 +276,6 @@ export class ContextMenuBarService {
 
       { label: 'Duplicate', icon: 'content_copy', action: 'duplicate' },
       { label: 'Copy Link', icon: 'link', action: 'copy_link' },
-      { label: 'Convert to Note', icon: 'note_alt', action: 'convert_to_note' },
 
       { label: '', icon: '', action: 'divider', isDivider: true },
 
@@ -364,15 +367,17 @@ export class ContextMenuBarService {
         color: '#6b7280',
       },
     ],
-    [EntityType.COMPLETED]:[],
-    [EntityType.COMMENT]:[],
-    [EntityType.TAG_VIEW]:[]
+    [EntityType.COMPLETED]: [],
+    [EntityType.COMMENT]: [],
+    [EntityType.TAG_VIEW]: [],
   };
+
   getContextMenu(
     type: EntityType,
     isPinned: boolean = false,
     isArchived: boolean = false,
     isShared: boolean = false,
+    isNote: boolean = false,
   ): ContextMenuItem[] {
     const menu = [...(this.CONTEXT_MENU_MAP[type] || [])];
 
@@ -385,7 +390,6 @@ export class ContextMenuBarService {
       }
     };
 
-    // ✅ Pin / Unpin
     if (
       [
         EntityType.PROJECT,
@@ -401,6 +405,21 @@ export class ContextMenuBarService {
         : { label: 'Pin', icon: 'push_pin', action: 'pin' };
 
       insertAfterEdit(pinItem);
+    }
+
+  if (type === EntityType.TASK) {
+      const noteItem: ContextMenuItem = isNote
+        ? {
+            label: 'Convert to Note',
+            icon: 'note_alt',
+            action: 'convert_to_note',
+          }
+        : {
+            label: 'Convert to Task',
+            icon: 'note_alt',
+            action: 'convert_to_Task',
+          };
+           insertAfterEdit(noteItem);
     }
 
     //share and unshare tag

@@ -1,12 +1,13 @@
+import { NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-// import { FormsModule } from '@angular/forms';
-// import { EditorModule } from 'primeng/editor';
-// import { NgClass } from "../../../../node_modules/@angular/common/common_module.d-NEF7UaHr";
-// import("quill")
+import { FormsModule } from '@angular/forms';
+import { EditorModule } from 'primeng/editor';
+
+import("quill")
 
 @Component({
   selector: 'app-summary',
-  imports: [],
+  imports: [EditorModule, FormsModule, NgClass],
   templateUrl: './summary.component.html',
   styles: ``
 })
