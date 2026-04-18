@@ -112,6 +112,7 @@ export class ContextHeaderComponent implements OnInit {
         [EntityType.ASSIGNED_TO_ME]: 'Assigned to Me',
         [EntityType.SUMMARY]: 'Summary',
         [EntityType.TRASHED]: 'Trash',
+        [EntityType.TAG_VIEW]: this.routeData().id
       };
       this.data = {
         entityType: route.entityType,

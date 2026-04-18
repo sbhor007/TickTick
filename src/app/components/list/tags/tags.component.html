@@ -9,133 +9,35 @@
     appendTo="body"
   />
   <div class="px-2 mt-4">
-
-  <!-- Non-Shared Tags Section -->
-  <div class="flex items-center justify-between px-2 py-1 mb-1">
-    <button
-      class="flex items-center gap-1.5 text-[13px] font-medium text-white/85 hover:text-white transition-colors"
-      (click)="toggleExpand()"
-    >
-      <i
-        class="pi pi-chevron-down text-[10px] text-white/40 transition-transform duration-200"
-        [class.rotate-[-90deg]]="!isExpanded"
-      ></i>
-      Tags
-    </button>
-    <div class="flex items-center gap-0.5">
-      <button class="w-6 h-6 flex items-center justify-center rounded-md text-white/40 hover:text-white/75 hover:bg-white/[0.07] transition-colors text-xs">
-        <i class="pi pi-ellipsis-h"></i>
-      </button>
-      <button
-        class="w-6 h-6 flex items-center justify-center rounded-md text-white/40 hover:text-white/75 hover:bg-white/[0.07] transition-colors text-xs"
-        (click)="openCreateDialog()"
-      >
-        <i class="pi pi-plus"></i>
-      </button>
-    </div>
-  </div>
-
-  @if (isExpanded) {
-    @for (tag of notSharedTags(); track tag.id) {
-      <div>
-        <div
-          [routerLink]="['tags', tag.name]"
-          (contextmenu)="openContextMenu($event, tag)"
-          class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
-        >
-          <i
-            class="pi pi-chevron-right text-[10px] text-white/50 transition-transform duration-200"
-            (click)="toggleExpandTag(tag.id)"
-            [class.rotate-90]="isTagExpanded(tag.id)"
-            [class.invisible]="!hasChildren(tag)"
-          ></i>
-          <i class="pi pi-tag text-[13px] text-white/35"></i>
-          <span class="flex-1 text-[13px] text-white/78 truncate">{{ tag.name }}</span>
-          <span class="w-[7px] h-[7px] rounded-full flex-shrink-0" [style.background]="tag.color"></span>
-          <div class="relative w-6 text-right">
-            <span class="text-xs text-gray-500 transition-opacity group-hover:opacity-0">
-              {{ tag.childTag?.length ?? 0 }}
-            </span>
-            <i
-              (click)="openContextMenu($event, tag)"
-              class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
-            ></i>
-          </div>
-        </div>
-
-        @if (isTagExpanded(tag.id) && hasChildren(tag)) {
-          <div class="ml-5 border-l border-white/10 pl-3">
-            @for (child of tag.childTag; track child.id) {
-              <div>
-                <div
-                  (contextmenu)="openContextMenu($event, child)"
-                  class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
-                  (click)="toggleExpandTag(child.id)"
-                >
-                  <i
-                    class="pi pi-chevron-right text-[10px] text-white/50 transition-transform duration-200"
-                    [class.rotate-90]="isTagExpanded(child.id)"
-                    [class.invisible]="!hasChildren(child)"
-                  ></i>
-                  <i class="pi pi-tag text-[13px] text-white/35"></i>
-                  <span class="flex-1 text-[13px] text-white/78 truncate">{{ child.name }}</span>
-                  <span class="w-[7px] h-[7px] rounded-full flex-shrink-0" [style.background]="child.color"></span>
-                  <div class="relative w-6 text-right">
-                    <span class="text-xs text-gray-500 transition-opacity group-hover:opacity-0">
-                      {{ child.childTag?.length ?? 0 }}
-                    </span>
-                    <i
-                      (click)="openContextMenu($event, child)"
-                      class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
-                    ></i>
-                  </div>
-                </div>
-
-                @if (isTagExpanded(child.id) && hasChildren(child)) {
-                  <div class="ml-5 border-l border-white/10 pl-3">
-                    @for (grand of child.childTag; track grand.id) {
-                      <div
-                        (contextmenu)="openContextMenu($event, grand)"
-                        class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
-                      >
-                        <i class="pi pi-tag text-[13px] text-white/35"></i>
-                        <span class="flex-1 text-[13px] text-white/78 truncate">{{ grand.name }}</span>
-                        <span class="w-[7px] h-[7px] rounded-full flex-shrink-0" [style.background]="grand.color"></span>
-                        <span class="text-xs text-gray-500">{{ grand.childTag?.length ?? 0 }}</span>
-                        <i
-                          (click)="openContextMenu($event, grand)"
-                          class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
-                        ></i>
-                      </div>
-                    }
-                  </div>
-                }
-              </div>
-            }
-          </div>
-        }
-      </div>
-    }
-  }
-
-  <!-- Shared Tags Section -->
-  @if (sharedTags().length > 0) {
-    <div class="flex items-center justify-between px-2 py-1 mb-1 mt-4">
+    <!-- Non-Shared Tags Section -->
+    <div class="flex items-center justify-between px-2 py-1 mb-1">
       <button
         class="flex items-center gap-1.5 text-[13px] font-medium text-white/85 hover:text-white transition-colors"
-        (click)="true"
+        (click)="toggleExpand()"
       >
         <i
           class="pi pi-chevron-down text-[10px] text-white/40 transition-transform duration-200"
-          [class.rotate-[-90deg]]="!isSharedExpanded"
+          [class.rotate-[-90deg]]="!isExpanded"
         ></i>
-        <i class="pi pi-share-alt text-[11px] text-white/40"></i>
-        Shared Tags
+        Tags
       </button>
+      <div class="flex items-center gap-0.5">
+        <button
+          class="w-6 h-6 flex items-center justify-center rounded-md text-white/40 hover:text-white/75 hover:bg-white/[0.07] transition-colors text-xs"
+        >
+          <i class="pi pi-ellipsis-h"></i>
+        </button>
+        <button
+          class="w-6 h-6 flex items-center justify-center rounded-md text-white/40 hover:text-white/75 hover:bg-white/[0.07] transition-colors text-xs"
+          (click)="openCreateDialog()"
+        >
+          <i class="pi pi-plus"></i>
+        </button>
+      </div>
     </div>
 
-    @if (isSharedExpanded) {
-      @for (tag of sharedTags(); track tag.id) {
+    @if (isExpanded) {
+      @for (tag of notSharedTags(); track tag.id) {
         <div>
           <div
             [routerLink]="['tags', tag.name]"
@@ -148,11 +50,18 @@
               [class.rotate-90]="isTagExpanded(tag.id)"
               [class.invisible]="!hasChildren(tag)"
             ></i>
-            <i class="pi pi-tag text-[13px] text-teal-400/60"></i>
-            <span class="flex-1 text-[13px] text-white/78 truncate">{{ tag.name }}</span>
-            <span class="w-[7px] h-[7px] rounded-full flex-shrink-0" [style.background]="tag.color"></span>
+            <i class="pi pi-tag text-[13px] text-white/35"></i>
+            <span class="flex-1 text-[13px] text-white/78 truncate">{{
+              tag.name
+            }}</span>
+            <span
+              class="w-[7px] h-[7px] rounded-full flex-shrink-0"
+              [style.background]="tag.color"
+            ></span>
             <div class="relative w-6 text-right">
-              <span class="text-xs text-gray-500 transition-opacity group-hover:opacity-0">
+              <span
+                class="text-xs text-gray-500 transition-opacity group-hover:opacity-0"
+              >
                 {{ tag.childTag?.length ?? 0 }}
               </span>
               <i
@@ -176,11 +85,18 @@
                       [class.rotate-90]="isTagExpanded(child.id)"
                       [class.invisible]="!hasChildren(child)"
                     ></i>
-                    <i class="pi pi-tag text-[13px] text-teal-400/60"></i>
-                    <span class="flex-1 text-[13px] text-white/78 truncate">{{ child.name }}</span>
-                    <span class="w-[7px] h-[7px] rounded-full flex-shrink-0" [style.background]="child.color"></span>
+                    <i class="pi pi-tag text-[13px] text-white/35"></i>
+                    <span class="flex-1 text-[13px] text-white/78 truncate">{{
+                      child.name
+                    }}</span>
+                    <span
+                      class="w-[7px] h-[7px] rounded-full flex-shrink-0"
+                      [style.background]="child.color"
+                    ></span>
                     <div class="relative w-6 text-right">
-                      <span class="text-xs text-gray-500 transition-opacity group-hover:opacity-0">
+                      <span
+                        class="text-xs text-gray-500 transition-opacity group-hover:opacity-0"
+                      >
                         {{ child.childTag?.length ?? 0 }}
                       </span>
                       <i
@@ -197,10 +113,18 @@
                           (contextmenu)="openContextMenu($event, grand)"
                           class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
                         >
-                          <i class="pi pi-tag text-[13px] text-teal-400/60"></i>
-                          <span class="flex-1 text-[13px] text-white/78 truncate">{{ grand.name }}</span>
-                          <span class="w-[7px] h-[7px] rounded-full flex-shrink-0" [style.background]="grand.color"></span>
-                          <span class="text-xs text-gray-500">{{ grand.childTag?.length ?? 0 }}</span>
+                          <i class="pi pi-tag text-[13px] text-white/35"></i>
+                          <span
+                            class="flex-1 text-[13px] text-white/78 truncate"
+                            >{{ grand.name }}</span
+                          >
+                          <span
+                            class="w-[7px] h-[7px] rounded-full flex-shrink-0"
+                            [style.background]="grand.color"
+                          ></span>
+                          <span class="text-xs text-gray-500">{{
+                            grand.childTag?.length ?? 0
+                          }}</span>
                           <i
                             (click)="openContextMenu($event, grand)"
                             class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
@@ -215,14 +139,129 @@
           }
         </div>
       }
+
+      <!-- Shared Tags Section -->
+      @if (sharedTags().length > 0) {
+        <div class="flex items-center justify-between px-2 py-1 mb-1 ml-10">
+          <button
+            class="flex items-center gap-1.5 text-[13px] font-medium text-white/85 hover:text-white transition-colors"
+            (click)="(true)"
+          >
+            Shared
+          </button>
+        </div>
+
+        @if (isSharedExpanded) {
+          @for (tag of sharedTags(); track tag.id) {
+            <div class="ml-10">
+              <div
+                [routerLink]="['tags', tag.name]"
+                (contextmenu)="openContextMenu($event, tag)"
+                class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
+              >
+                <i
+                  class="pi pi-chevron-right text-[10px] text-white/50 transition-transform duration-200"
+                  (click)="toggleExpandTag(tag.id)"
+                  [class.rotate-90]="isTagExpanded(tag.id)"
+                  [class.invisible]="!hasChildren(tag)"
+                ></i>
+                <i class="pi pi-tag text-gray-400/50"></i>
+                <span class="flex-1 text-[13px] text-gray-400/50 truncate">{{
+                  tag.name
+                }}</span>
+                <span
+                  class="w-[7px] h-[7px] rounded-full flex-shrink-0"
+                  [style.background]="tag.color"
+                ></span>
+                <div class="relative w-6 text-right">
+                  <span
+                    class="text-xs text-gray-500 transition-opacity group-hover:opacity-0"
+                  >
+                    {{ tag.childTag?.length ?? 0 }}
+                  </span>
+                  <i
+                    (click)="openContextMenu($event, tag)"
+                    class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
+                  ></i>
+                </div>
+              </div>
+
+              @if (isTagExpanded(tag.id) && hasChildren(tag)) {
+                <div class="ml-5 border-l border-white/10 pl-3">
+                  @for (child of tag.childTag; track child.id) {
+                    <div>
+                      <div
+                        (contextmenu)="openContextMenu($event, child)"
+                        class="flex items-center gap-2  rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
+                        (click)="toggleExpandTag(child.id)"
+                      >
+                        <i
+                          class="pi pi-chevron-right text-[10px] text-white/50 transition-transform duration-200"
+                          [class.rotate-90]="isTagExpanded(child.id)"
+                          [class.invisible]="!hasChildren(child)"
+                        ></i>
+                        <i class="pi pi-tag text-[13px] text-gray-400/50"></i>
+                        <span
+                          class="flex-1 text-[13px] text-gray-400/50 truncate"
+                          >{{ child.name }}</span
+                        >
+                        <span
+                          class="w-[7px] h-[7px] rounded-full flex-shrink-0"
+                          [style.background]="child.color"
+                        ></span>
+                        <div class="relative w-6 text-right">
+                          <span
+                            class="text-xs text-gray-500 transition-opacity group-hover:opacity-0"
+                          >
+                            {{ child.childTag?.length ?? 0 }}
+                          </span>
+                          <i
+                            (click)="openContextMenu($event, child)"
+                            class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
+                          ></i>
+                        </div>
+                      </div>
+
+                      @if (isTagExpanded(child.id) && hasChildren(child)) {
+                        <div class="ml-5 border-l border-white/10 pl-3">
+                          @for (grand of child.childTag; track grand.id) {
+                            <div
+                              (contextmenu)="openContextMenu($event, grand)"
+                              class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
+                            >
+                              <i
+                                class="pi pi-tag text-[13px] text-gray-400/50"
+                              ></i>
+                              <span
+                                class="flex-1 text-[13px] text-white/78 truncate"
+                                >{{ grand.name }}</span
+                              >
+                              <span
+                                class="w-[7px] h-[7px] rounded-full flex-shrink-0"
+                                [style.background]="grand.color"
+                              ></span>
+                              <span class="text-xs text-gray-500">{{
+                                grand.childTag?.length ?? 0
+                              }}</span>
+                              <i
+                                (click)="openContextMenu($event, grand)"
+                                class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity text-gray-400"
+                              ></i>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        }
+      }
     }
-  }
-
-</div>
+  </div>
 }
-
-
-
 
 @if (isTagInputOpen) {
   <app-tag-input
@@ -241,9 +280,13 @@
   <div class="flex flex-col gap-4 py-2">
     <p class="text-sm text-white/60 leading-relaxed">
       You can merge the related tasks of tag
-      <span class="text-white/90 font-medium">{{selectedTag?.name || ""}}</span> to
-      another tag. After merging, tag
-      <span class="text-white/90 font-medium">{{selectedTag?.name || ""}}</span>
+      <span class="text-white/90 font-medium">{{
+        selectedTag?.name || ""
+      }}</span>
+      to another tag. After merging, tag
+      <span class="text-white/90 font-medium">{{
+        selectedTag?.name || ""
+      }}</span>
       will be deleted.
     </p>
 
@@ -253,7 +296,8 @@
     >
       <option [ngValue]="null" disabled selected>Select a tag</option>
       @for (tag of tags(); track tag.id) {
-        <option *ngIf="tag.id != selectedTag?.id"
+        <option
+          *ngIf="tag.id != selectedTag?.id"
           [ngValue]="tag.id"
           style="background: #111113; color: rgba(255, 255, 255, 0.75)"
         >

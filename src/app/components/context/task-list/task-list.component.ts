@@ -166,9 +166,7 @@ export class TaskListComponent implements OnInit {
       return this.groupByFn(data, 'Date', true);
     }
 
-    if (routerData.entityType === EntityType.TAG_VIEW) {
-      return this.groupByFn(data, 'Tag', true);
-    }
+    
 
     if (groupBy !== 'None') {
       return this.groupByFn(data, groupBy);

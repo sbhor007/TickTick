@@ -1,13 +1,12 @@
 <div class="card h-screen">
   <p-splitter 
-    [panelSizes]="ui.detailPanelVisible() ? [25, 100] : [0, 100]"
-    [minSizes]="[0, 50]"
+    [panelSizes]="[25, 75]" 
+    [minSizes]="[15, 50]"
     styleClass="h-full"
     class="w-full h-full"
   >
     <ng-template pTemplate="panel">
-      <div class="h-full p-2 overflow-y-auto"
-           [class.hidden]="!ui.detailPanelVisible()">
+      <div class="flex justify-center h-full p-2 overflow-y-auto">
         <app-list-action class="w-full"></app-list-action>
       </div>
     </ng-template>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SplitterModule } from 'primeng/splitter';
 import { ListActionComponent } from '../../../components/list/list-action/list-action.component';
@@ -15,5 +15,18 @@ import { UiStateService } from '../../../services/ui-state.service';
 })
 export class ListActionPageComponent  {
   ui = inject(UiStateService);
+  splitterSizes = computed(() =>
+  this.ui.detailPanelVisible() ? [25, 75] : [0, 100]
+);
+
+// force p-splitter DOM update
+splitterKey = computed(() =>
+  this.ui.detailPanelVisible() ? 'show' : 'hide'
+);
+
+panelSizes = computed(() =>
+  this.ui.detailPanelVisible() ? [25, 75] : [0, 100]
+);
+
 
 }

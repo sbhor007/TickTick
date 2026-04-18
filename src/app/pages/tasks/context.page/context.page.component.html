@@ -1,10 +1,5 @@
 <div class="h-screen overflow-hidden">
-  <p-splitter
-    [panelSizes]="ui.detailPanelVisible() ? [50, 50] : [100, 0]"
-    [minSizes]="[50, 0]"
-    styleClass="h-full"
-    class="h-full"
-  >
+  <p-splitter class="h-full">
     <ng-template #panel>
       <div class="flex flex-col w-full h-full px-6 py-4 overflow-y-auto">
 
