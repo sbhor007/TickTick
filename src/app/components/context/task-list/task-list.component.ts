@@ -561,6 +561,15 @@ export class TaskListComponent implements OnInit {
         this.selectedTask = task;
         this.toggleDateTime();
         break;
+      case 'convert_to_note':
+        case 'convert_to_Task':
+       if(event.entityType != EntityType.SUBTASK && !event.payload.subtask){
+         this.taskService.updateTask(event.entityId,{...event.payload, isNote: !event.payload.isNote})
+       }else{
+        console.log("not Allow");
+       }
+        
+        break
 
       case 'set_priority_high':
         this.updateTaskOrSubTask(event, { priority: TaskPriority.HIGH });
@@ -636,9 +645,6 @@ export class TaskListComponent implements OnInit {
         });
         break;
 
-      case 'convert_to_note':
-        // TODO: implement note conversion
-        break;
 
       case 'delete':
         this.trashService.addTrash({

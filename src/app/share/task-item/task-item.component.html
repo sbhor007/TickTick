@@ -4,44 +4,49 @@
 >
   <!-- Context Menu Popover -->
   <p-popover
-    #contextMenuPopover
-    [dismissable]="true"
-    [appendTo]="'body'"
-    styleClass="task-context-popover"
-  >
-    <div class="ctx-menu">
-      <!-- Date & Priority Sections -->
-      @for (section of menuSections; track section.action) {
-        <div class="ctx-section">
-          <span class="ctx-section-label">{{ section.label }}</span>
-          <div class="ctx-icon-grid">
-            @for (child of section.items; track child.action) {
-              <button
-                class="ctx-icon-btn"
-                [title]="child.label"
-                (click)="onSectionItemClick(section.action, child.action)"
-              >
-                @if (child.color) {
-                  <i [class]="child.icon" [style.color]="child.color"></i>
-                } @else {
-                  <i [class]="child.icon"></i>
-                }
-              </button>
-            }
-          </div>
+  #contextMenuPopover
+  [dismissable]="true"
+  [appendTo]="'body'"
+  styleClass="task-context-popover"
+>
+  <div class="ctx-menu">
+    <!-- Date & Priority Sections -->
+    @for (section of menuSections; track section.action) {
+      <div class="ctx-section">
+        <span class="ctx-section-label">{{ section.label }}</span>
+        <div class="ctx-icon-grid">
+          @for (child of section.items; track child.action) {
+            <button
+              class="ctx-icon-btn"
+              [title]="child.label"
+              (click)="onSectionItemClick(section.action, child.action)"
+            >
+              @if (child.color) {
+                <i [class]="child.icon" [style.color]="child.color"></i>
+              } @else {
+                <i [class]="child.icon"></i>
+              }
+            </button>
+          }
         </div>
-      }
+      </div>
+    }
 
-      <!-- Regular Menu Items -->
-      @for (item of menuRegularItems; track item.action) {
-        @if (item.isDivider) {
-          <div class="ctx-divider"></div>
-        } @else if (item.label === "Move to") {
-          <!-- Move To Button -->
+    <!-- Regular Menu Items -->
+    @for (item of menuRegularItems; track item.action) {
+      @if (item.isDivider) {
+        <div class="ctx-divider"></div>
+      } @else if (item.label === "Move to") {
+
+        <!-- Move To Button -->
+        <div
+          class="relative"
+          (mouseenter)="showMoveTo = true"
+          (mouseleave)="showMoveTo = false"
+        >
           <button
-            class="ctx-menu-item"
+            class="ctx-menu-item w-full"
             [class.ctx-danger]="item.isDanger"
-            (mouseenter)="moveToPopover.show($event)"
           >
             <span
               class="material-symbols-outlined ctx-item-icon"
@@ -53,26 +58,21 @@
             <i class="pi pi-angle-right ctx-submenu-arrow"></i>
           </button>
 
-          <p-popover
-            #moveToPopover
-            [dismissable]="true"
-            [appendTo]="'body'"
-            styleClass="task-context-popover"
-          >
-            <div class="w-[200px] py-1 bg-[#1c1c1e]">
+          <!-- 2nd level submenu -->
+          @if (showMoveTo) {
+            <div
+              class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[60] border border-gray-700"
+              (mouseenter)="showMoveTo = true"
+              (mouseleave)="showMoveTo = false"
+            >
               @for (fp of folderProject(); track fp.id) {
                 <div
                   class="relative"
                   (mouseenter)="onFolderHover(fp.id)"
                   (mouseleave)="onFolderLeave()"
                 >
-                  <!-- Folder / Project Button -->
-                  <button
-                    class="ctx-menu-item w-full flex justify-between items-center"
-                  >
-                    @if (
-                      fp.entityType === "FOLDER" && fp.projects?.length > 0
-                    ) {
+                  <button class="ctx-menu-item w-full flex justify-between items-center">
+                    @if (fp.entityType === "FOLDER" && fp.projects?.length > 0) {
                       <i class="pi pi-folder"></i>
                       <span class="flex-1">{{ fp.name }}</span>
                       <i class="pi pi-angle-right"></i>
@@ -80,7 +80,7 @@
                       <i class="pi pi-align-justify"></i>
                       <span
                         class="flex-1"
-                        (click)="moveTO(fp, item.action); moveToPopover.hide()"
+                        (click)="moveTO(fp, item.action); showMoveTo = false"
                       >
                         {{ fp.name }}
                       </span>
@@ -90,14 +90,12 @@
                   <!-- 3rd level submenu -->
                   @if (hoveredFolderId === fp.id && fp.projects?.length) {
                     <div
-                      class="absolute left-full top-0 ml-2 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[60] border border-gray-700"
+                      class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[70] border border-gray-700"
                     >
                       @for (project of fp.projects; track project.id) {
                         <button
                           class="ctx-menu-item w-full text-left"
-                          (click)="
-                            moveTO(project, item.action); moveToPopover.hide()
-                          "
+                          (click)="moveTO(project, item.action); showMoveTo = false"
                         >
                           <i class="pi pi-align-justify"></i>
                           <span>{{ project.name }}</span>
@@ -108,28 +106,30 @@
                 </div>
               }
             </div>
-          </p-popover>
-        } @else {
-          <button
-            class="ctx-menu-item"
-            [class.ctx-danger]="item.isDanger"
-            (click)="onRegularItemClick(item)"
+          }
+        </div>
+
+      } @else {
+        <button
+          class="ctx-menu-item"
+          [class.ctx-danger]="item.isDanger"
+          (click)="onRegularItemClick(item)"
+        >
+          <span
+            class="material-symbols-outlined ctx-item-icon"
+            [class.ctx-danger-icon]="item.isDanger"
           >
-            <span
-              class="material-symbols-outlined ctx-item-icon"
-              [class.ctx-danger-icon]="item.isDanger"
-            >
-              {{ item.icon }}
-            </span>
-            <span class="ctx-item-label">{{ item.label }}</span>
-            @if (item.hasSubmenu) {
-              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
-            }
-          </button>
-        }
+            {{ item.icon }}
+          </span>
+          <span class="ctx-item-label">{{ item.label }}</span>
+          @if (item.hasSubmenu) {
+            <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+          }
+        </button>
       }
-    </div>
-  </p-popover>
+    }
+  </div>
+</p-popover>
 
   <!-- Subtask toggle slot (projected from parent) -->
   <ng-content select="[subtaskToggle]" />
@@ -137,17 +137,21 @@
   <!-- Left: Checkbox + Title -->
   <div class="flex items-center gap-2 flex-1 min-w-0">
     <label class="relative flex items-center cursor-pointer">
-      @if (task.status != "WONT_DO") {
-        <input
-          type="checkbox"
-          [formControl]="isCompleted"
-          [class]="getCheckboxClass(task.priority)"
-        />
-      } @else {
-        <i
-          class="pi pi-ban text-gray-400/50"
-          (click)="updateTaskOrSubTaskStatus(task)"
-        ></i>
+      @if (!task.isNote) {
+        @if (task.status != "WONT_DO") {
+          <input
+            type="checkbox"
+            [formControl]="isCompleted"
+            [class]="getCheckboxClass(task.priority)"
+          />
+        } @else {
+          <i
+            class="pi pi-ban text-gray-400/50"
+            (click)="updateTaskOrSubTaskStatus(task)"
+          ></i>
+        }
+      }@else {
+        <i class="pi pi-book text-gray-400/50"></i>
       }
       @if (isCompleted.value) {
         <span
@@ -238,33 +242,37 @@
 
       <!-- Due Date -->
       <!-- @ViewChild('dateTimePopover') dateTimePopover!: any; -->
-     <!-- Due Date -->
-@if (task.dueDate) {
-  <span
-    (click)="toggleDateTime($event)"
-    class="text-[11px] font-medium whitespace-nowrap px-3 py-1 rounded-md transition-all cursor-pointer hover:bg-gray-700/50"
-    [class]="isCompleted.value ? 'text-gray-600 line-through' : getDueDateColor(task.dueDate)"
-  >
-    {{ task.dueDate | shortDate }}
-  </span>
-} 
+      <!-- Due Date -->
+      @if (task.dueDate) {
+        <span
+          (click)="toggleDateTime($event)"
+          class="text-[11px] font-medium whitespace-nowrap px-3 py-1 rounded-md transition-all cursor-pointer hover:bg-gray-700/50"
+          [class]="
+            isCompleted.value
+              ? 'text-gray-600 line-through'
+              : getDueDateColor(task.dueDate)
+          "
+        >
+          {{ task.dueDate | shortDate }}
+        </span>
+      }
 
-<!-- Date Time Picker Popover -->
-<p-popover
-  #dateTimePopover
-  [dismissable]="true"
-  [appendTo]="'body'"
-  styleClass="date-time-popover"
-  (onHide)="isDateTimePikerVisible = false"
->
-  <app-date-time-picker
-    [initialDate]="initialDate()"
-    [initialTime]="initialTime()"
-    (confirmed)="handleDateTimeEvent($event); dateTimePopover.hide()"
-    (cleared)="dateTimePopover.hide()"
-    (closed)="dateTimePopover.hide()"
-  />
-</p-popover>
+      <!-- Date Time Picker Popover -->
+      <p-popover
+        #dateTimePopover
+        [dismissable]="true"
+        [appendTo]="'body'"
+        styleClass="date-time-popover"
+        (onHide)="isDateTimePikerVisible = false"
+      >
+        <app-date-time-picker
+          [initialDate]="initialDate()"
+          [initialTime]="initialTime()"
+          (confirmed)="handleDateTimeEvent($event); dateTimePopover.hide()"
+          (cleared)="dateTimePopover.hide()"
+          (closed)="dateTimePopover.hide()"
+        />
+      </p-popover>
       @if (task?.subtasks?.length > 0) {
         <i
           class="pi pi-list text-[11px]"

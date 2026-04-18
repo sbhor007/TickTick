@@ -1,6 +1,6 @@
 <div class="relative">
 <!-- Option/Context menu -->
- <p-popover
+<p-popover
   #contextMenuPopover
   [dismissable]="true"
   [appendTo]="'body'"
@@ -33,75 +33,79 @@
     @for (item of menuRegularItems; track item.action) {
       @if (item.isDivider) {
         <div class="ctx-divider"></div>
-      } 
+      }
       @else if (item.label === "Move to") {
         <!-- Move To Button -->
-        <button
-          class="ctx-menu-item"
-          [class.ctx-danger]="item.isDanger"
-          (mouseenter)="moveToPopover.show($event)"
+        <div
+          class="relative"
+          (mouseenter)="showMoveTo = true"
+          (mouseleave)="showMoveTo = false"
         >
-          <span
-            class="material-symbols-outlined ctx-item-icon"
-            [class.ctx-danger-icon]="item.isDanger"
+          <button
+            class="ctx-menu-item w-full"
+            [class.ctx-danger]="item.isDanger"
           >
-            {{ item.icon }}
-          </span>
-          <span class="ctx-item-label">{{ item.label }}</span>
-          <i class="pi pi-angle-right ctx-submenu-arrow"></i>
-        </button>
+            <span
+              class="material-symbols-outlined ctx-item-icon"
+              [class.ctx-danger-icon]="item.isDanger"
+            >
+              {{ item.icon }}
+            </span>
+            <span class="ctx-item-label">{{ item.label }}</span>
+            <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+          </button>
 
-        <!-- Nested Move To Popover (2nd level) -->
-        <p-popover
-          #moveToPopover
-          [dismissable]="true"
-          [appendTo]="'body'"
-          styleClass="task-context-popover"
-        >
-          <div class="w-[200px] py-1 bg-[#1c1c1e]">
-            @for (fp of folderProject(); track fp.id) {
-              <div
-                class="relative"
-                (mouseenter)="onFolderHover(fp.id)"
-                (mouseleave)="onFolderLeave()"
-              >
-                <button class="ctx-menu-item w-full flex justify-between items-center">
-                  @if (fp.entityType === "FOLDER" && fp.projects.length > 0) {
-                    <i class="pi pi-folder"></i>
-                    <span class="flex-1">{{ fp.name }}</span>
-                    <i class="pi pi-angle-right"></i>
-                  } @else if (fp.entityType === "PROJECT") {
-                    <i class="pi pi-align-justify"></i>
-                    <span 
-                      class="flex-1"
-                      (click)="assignToAnotherProject(fp, item.action); moveToPopover.hide()"
-                    >
-                      {{ fp.name }}
-                    </span>
-                  }
-                </button>
-
-                <!-- 3rd level: Projects inside Folder -->
-                @if (hoveredFolderId === fp.id && fp.projects?.length) {
-                  <div
-                    class="absolute left-full top-0 ml-2 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[60] border border-gray-700"
-                  >
-                    @for (project of fp.projects; track project.id) {
-                      <button
-                        class="ctx-menu-item w-full text-left"
-                        (click)="assignToAnotherProject(project, item.action); moveToPopover.hide()"
+          <!-- Submenu positioned to the right -->
+          @if (showMoveTo) {
+            <div
+              class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[60] border border-gray-700"
+              (mouseenter)="showMoveTo = true"
+              (mouseleave)="showMoveTo = false"
+            >
+              @for (fp of folderProject(); track fp.id) {
+                <div
+                  class="relative"
+                  (mouseenter)="onFolderHover(fp.id)"
+                  (mouseleave)="onFolderLeave()"
+                >
+                  <button class="ctx-menu-item w-full flex justify-between items-center">
+                    @if (fp.entityType === "FOLDER" && fp.projects.length > 0) {
+                      <i class="pi pi-folder"></i>
+                      <span class="flex-1">{{ fp.name }}</span>
+                      <i class="pi pi-angle-right"></i>
+                    } @else if (fp.entityType === "PROJECT") {
+                      <i class="pi pi-align-justify"></i>
+                      <span
+                        class="flex-1"
+                        (click)="assignToAnotherProject(fp, item.action); showMoveTo = false"
                       >
-                        <i class="pi pi-align-justify"></i>
-                        <span>{{ project.name }}</span>
-                      </button>
+                        {{ fp.name }}
+                      </span>
                     }
-                  </div>
-                }
-              </div>
-            }
-          </div>
-        </p-popover>
-      } 
+                  </button>
+
+                  <!-- 3rd level: Projects inside Folder -->
+                  @if (hoveredFolderId === fp.id && fp.projects?.length) {
+                    <div
+                      class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[70] border border-gray-700"
+                    >
+                      @for (project of fp.projects; track project.id) {
+                        <button
+                          class="ctx-menu-item w-full text-left"
+                          (click)="assignToAnotherProject(project, item.action); showMoveTo = false"
+                        >
+                          <i class="pi pi-align-justify"></i>
+                          <span>{{ project.name }}</span>
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
       @else {
         <button
           class="ctx-menu-item"

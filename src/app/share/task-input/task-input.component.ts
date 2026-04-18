@@ -77,6 +77,7 @@ export class TaskInputComponent implements OnInit {
   isExpanded = false;
   isDateTimePikerVisible = false;
   isTagSelectorVisible = false;
+  showMoveTo = false;
 
   /**date time piker */
   initialDate = signal<Date | null>(null);

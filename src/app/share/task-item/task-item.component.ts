@@ -98,6 +98,7 @@ export class TaskItemComponent implements OnChanges {
   initialDate = signal<Date | null>(null);
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
+  showMoveTo = false;
 
   /**move to */
   isVisibleFolderMenu = false;
@@ -208,7 +209,10 @@ export class TaskItemComponent implements OnChanges {
 
     const context = this.contextMenuService.getContextMenu(
       task.entityType,
-      task.isPinned,
+    task.isPinned,
+    false,
+    false,
+    task.isNote ?? false    
     );
 
     // Split into sections (Date/Priority) and regular items
@@ -351,7 +355,7 @@ export class TaskItemComponent implements OnChanges {
     this.isDateTimePikerVisible = false;
   }
 
-  toggleDateTime(event:Event) {
+  toggleDateTime(event: Event) {
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
     console.log(this.isDateTimePikerVisible);
     if (this.isDateTimePikerVisible) {

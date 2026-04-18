@@ -28,7 +28,8 @@
         class="flex items-center gap-3 flex-1 min-w-0 px-4 py-4 border-b border-gray-400/20"
       >
         <!-- Checkbox -->
-        <label class="relative flex items-center cursor-pointer flex-shrink-0">
+        @if(!task.isNote){
+          <label class="relative flex items-center cursor-pointer flex-shrink-0">
           <input
             type="checkbox"
             [formControl]="isCompleted"
@@ -51,6 +52,9 @@
             </span>
           }
         </label>
+        }@else {
+          <i class="pi pi-book text-gray-400/50"></i>
+        }
 
         <!-- Due Date -->
         <!-- Due Date Trigger -->

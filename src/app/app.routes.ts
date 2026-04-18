@@ -10,6 +10,11 @@ import { SummaryComponent } from './components/summary/summary.component';
 
 export const routes: Routes = [
   {
+  path: '',
+  redirectTo: 'task',
+  pathMatch: 'full'
+},
+  {
     path: '',
     component: NavigationComponent,
     children: [

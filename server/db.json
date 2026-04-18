@@ -470,7 +470,7 @@
       "description": "",
       "status": "PENDING",
       "priority": "NONE",
-      "isPinned": true,
+      "isPinned": false,
       "parentId": null,
       "subtasks": [],
       "tags": [],
@@ -479,8 +479,9 @@
       "entityType": "TASK",
       "dueDate": null,
       "createdAt": "2026-04-17T06:07:23.355Z",
-      "updatedAt": "2026-04-17T15:41:39.206Z",
-      "completedAt": null
+      "updatedAt": "2026-04-18T04:03:15.309Z",
+      "completedAt": null,
+      "isNote": false
     },
     {
       "id": "f908ec3d-a001-4910-b5c3-14941f91bbb7",
@@ -561,10 +562,10 @@
       "comments": [],
       "attachmentId": null,
       "entityType": "TASK",
-      "isNote": false,
+      "isNote": true,
       "dueDate": null,
       "createdAt": "2026-04-18T03:13:14.185Z",
-      "updatedAt": "2026-04-18T03:13:14.185Z",
+      "updatedAt": "2026-04-18T04:13:50.130Z",
       "completedAt": null
     }
   ],
