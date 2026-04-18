@@ -88,6 +88,7 @@ export class TaskInputComponent implements OnInit {
 
   @ViewChild('contextMenuPopover') contextMenuPopover!: Popover;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('dateTimePopover') dateTimePopover!: any;
   contextMenu: MenuItem[] = [];
 
   // Structured context menu data
@@ -215,6 +216,13 @@ export class TaskInputComponent implements OnInit {
     console.log('Toggele Date time piker...');
 
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
+    if (this.isDateTimePikerVisible) {
+      setTimeout(() => {
+        this.dateTimePopover?.show(event);
+      }, 10);
+    } else {
+      this.dateTimePopover?.hide();
+    }
   }
 
   clearDateTime(): void {

@@ -35,6 +35,7 @@ import { DateTimeSelection } from '../../../models/date';
 
 import { Tag } from '../../../models/tag';
 import { TagsService } from '../../../config/tags.service';
+import { Popover } from "primeng/popover";
 // import { DropdownModule } from 'primeng/dropdown';
 // import { AutoCompleteModule } from 'primeng/autocomplete';
 @Component({
@@ -46,7 +47,8 @@ import { TagsService } from '../../../config/tags.service';
     ShortDatePipe,
     TagSelectorComponent,
     DateTimePickerComponent,
-  ],
+    Popover
+],
   templateUrl: './task-list.component.html',
 })
 export class TaskListComponent implements OnInit {
@@ -69,6 +71,7 @@ export class TaskListComponent implements OnInit {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
   selectedTask: Task | null = null;
+  
 
   // @Input() sortGroupData: any = { groupBy: 'none', sortBy: 'Title' };
 
@@ -147,17 +150,20 @@ export class TaskListComponent implements OnInit {
         .filter((t) => t.projectId === routerData.id);
     } else if (routerData.entityType === EntityType.TRASHED) {
       const trash = this.trashService.allTrash$();
-      // Trash handles its own structure, filter parentId there too
       data = trash.filter((t) => !t.parentId);
+    } else if (routerData.entityType === EntityType.COMPLETED) {
+      data = this.taskService.allTasks$().filter((t) => t.status === 'COMPLETED');
     }
 
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
 
+    if (routerData.entityType === EntityType.COMPLETED) {
+      return this.groupByFn(data, 'Date', true);
+    }
+
     if (groupBy !== 'None') {
       return this.groupByFn(data, groupBy);
     }
-
-    // Helper flags (inline — no need for separate methods)
 
     const hasPinnedContent = (t: Task) =>
       (t.isPinned || t.subtasks?.some((st) => st.isPinned)) && !isCompleted(t);
@@ -166,29 +172,27 @@ export class TaskListComponent implements OnInit {
       t.status === TaskStatus.COMPLETED ||
       (!!t.subtasks?.length &&
         t.subtasks.every((st) => st.status === TaskStatus.COMPLETED));
+
     return [
       {
         key: 'pinned',
         label: 'Pinned',
-        // Task itself is pinned OR any subtask is pinned
         tasks: data.filter((t) => hasPinnedContent(t)),
       },
       {
         key: 'unpinned',
         label: 'Tasks',
-        // Not pinned (neither task nor subtasks) AND not completed
         tasks: data.filter((t) => !hasPinnedContent(t) && !isCompleted(t)),
       },
       {
         key: 'completed',
         label: 'Completed',
-        // Task itself completed OR all subtasks completed
         tasks: data.filter((t) => isCompleted(t)),
       },
     ];
   });
 
-  /**sort by */
+  /** sort by */
   sortBy(a: any, b: any, sortType: string): number {
     switch (sortType) {
       case 'Title':
@@ -220,7 +224,7 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  /**get pinned task with subtasks */
+  /** get pinned tasks with subtasks */
   getPinnedTasks = (tasks: any[], result: any[] = []): any[] => {
     for (const task of tasks) {
       if (
@@ -236,7 +240,8 @@ export class TaskListComponent implements OnInit {
     }
     return result;
   };
-  /**get Completed tasks */
+
+  /** get completed tasks */
   getCompletedTasks(tasks: any[]): any[] {
     return tasks.flatMap((task) => {
       const current =
@@ -252,7 +257,8 @@ export class TaskListComponent implements OnInit {
       return [...current, ...children];
     });
   }
-  /**task that does not completed and pinned */
+
+  /** tasks that are not completed and not pinned */
   getRestTasks(tasks: any[]): any[] {
     return tasks.flatMap((task) => {
       const current =
@@ -271,14 +277,41 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  groupByFn(data: any[], groupBy: string) {
+  groupByFn(data: any[], groupBy: string, isCompletedView = false) {
     const groups = new Map<string, any[]>();
+
+    // Completed view: bypass pinned/rest/completed split,
+    // group all tasks directly by their completion date
+    if (isCompletedView) {
+      data.forEach((t) => {
+        const key = this.getCompletedDateGroup(
+          t.updatedAt ?? t.completedAt ?? t.dueDate
+        );
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key)!.push(t);
+      });
+
+      const completedDateOrder = [
+        'Today',
+        'Yesterday',
+        'This Week',
+        'Last Week',
+        'This Month',
+        'Older',
+      ];
+
+      return Array.from(groups.entries())
+        .sort(
+          ([a], [b]) =>
+            completedDateOrder.indexOf(a) - completedDateOrder.indexOf(b)
+        )
+        .map(([key, tasks]) => ({ key, label: key, tasks }));
+    }
+
     const pinned = this.getPinnedTasks(data);
     const completed = this.getCompletedTasks(data);
-
     const rest = this.getRestTasks(data);
 
-    // debugger;
     console.log('Group By::', groupBy);
 
     rest.forEach((t) => {
@@ -297,11 +330,9 @@ export class TaskListComponent implements OnInit {
           key = t.assignee ?? 'Unassigned';
           break;
         case 'Tag':
-          // key = t.tags ?? 'No Tag';
           if (t.tags?.length) {
             t.tags.forEach((tag: Tag) => {
               const key = tag?.name ?? 'No Tag';
-
               if (!groups.has(key)) groups.set(key, []);
               groups.get(key)!.push(t);
             });
@@ -311,7 +342,6 @@ export class TaskListComponent implements OnInit {
             groups.get(key)!.push(t);
           }
           return;
-          break;
         default:
           key = 'Other';
       }
@@ -328,22 +358,16 @@ export class TaskListComponent implements OnInit {
       'No Due Date',
     ];
 
-    // const sortedGroups =
-    //   groupBy === 'Date'
-    //     ? Array.from(groups.entries()).sort(
-    //         ([a], [b]) => dateOrder.indexOf(a) - dateOrder.indexOf(b),
-    //       )
-    //     : Array.from(groups.entries());
     const sortedGroups =
-  groupBy === 'Date'
-    ? Array.from(groups.entries()).sort(
-        ([a], [b]) => dateOrder.indexOf(a) - dateOrder.indexOf(b)
-      )
-    : Array.from(groups.entries()).sort(([a], [b]) => {
-        if (a === 'No Tag') return 1;
-        if (b === 'No Tag') return -1;
-        return a.localeCompare(b);
-      });
+      groupBy === 'Date'
+        ? Array.from(groups.entries()).sort(
+            ([a], [b]) => dateOrder.indexOf(a) - dateOrder.indexOf(b)
+          )
+        : Array.from(groups.entries()).sort(([a], [b]) => {
+            if (a === 'No Tag') return 1;
+            if (b === 'No Tag') return -1;
+            return a.localeCompare(b);
+          });
 
     const result = [];
 
@@ -352,7 +376,7 @@ export class TaskListComponent implements OnInit {
     }
 
     result.push(
-      ...sortedGroups.map(([key, tasks]) => ({ key, label: key, tasks })),
+      ...sortedGroups.map(([key, tasks]) => ({ key, label: key, tasks }))
     );
 
     if (completed.length > 0) {
@@ -370,7 +394,7 @@ export class TaskListComponent implements OnInit {
     const due = new Date(dueDate);
     due.setHours(0, 0, 0, 0);
     const diffDays = Math.round(
-      (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
     );
 
     if (diffDays < 0) return 'Overdue';
@@ -380,7 +404,27 @@ export class TaskListComponent implements OnInit {
     return 'Later';
   }
 
-  /**compare due date */
+  getCompletedDateGroup(date: any): string {
+    if (!date) return 'Older';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const completed = new Date(date);
+    completed.setHours(0, 0, 0, 0);
+
+    const diffDays = Math.round(
+      (today.getTime() - completed.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diffDays === 0) return 'Today';
+    if (diffDays === 1) return 'Yesterday';
+    if (diffDays <= 7) return 'This Week';
+    if (diffDays <= 14) return 'Last Week';
+    if (diffDays <= 30) return 'This Month';
+    return 'Older';
+  }
+
+  /** compare due date */
   isToday(dueDate: any): boolean {
     if (!dueDate) return false;
     const today = new Date();
@@ -404,14 +448,15 @@ export class TaskListComponent implements OnInit {
     if (!dueDate) return false;
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0); // start from tomorrow
+    tomorrow.setHours(0, 0, 0, 0);
     const next7Days = new Date();
     next7Days.setDate(next7Days.getDate() + 7);
     next7Days.setHours(23, 59, 59, 999);
     const due = new Date(dueDate);
     return due >= tomorrow && due <= next7Days;
   }
-  /**priority color */
+
+  /** priority color */
   getCheckboxClass(priority: TaskPriority): string {
     switch (priority) {
       case TaskPriority.HIGH:
@@ -425,7 +470,7 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  /**due date color */
+  /** due date color */
   getDueDateColor(dueDate: any): string {
     if (!dueDate) return 'text-gray-500';
     const today = new Date();
@@ -434,7 +479,8 @@ export class TaskListComponent implements OnInit {
     due.setHours(0, 0, 0, 0);
     return due < today ? 'text-red-400' : 'text-blue-400';
   }
-  /**get router data */
+
+  /** get router data */
   private loadRouteData(): void {
     const route = this.routeData();
     if (!route) return;
@@ -449,17 +495,6 @@ export class TaskListComponent implements OnInit {
         this.entityData.set(project);
       });
     }
-  }
-
-  loadDataByFolder(folder: Folder) {
-    return this.projectService
-      .projects$()
-      .filter((project) => project.folderId === folder.id)
-      .flatMap((project) =>
-        this.taskService
-          .allTasks$()
-          .filter((task) => task.projectId === project.id),
-      );
   }
 
   /**Toggle option */
@@ -512,8 +547,8 @@ export class TaskListComponent implements OnInit {
         });
         break;
       case 'set_date_custom':
-        this.x = event.clientX;
-        this.y = event.clientY;
+        this.x = event.clientX + 12;
+        this.y = event.clientY + 12;
         this.selectedTask = task;
         this.toggleDateTime();
         break;

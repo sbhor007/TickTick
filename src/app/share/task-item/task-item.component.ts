@@ -124,6 +124,7 @@ export class TaskItemComponent implements OnChanges {
   activePriority: string | null = null;
 
   @ViewChild('contextMenuPopover') contextMenuPopover!: Popover;
+  @ViewChild('dateTimePopover') dateTimePopover!: any;
   contextMenu: MenuItem[] = [];
 
   // Structured context menu data
@@ -350,22 +351,31 @@ export class TaskItemComponent implements OnChanges {
     this.isDateTimePikerVisible = false;
   }
 
-  toggleDateTime() {
+  toggleDateTime(event:Event) {
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
     console.log(this.isDateTimePikerVisible);
+    if (this.isDateTimePikerVisible) {
+      setTimeout(() => {
+        this.dateTimePopover?.show(event);
+      }, 10);
+    } else {
+      this.dateTimePopover?.hide();
+    }
   }
 
-  updateTaskOrSubTaskStatus(task:Task){
-    if(task.entityType == EntityType.TASK){
-      this.taskService.updateTask(task.id,{
-        ...task,status:TaskStatus.PENDING,
+  updateTaskOrSubTaskStatus(task: Task) {
+    if (task.entityType == EntityType.TASK) {
+      this.taskService.updateTask(task.id, {
+        ...task,
+        status: TaskStatus.PENDING,
         updatedAt: new Date().toISOString(),
-      })
-    }else if(task.entityType == EntityType.SUBTASK){
-      this.taskService.updateSubTask(task.parentId ?? '',task.id,{
-        ...task,status:TaskStatus.PENDING,
+      });
+    } else if (task.entityType == EntityType.SUBTASK) {
+      this.taskService.updateSubTask(task.parentId ?? '', task.id, {
+        ...task,
+        status: TaskStatus.PENDING,
         updatedAt: new Date().toISOString(),
-      })
+      });
     }
   }
 }

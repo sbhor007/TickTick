@@ -364,6 +364,8 @@ export class ContextMenuBarService {
         color: '#6b7280',
       },
     ],
+    [EntityType.COMPLETED]:[],
+    [EntityType.COMMENT]:[]
   };
   getContextMenu(
     type: EntityType,

@@ -2,6 +2,7 @@ import {
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
   Injector,
   OnInit,
@@ -21,7 +22,7 @@ import { ContextMenuBarService } from '../../config/context-menu-bar.service';
 import { ContextMenuItem } from '../../models/context-menu-item';
 import { Popover } from 'primeng/popover';
 import { MenuItem } from 'primeng/api';
-import { debounceTime } from 'rxjs';
+import { debounceTime, tap } from 'rxjs';
 import { TrashService } from '../../services/trash.service';
 import { TaskItemComponent } from '../../share/task-item/task-item.component';
 import { AttachmentService } from '../../services/attachment.service';
@@ -30,7 +31,11 @@ import { DateTimePickerComponent } from '../../share/date-time-picker/date-time-
 import { DateTimeSelection } from '../../models/date';
 import { TagsService } from '../../config/tags.service';
 import { Tag } from '../../models/tag';
-import { TagSelectorComponent } from "../../share/tag-selector/tag-selector.component";
+import { TagSelectorComponent } from '../../share/tag-selector/tag-selector.component';
+import { PickerComponent } from '@ctrl/ngx-emoji-mart';
+import { CommentService } from '../../services/comment.service';
+import { TimeAgoPipe } from '../../pipe/time-ago.pipe';
+import { TaskComment } from '../../models/task-comment';
 
 @Component({
   selector: 'app-task-details',
@@ -44,8 +49,10 @@ import { TagSelectorComponent } from "../../share/tag-selector/tag-selector.comp
     RouterLink,
     DateTimePickerComponent,
     FormsModule,
-    TagSelectorComponent
-],
+    TagSelectorComponent,
+    PickerComponent,
+    TimeAgoPipe,
+  ],
   templateUrl: './task-details.component.html',
   styles: ``,
 })
@@ -59,6 +66,7 @@ export class TaskDetailsComponent implements OnInit {
   private trashService = inject(TrashService);
   private tagService = inject(TagsService);
   private injector = inject(Injector);
+  private commentsService = inject(CommentService);
 
   entityType!: any;
   entityId!: any;
@@ -72,14 +80,18 @@ export class TaskDetailsComponent implements OnInit {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
 
-   isTagSelectorVisible = false;
+  @ViewChild('dateTimePopover') dateTimePopover!: any;
+
+  isTagSelectorVisible = false;
   selectedTask: Task | null = null;
   selectedTags: Tag[] = [];
 
   priorityOptions = Object.values(TaskPriority);
 
+  /**comments */
+  //  allComments = signal<TaskComment[]>([])
+
   constructor() {
-    // React to signal changes — keep task-details in sync with the shared signal
     effect(() => {
       const allTasks = this.taskService.allTasks$();
       if (!this.entityId) return;
@@ -96,6 +108,13 @@ export class TaskDetailsComponent implements OnInit {
             emitEvent: false,
           });
           this.priority.setValue(updated.priority, { emitEvent: false });
+          /* get comment data*/
+          const filtered = this.commentsService
+            .allComments$()
+            .filter((c) => c.taskId === this.task.id);
+          console.log(filtered);
+
+          this.allComments.update(() => filtered ?? []);
         }
       } else if (this.entityType === 'subtask') {
         const result = this.taskService.findSubTaskById(this.entityId);
@@ -111,9 +130,23 @@ export class TaskDetailsComponent implements OnInit {
             { emitEvent: false },
           );
           this.priority.setValue(result.subtask.priority, { emitEvent: false });
+          /**get comment data */
+          const filtered = this.commentsService
+            .allComments$()
+            .filter((c) => c.taskId === this.entityId);
+          this.allComments.update(() => filtered ?? []);
         }
       }
     });
+
+    // /**load comments */
+    // effect(() => {
+    //   const filtered = this.commentsService
+    //     .allComments$()
+    //     .filter((c) => c.taskId === this.task.id);
+
+    //   this.allComments.update(() => filtered ?? []);
+    // });
   }
 
   isCompleted = new FormControl<boolean>(false);
@@ -126,6 +159,7 @@ export class TaskDetailsComponent implements OnInit {
   priorityMenu: ContextMenuItem[] = [];
 
   ngOnInit() {
+    this.commentsService.loadAllComments();
     /**routing data */
     this.route.params.subscribe(({ entityType, id }) => {
       this.parentTask = null;
@@ -483,7 +517,7 @@ export class TaskDetailsComponent implements OnInit {
           });
         }
         break;
-        case 'add_tags_to_task':
+      case 'add_tags_to_task':
         this.isTagSelectorVisible = true;
         this.selectedTags = event.payload.tags;
         this.selectedTask = event.payload;
@@ -622,9 +656,16 @@ export class TaskDetailsComponent implements OnInit {
     this.isDateTimePikerVisible = false;
   }
 
-  toggleDateTime() {
+  toggleDateTime(event: Event) {
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
     console.log(this.isDateTimePikerVisible);
+    if (this.isDateTimePikerVisible) {
+      setTimeout(() => {
+        this.dateTimePopover?.show(event);
+      }, 10);
+    } else {
+      this.dateTimePopover?.hide();
+    }
   }
 
   /**tags */
@@ -689,34 +730,41 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   createAndSelectTag() {
-  const name = this.tagQuery().trim();
-  if (!name) return;
+    const name = this.tagQuery().trim();
+    if (!name) return;
 
-  this.tagService.createTags({ name });
+    this.tagService.createTags({ name });
 
-  const ref = effect(() => {
-    const tag = this.tagService.allTags$().find((t) => t.name === name);
-    if (!tag) return; // not yet loaded — wait for next signal update
+    const ref = effect(
+      () => {
+        const tag = this.tagService.allTags$().find((t) => t.name === name);
+        if (!tag) return; // not yet loaded — wait for next signal update
 
-    const updatedTags = this.task.tags ? [...this.task.tags, tag] : [tag];
+        const updatedTags = this.task.tags ? [...this.task.tags, tag] : [tag];
 
-    if (this.task.entityType === EntityType.TASK) {
-      this.taskService.updateTask(this.task.id, {
-        ...this.task,
-        tags: updatedTags,
-      });
-    } else if (this.task.entityType === EntityType.SUBTASK) {
-      this.taskService.updateSubTask(this.task.parentId ?? '', this.task.id, {
-        ...this.task,
-        tags: updatedTags,
-      });
-    }
+        if (this.task.entityType === EntityType.TASK) {
+          this.taskService.updateTask(this.task.id, {
+            ...this.task,
+            tags: updatedTags,
+          });
+        } else if (this.task.entityType === EntityType.SUBTASK) {
+          this.taskService.updateSubTask(
+            this.task.parentId ?? '',
+            this.task.id,
+            {
+              ...this.task,
+              tags: updatedTags,
+            },
+          );
+        }
 
-    ref.destroy(); 
-  }, { injector: this.injector });;
+        ref.destroy();
+      },
+      { injector: this.injector },
+    );
 
-  this.selectTag(name);
-}
+    this.selectTag(name);
+  }
 
   removeTag(index: number) {
     this.task.tags?.splice(index, 1);
@@ -735,7 +783,6 @@ export class TaskDetailsComponent implements OnInit {
       });
     }
   }
-
 
   /**tag selector for sub tasks */
   tagsSectorEventHandler(event: any) {
@@ -793,5 +840,154 @@ export class TaskDetailsComponent implements OnInit {
         break;
     }
   }
-}
 
+  @ViewChild('textarea') textareaRef!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('op') op!: Popover;
+
+  commentText = signal<string>(' ');
+  isCommentEditModeActive = false;
+
+  attachedFile = signal<{ name: string; file: File } | null>(null);
+  commentAttachmentId: string | null = null;
+  allComments = signal<TaskComment[]>([]);
+
+  addEmoji(event: { emoji: { native: string } }) {
+    const ta = this.textareaRef.nativeElement;
+    const start = ta.selectionStart ?? 0;
+    const end = ta.selectionEnd ?? 0;
+    const currentText = this.commentText();
+    const newText =
+      currentText.slice(0, start) + event.emoji.native + currentText.slice(end);
+    this.commentText.set(newText);
+
+    setTimeout(() => {
+      ta.selectionStart = ta.selectionEnd = start + event.emoji.native.length;
+      ta.focus();
+      this.op.hide();
+    }, 10);
+  }
+
+  onEnterPress(event: any) {
+    if (event.shiftKey) return;
+    event.preventDefault();
+    this.submitComment();
+  }
+
+  onFileSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.attachedFile.set({ name: file.name, file });
+  }
+
+  removeFile() {
+    this.attachedFile.set(null);
+  }
+
+  submitComment() {
+    const text = this.commentText().trim();
+
+    if (!text && !this.attachedFile()) return;
+
+    const file = this.attachedFile()?.file;
+    if (file) {
+      this.attachmentService.uploadAttachment(file).subscribe({
+        next: (attachmentId) => {
+          this.commentAttachmentId = attachmentId;
+
+          this.createComment();
+        },
+        error: (err) => {
+          console.error('Upload failed:', err);
+          this.createComment();
+        },
+      });
+    } else {
+      this.createComment();
+    }
+
+    console.log('✅ Comment Submitted');
+    console.log('Text:', text);
+    console.log('File:', this.attachedFile());
+
+    this.commentText.set('');
+    this.attachedFile.set(null);
+  }
+
+  createComment() {
+    if (this.commentAttachmentId) {
+      const url = this.attachmentService
+        .getAttachmentById(this.commentAttachmentId).pipe(
+          tap(data => console.log(data))
+        )
+        .subscribe((data) => data.url);
+      console.log('URL:',url);
+    }
+    const comment = {
+      id: crypto.randomUUID(),
+      name: this.commentText().trim(),
+      attachmentId: this.commentAttachmentId,
+      userId: null,
+      taskId: this.task.id,
+      entityType: EntityType.COMMENT,
+      updatedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+    };
+
+    this.commentsService.crateComment(comment);
+  }
+
+  wrapSelection(openChr: string, closeChr: string) {
+    const ta = this.textareaRef.nativeElement;
+    const start = ta.selectionStart ?? 0;
+    const end = ta.selectionEnd ?? 0;
+    const current = this.commentText();
+    const selected = current.slice(start, end);
+
+    const before = current.slice(start - openChr.length, start);
+    const after = current.slice(end, end + closeChr.length);
+    if (before === openChr && after === closeChr) {
+      const unwrapped =
+        current.slice(0, start - openChr.length) +
+        selected +
+        current.slice(end + closeChr.length);
+      this.commentText.set(unwrapped);
+      setTimeout(() => {
+        ta.selectionStart = start - openChr.length;
+        ta.selectionEnd = end - openChr.length;
+        ta.focus();
+      }, 0);
+      return;
+    }
+
+    const wrapped =
+      current.slice(0, start) +
+      openChr +
+      selected +
+      closeChr +
+      current.slice(end);
+    this.commentText.set(wrapped);
+
+    setTimeout(() => {
+      ta.selectionStart = start + openChr.length;
+      ta.selectionEnd = end + openChr.length;
+      ta.focus();
+    }, 0);
+  }
+
+  updateComment(event: any, c: TaskComment) {
+    const input = event.target as HTMLInputElement;
+    const newName = input.value.trim();
+
+    console.log('comment: ', newName);
+
+    const updated: TaskComment = { ...c, name: newName };
+    this.commentsService.updateComment(c.id, updated);
+    this.isCommentEditModeActive = !this.isCommentEditModeActive;
+  }
+
+  deleteComment(commentID: string) {
+    this.commentsService.deleteComment(commentID);
+  }
+}

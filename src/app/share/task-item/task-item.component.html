@@ -1,5 +1,5 @@
 <div
-(contextmenu)="openFolderMenu($event, task)"
+  (contextmenu)="openFolderMenu($event, task)"
   class="flex items-center gap-3 px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors group mb-0.5 w-full"
 >
   <!-- Context Menu Popover -->
@@ -37,76 +37,78 @@
         @if (item.isDivider) {
           <div class="ctx-divider"></div>
         } @else if (item.label === "Move to") {
-          <div class="relative">
-            <button
-              class="ctx-menu-item"
-              [class.ctx-danger]="item.isDanger"
-              (mouseenter)="onMouse($event)"
+          <!-- Move To Button -->
+          <button
+            class="ctx-menu-item"
+            [class.ctx-danger]="item.isDanger"
+            (mouseenter)="moveToPopover.show($event)"
+          >
+            <span
+              class="material-symbols-outlined ctx-item-icon"
+              [class.ctx-danger-icon]="item.isDanger"
             >
-              <span
-                class="material-symbols-outlined ctx-item-icon"
-                [class.ctx-danger-icon]="item.isDanger"
-              >
-                {{ item.icon }}
-              </span>
-              <span class="ctx-item-label">{{ item.label }}</span>
-              @if (item.hasSubmenu) {
-                <i class="pi pi-angle-right ctx-submenu-arrow"></i>
-              }
-            </button>
+              {{ item.icon }}
+            </span>
+            <span class="ctx-item-label">{{ item.label }}</span>
+            <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+          </button>
 
-            @if (isVisibleFolderMenu) {
-              <div
-                class="absolute left-full top-0 z-50 w-[180px] bg-[#1c1c1e] rounded-lg shadow-lg py-1"
-              >
-                @for (fp of folderProject(); track fp.id) {
-                  <div
-                    class="relative"
-                    (mouseenter)="onFolderHover(fp.id)"
-                    (mouseleave)="onFolderLeave()"
+          <p-popover
+            #moveToPopover
+            [dismissable]="true"
+            [appendTo]="'body'"
+            styleClass="task-context-popover"
+          >
+            <div class="w-[200px] py-1 bg-[#1c1c1e]">
+              @for (fp of folderProject(); track fp.id) {
+                <div
+                  class="relative"
+                  (mouseenter)="onFolderHover(fp.id)"
+                  (mouseleave)="onFolderLeave()"
+                >
+                  <!-- Folder / Project Button -->
+                  <button
+                    class="ctx-menu-item w-full flex justify-between items-center"
                   >
-                    <!-- Folder Button -->
-                    <button
-                      class="ctx-menu-item w-full flex justify-between items-center"
-                    >
-                      @if (fp.entityType === "FOLDER" && fp.projects.length > 0) {
-                        <!-- <div> -->
-                          <i class="pi pi-folder"></i>
-                        <span>{{ fp.name }}</span>
-                        <i class="pi pi-angle-right"></i>
-                        <!-- </div> -->
-                      } @else if(fp.entityType === "PROJECT") {
-                        <i class="pi pi-align-justify"></i>
-                        <span (click)="moveTO(fp,item.action)">{{ fp.name }}</span>
-                      }
-
-                    
-                      @if (fp.projects?.length) {
-                        
-                      }
-                    </button>
-
-                    <!--  Submenu -->
                     @if (
-                      hoveredFolderId === fp.id && fp.projects?.length
+                      fp.entityType === "FOLDER" && fp.projects?.length > 0
                     ) {
-                      <div
-                        class="absolute left-full top-0 ml-1 w-[180px] bg-[#1c1c1e] rounded-lg shadow-lg py-1"
+                      <i class="pi pi-folder"></i>
+                      <span class="flex-1">{{ fp.name }}</span>
+                      <i class="pi pi-angle-right"></i>
+                    } @else if (fp.entityType === "PROJECT") {
+                      <i class="pi pi-align-justify"></i>
+                      <span
+                        class="flex-1"
+                        (click)="moveTO(fp, item.action); moveToPopover.hide()"
                       >
-                        @for (project of fp.projects; track project.id) {
-                            <button
-                            (click)="moveTO(project,item.action)"
-                             class="ctx-menu-item w-full text-left">
-                            {{ project.name }}
-                          </button>
-                        }
-                      </div>
+                        {{ fp.name }}
+                      </span>
                     }
-                  </div>
-                }
-              </div>
-            }
-          </div>
+                  </button>
+
+                  <!-- 3rd level submenu -->
+                  @if (hoveredFolderId === fp.id && fp.projects?.length) {
+                    <div
+                      class="absolute left-full top-0 ml-2 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[60] border border-gray-700"
+                    >
+                      @for (project of fp.projects; track project.id) {
+                        <button
+                          class="ctx-menu-item w-full text-left"
+                          (click)="
+                            moveTO(project, item.action); moveToPopover.hide()
+                          "
+                        >
+                          <i class="pi pi-align-justify"></i>
+                          <span>{{ project.name }}</span>
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </p-popover>
         } @else {
           <button
             class="ctx-menu-item"
@@ -135,14 +137,17 @@
   <!-- Left: Checkbox + Title -->
   <div class="flex items-center gap-2 flex-1 min-w-0">
     <label class="relative flex items-center cursor-pointer">
-      @if(task.status != 'WONT_DO'){
+      @if (task.status != "WONT_DO") {
         <input
-        type="checkbox"
-        [formControl]="isCompleted"
-        [class]="getCheckboxClass(task.priority)"
-      />
-      }@else {
-        <i class="pi pi-ban text-gray-400/50" (click)="updateTaskOrSubTaskStatus(task)"></i>
+          type="checkbox"
+          [formControl]="isCompleted"
+          [class]="getCheckboxClass(task.priority)"
+        />
+      } @else {
+        <i
+          class="pi pi-ban text-gray-400/50"
+          (click)="updateTaskOrSubTaskStatus(task)"
+        ></i>
       }
       @if (isCompleted.value) {
         <span
@@ -202,7 +207,6 @@
       [class.text-gray-600]="isCompleted.value"
       [class.text-gray-500]="!isCompleted.value"
     >
-      
       @if (task.attachmentId) {
         <i
           class="pi pi-paperclip text-[11px]"
@@ -231,49 +235,44 @@
           tooltipPosition="top"
         ></i>
       }
-    
 
-    <!-- Due Date -->
-      @if (task.dueDate) {
-    <span
-    (click)="toggleDateTime()"    
-      class="text-[11px] font-medium whitespace-nowrap px-1.5 py-0.5 rounded transition-colors cursor-pointer"
-      [class]="
-        isCompleted.value ? 'text-gray-600' : getDueDateColor(task.dueDate)
-      "
-    >
-     
-        {{ task.dueDate | shortDate }}
-      
-      <!-- @else {
-        <i
-          class="pi pi-calendar text-[11px] opacity-0 group-hover:opacity-40 transition-opacity"
-        ></i>
-      } -->
-    </span>
-    } 
-    @if (isDateTimePikerVisible) {
-      
-        <div class="relative -left-56 w-0 h-0 bg-gray-200">
-          <div class="absolute top-0 -left-3 mt-2 z-50 w-full min-w-[300px]">
-            <app-date-time-picker
-              [initialDate]="initialDate()"
-              [initialTime]="initialTime()"
-              (confirmed)="handleDateTimeEvent($event)"
-              (cleared)="isDateTimePikerVisible = false"
-              (closed)="isDateTimePikerVisible = false"
-            />
-          </div>
-        </div>
-      }
-    @if (task?.subtasks?.length > 0) {
+      <!-- Due Date -->
+      <!-- @ViewChild('dateTimePopover') dateTimePopover!: any; -->
+     <!-- Due Date -->
+@if (task.dueDate) {
+  <span
+    (click)="toggleDateTime($event)"
+    class="text-[11px] font-medium whitespace-nowrap px-3 py-1 rounded-md transition-all cursor-pointer hover:bg-gray-700/50"
+    [class]="isCompleted.value ? 'text-gray-600 line-through' : getDueDateColor(task.dueDate)"
+  >
+    {{ task.dueDate | shortDate }}
+  </span>
+} 
+
+<!-- Date Time Picker Popover -->
+<p-popover
+  #dateTimePopover
+  [dismissable]="true"
+  [appendTo]="'body'"
+  styleClass="date-time-popover"
+  (onHide)="isDateTimePikerVisible = false"
+>
+  <app-date-time-picker
+    [initialDate]="initialDate()"
+    [initialTime]="initialTime()"
+    (confirmed)="handleDateTimeEvent($event); dateTimePopover.hide()"
+    (cleared)="dateTimePopover.hide()"
+    (closed)="dateTimePopover.hide()"
+  />
+</p-popover>
+      @if (task?.subtasks?.length > 0) {
         <i
           class="pi pi-list text-[11px]"
           pTooltip="Subtasks"
           tooltipPosition="top"
         ></i>
       }
-      </div>
+    </div>
 
     <!-- Ellipsis Button -->
     <button
