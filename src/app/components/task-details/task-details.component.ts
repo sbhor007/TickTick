@@ -864,11 +864,12 @@ export class TaskDetailsComponent implements OnInit {
   @ViewChild('op') op!: Popover;
 
   commentText = signal<string>(' ');
-  isCommentEditModeActive = false;
+  
 
   attachedFile = signal<{ name: string; file: File } | null>(null);
   commentAttachmentId: string | null = null;
   allComments = signal<TaskComment[]>([]);
+  editingCommentId: string | null = null;
 
   addEmoji(event: { emoji: { native: string } }) {
     const ta = this.textareaRef.nativeElement;
@@ -1002,7 +1003,7 @@ export class TaskDetailsComponent implements OnInit {
 
     const updated: TaskComment = { ...c, name: newName };
     this.commentsService.updateComment(c.id, updated);
-    this.isCommentEditModeActive = !this.isCommentEditModeActive;
+    this.editingCommentId = null;
   }
 
   deleteComment(commentID: string) {

@@ -36,6 +36,7 @@ import { DateTimeSelection } from '../../../models/date';
 import { Tag } from '../../../models/tag';
 import { TagsService } from '../../../config/tags.service';
 import { Popover } from "primeng/popover";
+import { filter } from 'rxjs';
 // import { DropdownModule } from 'primeng/dropdown';
 // import { AutoCompleteModule } from 'primeng/autocomplete';
 @Component({
@@ -153,12 +154,20 @@ export class TaskListComponent implements OnInit {
       data = trash.filter((t) => !t.parentId);
     } else if (routerData.entityType === EntityType.COMPLETED) {
       data = this.taskService.allTasks$().filter((t) => t.status === 'COMPLETED');
+    }else if(routerData.entityType === EntityType.TAG_VIEW){
+      data =  this.taskService.allTasks$().filter(t =>
+    t.tags?.some(tag => tag.name.toLowerCase().includes(routerData.id.toLowerCase()))
+  );
     }
 
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
 
     if (routerData.entityType === EntityType.COMPLETED) {
       return this.groupByFn(data, 'Date', true);
+    }
+
+    if (routerData.entityType === EntityType.TAG_VIEW) {
+      return this.groupByFn(data, 'Tag', true);
     }
 
     if (groupBy !== 'None') {

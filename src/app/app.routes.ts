@@ -106,6 +106,17 @@ export const routes: Routes = [
             ]
           },
           {
+            path: 'tags/:id',
+            component:ContextPageComponent,
+            data: { entityType: EntityType.TAG_VIEW },
+            children:[
+              {
+                path:':entityType/:id',
+                component: TaskDetailsComponent
+              }
+            ]
+          },
+          {
             path: 'SUMMARY/:id',
             component:SummaryComponent,
           },

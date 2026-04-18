@@ -215,13 +215,13 @@
 
 
   <!-- comment section -->
-  @if (allComments().length > 0) {
+  
     <div class="flex flex-col gap-2 w-full">
     <!-- list out comments -->
     <!-- comment-list.component.html -->
     <div class="px-4 py-1">
       @for (c of allComments(); track $index) {
-        <p> santosh {{c.attachmentURL}}</p>
+
         <div
           class="flex items-center gap-3 px-4 py-3 hover:bg-gray-500/10 rounded-xl mb-2 border border-transparent hover:border-gray-600/50 transition-all duration-200 group"
         >
@@ -236,17 +236,19 @@
 
           <!-- Middle: email top, name input bottom -->
           <div class="flex flex-col flex-1 min-w-0 gap-0.5">
-            <span class="text-xs text-gray-400 truncate">
+            <div class="flex gap-2">
+              <span class="text-xs text-gray-400 truncate ">
               santosh&#64;gmail.com
             </span>
+            <span class="text-xs text-gray-400 truncate">{{c.updatedAt | shortDate}}</span>
+            </div>
             <input
               type="text"
               [value]="c.name"
-              [disabled]="!isCommentEditModeActive"
+              [disabled]="editingCommentId !== c.id"
               (keydown.enter)="updateComment($event,c)"
               [class]="
-                isCommentEditModeActive
-                
+                editingCommentId == c.id                
                   ? 'bg-transparent text-sm text-gray-200 border-b border-indigo-500/60 outline-none py-0.5 w-full transition-colors duration-150 caret-indigo-400 animate-pulse-caret'
                   : 'bg-transparent text-sm text-gray-200 border-b border-transparent outline-none py-0.5 w-full transition-colors duration-150 caret-transparent'
               "
@@ -259,7 +261,7 @@
             class="flex items-center gap-1.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
           >
             <button
-            (click)="isCommentEditModeActive = !isCommentEditModeActive"
+            (click)="editingCommentId = c.id || null"
               class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-indigo-500/20 transition-colors duration-150"
             >
               <i
@@ -399,7 +401,7 @@
 </p-popover>
   </div>
   }
-    }
+    
 </div>
 
 @if (isTagSelectorVisible) {

@@ -533,6 +533,39 @@
       "createdAt": "2026-04-17T06:08:01.286Z",
       "updatedAt": "2026-04-18T02:00:02.910Z",
       "completedAt": null
+    },
+    {
+      "id": "d62516ea-23b1-4896-a27c-396091655339",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "new one",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [
+        {
+          "name": "tag-3",
+          "id": "ce3771f8-8ebb-4b9d-a444-3a05e4c490f5",
+          "parentId": null,
+          "entityType": "TAG",
+          "color": "",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-17T05:53:05.991Z",
+          "updatedAt": "2026-04-17T05:53:05.991Z"
+        }
+      ],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-18T03:13:14.185Z",
+      "updatedAt": "2026-04-18T03:13:14.185Z",
+      "completedAt": null
     }
   ],
   "tags": [
@@ -542,10 +575,23 @@
       "parentId": null,
       "entityType": "TAG",
       "color": "",
-      "childTag": [],
+      "childTag": [
+        {
+          "name": "hello",
+          "color": "",
+          "parentId": "ce3771f8-8ebb-4b9d-a444-3a05e4c490f5",
+          "entityType": "CHILD_TAG",
+          "id": "59265fcf-2dac-4d69-84de-523357247c43",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-18T03:19:52.667Z",
+          "updatedAt": "2026-04-18T03:19:52.667Z"
+        }
+      ],
       "isPinned": false,
       "createdAt": "2026-04-17T05:53:05.991Z",
-      "updatedAt": "2026-04-17T05:53:05.991Z"
+      "updatedAt": "2026-04-18T03:25:53.288Z",
+      "isShared": true
     },
     {
       "name": "tag-4",
@@ -556,8 +602,8 @@
       "childTag": [],
       "isPinned": false,
       "createdAt": "2026-04-17T05:53:20.367Z",
-      "updatedAt": "2026-04-17T11:37:05.771Z",
-      "isShared": false
+      "updatedAt": "2026-04-18T03:25:43.796Z",
+      "isShared": true
     },
     {
       "name": "tag-5",
@@ -568,7 +614,8 @@
       "childTag": [],
       "isPinned": false,
       "createdAt": "2026-04-17T05:53:44.209Z",
-      "updatedAt": "2026-04-17T05:53:44.209Z"
+      "updatedAt": "2026-04-18T03:25:50.522Z",
+      "isShared": true
     },
     {
       "name": "new",
@@ -673,12 +720,12 @@
     },
     {
       "id": "5ae0745c-f263-4b50-9615-32d328c1535d",
-      "name": "dsd",
+      "name": "dsd4",
       "attachmentId": null,
       "userId": null,
       "taskId": "4a3af2c1-e9f6-41be-bd28-d3b107e198ad",
       "entityType": "COMMENT",
-      "updatedAt": "2026-04-18T02:27:04.487Z",
+      "updatedAt": "2026-04-18T03:01:02.372Z",
       "createdAt": "2026-04-18T02:27:04.487Z"
     },
     {

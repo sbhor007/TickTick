@@ -365,7 +365,8 @@ export class ContextMenuBarService {
       },
     ],
     [EntityType.COMPLETED]:[],
-    [EntityType.COMMENT]:[]
+    [EntityType.COMMENT]:[],
+    [EntityType.TAG_VIEW]:[]
   };
   getContextMenu(
     type: EntityType,
@@ -403,7 +404,7 @@ export class ContextMenuBarService {
     }
 
     //share and unshare tag
-    if ([EntityType.TAG, EntityType.CHILD_TAG].includes(type)) {
+    if ([EntityType.TAG].includes(type)) {
       const sharedItem: ContextMenuItem = isShared
         ? {
             label: 'Move to Personal Tags',

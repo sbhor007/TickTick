@@ -16,6 +16,7 @@ import { ContextMenuBarService } from '../../../config/context-menu-bar.service'
 import { DialogModule } from 'primeng/dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 interface TreeNode {
   label: string;
   icon: string;
@@ -25,7 +26,14 @@ interface TreeNode {
 
 @Component({
   selector: 'app-tags',
-  imports: [TagInputComponent, Menu, CommonModule, FormsModule, DialogModule],
+  imports: [
+    TagInputComponent,
+    Menu,
+    CommonModule,
+    FormsModule,
+    DialogModule,
+    RouterLink,
+  ],
   templateUrl: './tags.component.html',
 })
 export class TagsComponent implements OnInit {
@@ -33,6 +41,9 @@ export class TagsComponent implements OnInit {
   private tagsService = inject(TagsService);
 
   isExpanded = true;
+
+  isSharedExpanded = true;
+
   isTagInputOpen = false;
   mode: 'create' | 'update' | 'create_subtag' | 'update_subtag' = 'create';
   selectedTag: any = null;
@@ -40,11 +51,15 @@ export class TagsComponent implements OnInit {
   // ✅ tracks which tag rows are expanded
   expandedTags = new Set<string>();
 
-  tags = computed(() =>{
-    const notShared = this.tagsService.allTags$().filter(t => !t.isShared)
-    const shared = this.tagsService.allTags$().filter(t => t.isShared)
-    return [...notShared,...shared]
-  });
+  tags = computed(() => this.tagsService.allTags$());
+
+  notSharedTags = computed(() =>
+    this.tagsService.allTags$().filter((t) => !t.isShared),
+  );
+
+  sharedTags = computed(() =>
+    this.tagsService.allTags$().filter((t) => t.isShared),
+  );
   /**Context menu*/
   @ViewChild('contextMenuOptions') contextMenuOptions!: Menu;
   contextMenu: MenuItem[] = [];
@@ -120,7 +135,7 @@ export class TagsComponent implements OnInit {
 
   /**Handle context menu actions */
   handleAction(tag: any, action: string, event: any) {
-      // $&('actions event for tags : ', event);
+    // $&('actions event for tags : ', event);
 
     if (tag.entityType === EntityType.TAG) {
       // handle tags context menu actions
@@ -137,11 +152,11 @@ export class TagsComponent implements OnInit {
           break;
         case 'pin':
           this.updateTag({ ...tag, isPinned: !tag.isPinned });
-            // $&('Tag Pinned....');
+          // $&('Tag Pinned....');
           break;
         case 'unpin':
           this.updateTag({ ...tag, isPinned: !tag.isPinned });
-            // $&('Tag unpinned....');
+          // $&('Tag unpinned....');
           break;
 
         case 'mergeTags':
@@ -150,7 +165,7 @@ export class TagsComponent implements OnInit {
           break;
         case 'shareUnshareTag':
           this.updateTag({ ...tag, isShared: !tag.isShared });
-            // $&('Tag Share to....');
+          // $&('Tag Share to....');
           break;
         case 'delete':
           this.tagsService.deleteTag(tag.id);
@@ -166,25 +181,31 @@ export class TagsComponent implements OnInit {
 
           break;
         case 'pin':
-          this.selectedTag = tag
-          if(this.selectedTag?.parentId != null){
-              // $&("----------------");
-            
-            this.tagsService.updateSubTag(this.selectedTag.parentId, this.selectedTag.id,{...this.selectedTag, isPinned:!this.selectedTag.isPinned
-          })
+          this.selectedTag = tag;
+          if (this.selectedTag?.parentId != null) {
+            // $&("----------------");
+
+            this.tagsService.updateSubTag(
+              this.selectedTag.parentId,
+              this.selectedTag.id,
+              { ...this.selectedTag, isPinned: !this.selectedTag.isPinned },
+            );
             // $&('Tag Pinned....');
-          this.selectedTag = null
+            this.selectedTag = null;
           }
           break;
-          case 'unpin':
-          this.selectedTag = tag
-          if(this.selectedTag?.parentId != null){
-              // $&("----------------");
-            
-            this.tagsService.updateSubTag(this.selectedTag.parentId, this.selectedTag.id,{...this.selectedTag, isPinned:!this.selectedTag.isPinned
-          })
+        case 'unpin':
+          this.selectedTag = tag;
+          if (this.selectedTag?.parentId != null) {
+            // $&("----------------");
+
+            this.tagsService.updateSubTag(
+              this.selectedTag.parentId,
+              this.selectedTag.id,
+              { ...this.selectedTag, isPinned: !this.selectedTag.isPinned },
+            );
             // $&('Tag Pinned....');
-          this.selectedTag = null
+            this.selectedTag = null;
           }
           break;
         case 'mergeTags':
@@ -193,16 +214,19 @@ export class TagsComponent implements OnInit {
         case 'moveToSharedTags':
           break;
         case 'delete':
-          this.selectedTag = tag
-          this.tagsService.deleteSubTag(this.selectedTag.parentId, this.selectedTag.id)
-          this.selectedTag = null
+          this.selectedTag = tag;
+          this.tagsService.deleteSubTag(
+            this.selectedTag.parentId,
+            this.selectedTag.id,
+          );
+          this.selectedTag = null;
           break;
       }
     }
   }
   /**input event handler */
   inputTagsEventHandler(event: any) {
-      // $&('Input handler Event : ', event);
+    // $&('Input handler Event : ', event);
 
     if (event.action == 'close') {
       this.closeDialog();
@@ -214,7 +238,7 @@ export class TagsComponent implements OnInit {
         this.closeDialog();
         break;
       case 'update':
-          // $&('Update Event', event);
+        // $&('Update Event', event);
         this.updateTag(event.payload);
         this.closeDialog();
         break;
@@ -223,14 +247,14 @@ export class TagsComponent implements OnInit {
         this.closeDialog();
         break;
       case 'update_subtag':
-          // $&(this.selectedTag);
+        // $&(this.selectedTag);
         this.updateSubTag(
           event.payload,
           this.selectedTag.parentId,
           this.selectedTag.id,
         );
         this.selectedTag = null;
-      this.isTagInputOpen = false;
+        this.isTagInputOpen = false;
         break;
     }
   }
@@ -242,15 +266,13 @@ export class TagsComponent implements OnInit {
 
   /**toggle pin for subTag */
 
-
   /**update Sub tag */
   updateSubTag(payload: any, parentId: string, childId: string) {
     if (payload.parentId != parentId) {
-      this.tagsService.moveSubTag(payload.parentId, payload)
-      this.tagsService.deleteSubTag(parentId, childId)
+      this.tagsService.moveSubTag(payload.parentId, payload);
+      this.tagsService.deleteSubTag(parentId, childId);
     } else {
       this.tagsService.updateSubTag(parentId, childId, payload);
-      
     }
   }
 
@@ -259,7 +281,7 @@ export class TagsComponent implements OnInit {
   selectedTargetTag!: string;
 
   mergeTags() {
-      // $&('selected merging tag id....', this.selectedTargetTag);
+    // $&('selected merging tag id....', this.selectedTargetTag);
     this.tagsService.mergeTags(this.selectedTag.id, this.selectedTargetTag);
     this.selectedTag = null;
     this.isVisibleConfirmPopup = false;
