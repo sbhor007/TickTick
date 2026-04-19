@@ -69,7 +69,7 @@ export class TaskInputComponent implements OnInit {
   projectPlaceHolder: string = this.project?.name;
 
   taskTitle = '';
-  
+
   taskAttachmentId: string | null = null;
   taskDueDate: Date | string | null = null;
   taskDueDateTime: Date | string | null = null;
@@ -85,8 +85,6 @@ export class TaskInputComponent implements OnInit {
   initialDate = signal<Date | null>(null);
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
-
- 
 
   @ViewChild('contextMenuPopover') contextMenuPopover!: Popover;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -131,55 +129,93 @@ export class TaskInputComponent implements OnInit {
   }
 
   /**input sugetions */
-  
-selectedTags: Set<Tag> = new Set();
-suggestions: string[] = [];
-triggerChar = '';
-taskPriority: TaskPriority = TaskPriority.NONE;
-tags = computed(() => this.tagService.allTags$());
-priorities = Object.values(TaskPriority);
 
-onInputChange(event: Event) {
-  const val = (event.target as HTMLInputElement).value;
-  const match = val.match(/[#!](\w*)$/);
+  selectedTags: Set<Tag> = new Set();
+  suggestions: string[] = [];
+  triggerChar = '';
+  taskPriority: TaskPriority = TaskPriority.NONE;
+  tags = computed(() => this.tagService.allTags$());
+  priorities = Object.values(TaskPriority);
 
-  if (!match) { this.suggestions = []; return; }
+  onInputChange(event: Event) {
+    const val = (event.target as HTMLInputElement).value;
+    const match = val.match(/[#!](\w*)$/);
 
-  this.triggerChar = match[0][0];
-  const list = this.triggerChar === '#' ? this.tags().map(t => t.name) : this.priorities;
-  this.suggestions = list.filter(x => x.toLowerCase().startsWith(match[1].toLowerCase()));
-}
-
-select(item: string) {
-  this.taskTitle = ''
-
-  if (this.triggerChar === '#') {
-    const tag = this.tags().find(t => t.name === item);
-    if (tag && ![...this.selectedTags].some(t => t.id === tag.id)) {
-      this.selectedTags.add(tag);
+    if (!match) {
+      this.suggestions = [];
+      return;
     }
-  } else {
-    this.taskPriority = item as TaskPriority;
+
+    this.triggerChar = match[0][0];
+    const query = match[1].toLowerCase();
+
+    if (this.triggerChar === '#') {
+      const filtered = this.tags()
+        .map((t) => t.name)
+        .filter((x) => x.toLowerCase().startsWith(query));
+
+      // if no match and user typed something, offer "Create: <query>"
+      this.suggestions =
+        filtered.length || !query ? filtered : [`Create: ${match[1]}`];
+    } else {
+      this.suggestions = this.priorities.filter((x) =>
+        x.toLowerCase().startsWith(query),
+      );
+    }
   }
 
-  this.suggestions = [];
-}
+  select(item: string) {
+    this.taskTitle = this.taskTitle.replace(/[#!]\w*$/, '');
 
-removeTag(tag: Tag) {
-  this.selectedTags.forEach(t => {
-    if (t.name === tag.id) this.selectedTags.delete(t);
-  });
-}
+    if (this.triggerChar === '#') {
+      if (item.startsWith('Create: ')) {
+        const newName = item.replace('Create: ', '');
+        this.tagService.createTags({ name: newName }, (newTag) => {
+          this.selectedTags.add(newTag);
+        });
+      } else {
+        const tag = this.tags().find((t) => t.name === item);
+        if (tag && ![...this.selectedTags].some((t) => t.id === tag.id)) {
+          this.selectedTags.add(tag);
+        }
+      }
+    } else {
+      this.taskPriority = item as TaskPriority;
+    }
 
-onBackspace(event: KeyboardEvent) {
-  if (event.key !== 'Backspace' || this.taskTitle.length > 0) return;
-  if (this.selectedTags.size > 0) {
-    const last = [...this.selectedTags].at(-1)!;
-    this.selectedTags.delete(last);
-  } else if (this.taskPriority !== TaskPriority.NONE) {
-    this.taskPriority = TaskPriority.NONE;
+    this.suggestions = [];
   }
-}
+
+  removeTag(tag: Tag) {
+    this.selectedTags.forEach((t) => {
+      if (t.id === tag.id) this.selectedTags.delete(t);
+    });
+  }
+
+  activeIndex = -1;
+
+  onBackspace(event: KeyboardEvent) {
+    event.stopPropagation;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.activeIndex = (this.activeIndex + 1) % this.suggestions.length;
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.activeIndex =
+        (this.activeIndex - 1 + this.suggestions.length) %
+        this.suggestions.length;
+    } else if (event.key === 'Escape') {
+      this.suggestions = [];
+      this.activeIndex = -1;
+    } else if (event.key === 'Backspace' && this.taskTitle.length === 0) {
+      if (this.selectedTags.size > 0) {
+        const last = [...this.selectedTags].at(-1)!;
+        this.selectedTags.delete(last);
+      } else if (this.taskPriority !== TaskPriority.NONE) {
+        this.taskPriority = TaskPriority.NONE;
+      }
+    }
+  }
 
   /**move to */
   onMouse(event: any) {
@@ -335,7 +371,7 @@ onBackspace(event: KeyboardEvent) {
     };
 
     console.log('task-Data: ', taskData);
-    // this.taskService.crateTask(this.project.id, taskData);
+    this.taskService.crateTask(this.project.id, taskData);
     this.cleanupInputField();
   }
 
@@ -354,9 +390,9 @@ onBackspace(event: KeyboardEvent) {
     this.selectedTags = new Set();
   }
 
-  selectPriorityOrTag(event: any) {
-    console.log('selectPriorityOrTag::', event);
-  }
+  // selectPriorityOrTag(event: any) {
+  //   console.log('selectPriorityOrTag::', event);
+  // }
   /**
    * 
    * {
@@ -432,13 +468,15 @@ onBackspace(event: KeyboardEvent) {
   }
 
   /**tag selector */
-  tagsSectorEventHandler(event: any) {
+  tagsSelectorEventHandler(event: any) {
     console.log('tag selector event::', event);
     this.isTagSelectorVisible = false;
     if (event.action == 'cancel') return;
     switch (event.action) {
       case 'add':
-        this.selectedTags = event.payload;
+        event.payload.forEach((element:Tag) => {
+          this.selectedTags.add(element)
+        });
         break;
       case 'create':
         this.tagService.createTags({ name: event.payload });

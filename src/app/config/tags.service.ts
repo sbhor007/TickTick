@@ -32,7 +32,7 @@ export class TagsService {
   }
 
   /* createTag */
-  createTags(payload: Partial<Tag>) {
+  createTags(payload: Partial<Tag>,  onSuccess?: (tag: Tag) => void) {
     if (payload.parentId != null) {
       this.createSubTag(payload);
       return;
@@ -54,8 +54,8 @@ export class TagsService {
     }
     this.http.post<Tag>(`${environment.API}/tags`, body).subscribe({
       next: (data) => {
-        // console.info('Tag Crated...');
         this.loadAllTags();
+        onSuccess?.(data)
       },
       error: (err) => {
         console.error('Error Occurs in :', err);
