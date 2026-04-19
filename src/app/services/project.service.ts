@@ -91,13 +91,13 @@ export class ProjectService {
   deleteProject(projectId: string): Observable<any> {
     return this.http
       .delete<any>(`${environment.API}/projects/${projectId}`)
-      .pipe(
-        catchError((err) => {
-          console.error('Error fetching filtered projects:', err);
-          this.loadAllProjects();
-          return of(null);
-        }),
-      );
+      // .pipe(
+      //   catchError((err) => {
+      //     console.error('Error fetching filtered projects:', err);
+      //     this.loadAllProjects();
+      //     return of(null);
+      //   }),
+      // );
   }
 
   /* getPinnedProjects */

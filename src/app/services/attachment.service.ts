@@ -1,13 +1,34 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { Attachment } from '../models/attachment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AttachmentService {
+
+  private _allAttachments = signal<Attachment[]>([]);
+  readonly allAttachments$ = this._allAttachments;
+
   constructor(private http: HttpClient) {}
+
+  fetchAllAttachments(){
+    return this.http.get<any>(`${environment.API}/attachments`).pipe(
+      catchError((err) => {
+        console.error('Error get all tasks:', err);
+        return of([]);
+      }),
+    );
+  }
+
+  loadAllAllAttachments() {
+    this.fetchAllAttachments().subscribe((attachments) => {
+      this._allAttachments.set(attachments);
+    });
+  }
+
   uploadAttachment(file: File): Observable<string> {
     return new Observable((observer) => {
       const reader = new FileReader();

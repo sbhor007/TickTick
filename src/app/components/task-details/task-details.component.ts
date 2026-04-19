@@ -54,26 +54,28 @@ import { TaskComment } from '../../models/task-comment';
     TimeAgoPipe,
   ],
   templateUrl: './task-details.component.html',
-  styles: [`
-    ::ng-deep emoji-mart .emoji-mart {
-      width: 100% !important;
-      height: 380px !important;
-    }
+  styles: [
+    `
+      ::ng-deep emoji-mart .emoji-mart {
+        width: 100% !important;
+        height: 380px !important;
+      }
 
-    ::ng-deep emoji-mart .emoji-mart-bar:first-child {
-      display: none !important;
-    }
+      ::ng-deep emoji-mart .emoji-mart-bar:first-child {
+        display: none !important;
+      }
 
-    ::ng-deep emoji-mart .emoji-mart-scroll {
-      height: calc(380px - 90px) !important;
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-    }
+      ::ng-deep emoji-mart .emoji-mart-scroll {
+        height: calc(380px - 90px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+      }
 
-    ::ng-deep emoji-mart .emoji-mart-search {
-      padding: 8px !important;
-    }
-  `]
+      ::ng-deep emoji-mart .emoji-mart-search {
+        padding: 8px !important;
+      }
+    `,
+  ],
 })
 export class TaskDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -94,6 +96,8 @@ export class TaskDetailsComponent implements OnInit {
   attachment: any = null;
   imageUrl: SafeUrl | null = null;
 
+  selectedImagePreviewUrl: String | null = null;
+
   isDateTimePikerVisible = false;
   initialDate = signal<Date | null>(null);
   initialTime = signal<string | null>(null);
@@ -107,12 +111,10 @@ export class TaskDetailsComponent implements OnInit {
 
   priorityOptions = Object.values(TaskPriority);
 
-  /**comments */
-  //  allComments = signal<TaskComment[]>([])
-
   constructor() {
     effect(() => {
       const allTasks = this.taskService.allTasks$();
+
       if (!this.entityId) return;
 
       if (this.entityType === 'task') {
@@ -128,12 +130,28 @@ export class TaskDetailsComponent implements OnInit {
           });
           this.priority.setValue(updated.priority, { emitEvent: false });
           /* get comment data*/
-          const filtered = this.commentsService
+          /**attachments files show for task details */
+          const attachmentData = computed(() =>
+            this.attachmentService
+              .allAttachments$()
+              .find((a) => a.id === updated.attachmentId),
+          );
+          this.attachment = attachmentData();
+          /**comments with attachment files */
+          const filteredData = this.commentsService
             .allComments$()
-            .filter((c) => c.taskId === this.task.id);
-          console.log(filtered);
-
-          this.allComments.update(() => filtered ?? []);
+            .filter((c) => c.taskId == this.task.id)
+            .map((c) => {
+              if (c.attachmentId != null) {
+                const attachment = this.attachmentService
+                  .allAttachments$()
+                  .find((a) => a.id == c.attachmentId);
+                return { ...c, attachment: attachment };
+              } else {
+                return c;
+              }
+            });
+          this.allComments.update(() => filteredData ?? []);
         }
       } else if (this.entityType === 'subtask') {
         const result = this.taskService.findSubTaskById(this.entityId);
@@ -149,23 +167,25 @@ export class TaskDetailsComponent implements OnInit {
             { emitEvent: false },
           );
           this.priority.setValue(result.subtask.priority, { emitEvent: false });
+          this.attachment = null
           /**get comment data */
           const filtered = this.commentsService
             .allComments$()
-            .filter((c) => c.taskId === this.entityId);
+            .filter((c) => c.taskId === this.entityId)
+            .map((c) => {
+              if (c.attachmentId != null) {
+                const attachment = this.attachmentService
+                  .allAttachments$()
+                  .find((a) => a.id == c.attachmentId);
+                return { ...c, attachment: attachment };
+              } else {
+                return c;
+              }
+            });
           this.allComments.update(() => filtered ?? []);
         }
       }
     });
-
-    // /**load comments */
-    // effect(() => {
-    //   const filtered = this.commentsService
-    //     .allComments$()
-    //     .filter((c) => c.taskId === this.task.id);
-
-    //   this.allComments.update(() => filtered ?? []);
-    // });
   }
 
   isCompleted = new FormControl<boolean>(false);
@@ -178,6 +198,7 @@ export class TaskDetailsComponent implements OnInit {
   priorityMenu: ContextMenuItem[] = [];
 
   ngOnInit() {
+    this.attachmentService.loadAllAllAttachments();
     this.commentsService.loadAllComments();
     /**routing data */
     this.route.params.subscribe(({ entityType, id }) => {
@@ -337,7 +358,6 @@ export class TaskDetailsComponent implements OnInit {
         priority: newPriority,
       });
     }
-    // No manual getTaskById needed — the effect() auto-syncs when the signal updates
   }
 
   /**get task By id */
@@ -352,9 +372,9 @@ export class TaskDetailsComponent implements OnInit {
       this.priority.setValue(task.priority, { emitEvent: false });
       this.taskTitle.setValue(task.title, { emitEvent: false });
       this.taskDescription.setValue(task.description, { emitEvent: false });
-      if (task.attachmentId) {
-        this.getAttachmentById(task.attachmentId);
-      }
+      // if (task.attachmentId) {
+      //   this.getAttachmentById(task.attachmentId);
+      // }
       const due = this.task.dueDate;
       this.initialDate.set(
         typeof due === 'string' ? new Date(due) : (due ?? null),
@@ -364,25 +384,25 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   /**get attachment and show image */
-  getAttachmentById(attachmentId: string) {
-    this.attachmentService
-      .getAttachmentById(attachmentId)
-      .subscribe((attachment) => {
-        console.log('Attachment response:', attachment);
-        this.attachment = attachment;
-        this.showImage();
-      });
-  }
+  // getAttachmentById(attachmentId: string) {
+  //   this.attachmentService
+  //     .getAttachmentById(attachmentId)
+  //     .subscribe((attachment) => {
+  //       console.log('Attachment response:', attachment);
+  //       // this.attachment = attachment;
+  //       this.showImage();
+  //     });
+  // }
 
   /**show image */
-  showImage() {
-    if (this.attachment && this.attachment.fileData) {
-      // fileData is already a base64 data URL (e.g. "data:image/png;base64,...")
-      this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(
-        this.attachment.fileData,
-      );
-    }
-  }
+  // showImage() {
+  //   if (this.attachment && this.attachment.fileData) {
+  //     // fileData is already a base64 data URL (e.g. "data:image/png;base64,...")
+  //     this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(
+  //       this.attachment.fileData,
+  //     );
+  //   }
+  // }
   /**get sub task */
   getSubTaskById(subtaskId: string) {
     const result = this.taskService.findSubTaskById(subtaskId);
@@ -860,11 +880,11 @@ export class TaskDetailsComponent implements OnInit {
     }
   }
 
+  /**image preview */
   @ViewChild('textarea') textareaRef!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('op') op!: Popover;
 
   commentText = signal<string>(' ');
-  
 
   attachedFile = signal<{ name: string; file: File } | null>(null);
   commentAttachmentId: string | null = null;

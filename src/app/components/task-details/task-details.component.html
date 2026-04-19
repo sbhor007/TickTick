@@ -28,31 +28,33 @@
         class="flex items-center gap-3 flex-1 min-w-0 px-4 py-4 border-b border-gray-400/20"
       >
         <!-- Checkbox -->
-        @if(!task.isNote){
-          <label class="relative flex items-center cursor-pointer flex-shrink-0">
-          <input
-            type="checkbox"
-            [formControl]="isCompleted"
-            [class]="getCheckboxClass(task.priority)"
-          />
+        @if (!task.isNote) {
+          <label
+            class="relative flex items-center cursor-pointer flex-shrink-0"
+          >
+            <input
+              type="checkbox"
+              [formControl]="isCompleted"
+              [class]="getCheckboxClass(task.priority)"
+            />
 
-          @if (isCompleted.value) {
-            <span
-              class="absolute inset-0 flex items-center justify-center pointer-events-none"
-            >
-              <svg
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                class="w-3 h-3 text-white"
+            @if (isCompleted.value) {
+              <span
+                class="absolute inset-0 flex items-center justify-center pointer-events-none"
               >
-                <path
-                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
-                />
-              </svg>
-            </span>
-          }
-        </label>
-        }@else {
+                <svg
+                  viewBox="0 0 16 16"
+                  fill="currentColor"
+                  class="w-3 h-3 text-white"
+                >
+                  <path
+                    d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                  />
+                </svg>
+              </span>
+            }
+          </label>
+        } @else {
           <i class="pi pi-book text-gray-400/50"></i>
         }
 
@@ -115,19 +117,19 @@
           <input
             type="text"
             [formControl]="taskTitle"
-            placeholder="Type Something"
-            class="placeholder-transparent hover:placeholder-gray-400 w-full outline-none font-semibold"
+            [placeholder]="'What we like To Do?'"
+            class="  w-full outline-none font-semibold"
           />
         </div>
         <!-- image section -->
         <div>
-          @if (imageUrl) {
-            <img [src]="imageUrl" alt="preview" />
+          @if (attachment ) {
+            <img [src]="attachment.fileData" alt="preview" (click)="selectedImagePreviewUrl = attachment.fileData"/>
           }
           <input
             type="text"
             [formControl]="taskDescription"
-             placeholder="Type Something"
+            placeholder="Type Something"
             class="w-full placeholder-transparent hover:placeholder-gray-400/50 transition-all duration-300 outline-none text-gray-500"
           />
           <!-- description section -->
@@ -217,197 +219,202 @@
       }
     </div>
 
+    <!-- comment section -->
 
-  <!-- comment section -->
-  
     <div class="flex flex-col gap-2 w-full">
-    <!-- list out comments -->
-    <!-- comment-list.component.html -->
-    <div class="px-4 py-1">
-      @for (c of allComments(); track $index) {
-
-        <div
-          class="flex items-center gap-3 px-4 py-3 hover:bg-gray-500/10 rounded-xl mb-2 border border-transparent hover:border-gray-600/50 transition-all duration-200 group"
-        >
-          <!-- Avatar circle -->
+      <!-- list out comments -->
+      <div class="px-4 py-1">
+        @for (c of allComments(); track $index) {
           <div
-            class="w-9 h-9 rounded-full flex-shrink-0 bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center"
+            class="flex items-center gap-3 px-4 py-3 hover:bg-gray-500/10 rounded-xl mb-2 border border-transparent hover:border-gray-600/50 transition-all duration-200 group"
           >
-            <span class="text-sm font-medium text-indigo-300">
-              {{ "S" }}
-            </span>
-          </div>
-
-          <!-- Middle: email top, name input bottom -->
-          <div class="flex flex-col flex-1 min-w-0 gap-0.5">
-            <div class="flex gap-2">
-              <span class="text-xs text-gray-400 truncate ">
-              santosh&#64;gmail.com
-            </span>
-            <span class="text-xs text-gray-400 truncate">{{c.updatedAt | shortDate}}</span>
+            <!-- Avatar circle -->
+            <div
+              class="w-9 h-9 rounded-full flex-shrink-0 bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center"
+            >
+              <span class="text-sm font-medium text-indigo-300">
+                {{ "S" }}
+              </span>
             </div>
-            <input
-              type="text"
-              [value]="c.name"
-              [disabled]="editingCommentId !== c.id"
-              (keydown.enter)="updateComment($event,c)"
-              [class]="
-                editingCommentId == c.id                
-                  ? 'bg-transparent text-sm text-gray-200 border-b border-indigo-500/60 outline-none py-0.5 w-full transition-colors duration-150 caret-indigo-400 animate-pulse-caret'
-                  : 'bg-transparent text-sm text-gray-200 border-b border-transparent outline-none py-0.5 w-full transition-colors duration-150 caret-transparent'
-              "
-              placeholder="Comment name..."
-            />
-          </div>
 
-          <!-- Right: action icons -->
-          <div
-            class="flex items-center gap-1.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-          >
-            <button
-            (click)="editingCommentId = c.id || null"
-              class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-indigo-500/20 transition-colors duration-150"
-            >
-              <i
-                class="pi pi-pencil text-xs text-indigo-400"
-                
-              ></i>
-            </button>
-            <button
-            (click)="deleteComment(c.id)"
-              class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-red-500/20 transition-colors duration-150"
-            >
-              <i class="pi pi-trash text-xs text-red-400"></i>
-            </button>
-          </div>
-        </div>
-      }
-    </div>
-    <!-- Comment Box -->
-    <div class="flex flex-col px-4 overflow-hidden w-full">
-      <!-- Editor area -->
-
-      <!-- Textarea -->
-      <div
-        class="flex dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus-within:border-blue-400 rounded-xl transition-colors"
-      >
-        <div class="w-[95%]">
-          <textarea
-            #textarea
-            [ngModel]="commentText()"
-            (ngModelChange)="commentText.set($event)"
-            (keydown.enter)="onEnterPress($event)"
-            rows="1"
-            placeholder="Write a comment..."
-            class="w-full resize-none bg-transparent border-none outline-none px-3.5 pt-3 pb-2 text-sm text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400"
-          ></textarea>
-          <div class="flex flex-wrap gap-1.5 px-3 pb-2">
-            @if (attachedFile()) {
-              <div
-                class="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md px-2 py-1 text-xs text-zinc-500 dark:text-zinc-400 max-w-[180px]"
-              >
-                <i class="pi pi-paperclip text-[11px]"></i>
-                <span class="truncate">{{ attachedFile()?.name }}</span>
-                <button
-                  (click)="removeFile()"
-                  class="ml-0.5 hover:text-red-400 transition-colors leading-none"
-                >
-                  ✕
-                </button>
+            <!-- Middle: email top, name input bottom -->
+            <div class="flex flex-col flex-1 min-w-0 gap-0.5">
+              <div class="flex gap-2">
+                <span class="text-xs text-gray-400 truncate">
+                  santosh&#64;gmail.com
+                </span>
+                <span class="text-xs text-gray-400 truncate">{{
+                  c.updatedAt | shortDate
+                }}</span>
               </div>
-            }
+              <input
+                type="text"
+                [value]="c.name"
+                [disabled]="editingCommentId !== c.id"
+                (keydown.enter)="updateComment($event, c)"
+                [class]="
+                  editingCommentId == c.id
+                    ? 'bg-transparent text-sm text-gray-200 border-b border-indigo-500/60 outline-none py-0.5 w-full transition-colors duration-150 caret-indigo-400 animate-pulse-caret'
+                    : 'bg-transparent text-sm text-gray-200 border-b border-transparent outline-none py-0.5 w-full transition-colors duration-150 caret-transparent'
+                "
+                placeholder="Comment name..."
+              />
+              <!-- if Image Available -->
+              @if (c.attachment) {
+                <img
+                  [src]="c.attachment.fileData"
+                  alt="preview"
+                  class="w-20"
+                  (click)="selectedImagePreviewUrl = c.attachment.fileData"
+                />
+              }
+            </div>
+
+            <!-- Right: action icons -->
+            <div
+              class="flex items-center gap-1.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+            >
+              <button
+                (click)="editingCommentId = c.id || null"
+                class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-indigo-500/20 transition-colors duration-150"
+              >
+                <i class="pi pi-pencil text-xs text-indigo-400"></i>
+              </button>
+              <button
+                (click)="deleteComment(c.id)"
+                class="w-7 h-7 flex items-center justify-center rounded-md hover:bg-red-500/20 transition-colors duration-150"
+              >
+                <i class="pi pi-trash text-xs text-red-400"></i>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+      <!-- Comment Box -->
+      <div class="flex flex-col px-4 overflow-hidden w-full">
+        <!-- Editor area -->
+
+        <!-- Textarea -->
+        <div
+          class="flex dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus-within:border-blue-400 rounded-xl transition-colors"
+        >
+          <div class="w-[95%]">
+            <textarea
+              #textarea
+              [ngModel]="commentText()"
+              (ngModelChange)="commentText.set($event)"
+              (keydown.enter)="onEnterPress($event)"
+              rows="1"
+              placeholder="Write a comment..."
+              class="w-full resize-none bg-transparent border-none outline-none px-3.5 pt-3 pb-2 text-sm text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400"
+            ></textarea>
+            <div class="flex flex-wrap gap-1.5 px-3 pb-2">
+              @if (attachedFile()) {
+                <div
+                  class="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md px-2 py-1 text-xs text-zinc-500 dark:text-zinc-400 max-w-[180px]"
+                >
+                  <i class="pi pi-paperclip text-[11px]"></i>
+                  <span class="truncate">{{ attachedFile()?.name }}</span>
+                  <button
+                    (click)="removeFile()"
+                    class="ml-0.5 hover:text-red-400 transition-colors leading-none"
+                  >
+                    ✕
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+          <div class="flex justify-center items-center">
+            <!-- Emoji Button -->
+            <button
+              type="button"
+              class="pi pi-face-smile p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+              (click)="op.toggle($event)"
+              title="Add emoji"
+            ></button>
+
+            <!-- Attachment Button -->
+            <label
+              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+              title="Attach file"
+            >
+              <i class="pi pi-paperclip text-sm"></i>
+              <input
+                type="file"
+                class="hidden"
+                accept="image/*,.pdf,.doc,.docx,.txt"
+                (change)="onFileSelect($event)"
+              />
+            </label>
           </div>
         </div>
-        <div class="flex justify-center items-center">
-          <!-- Emoji Button -->
-          <button
-            type="button"
-            class="pi pi-face-smile p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
-            (click)="op.toggle($event)"
-            title="Add emoji"
-          ></button>
 
-          <!-- Attachment Button -->
-          <label
-            class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors cursor-pointer"
-            title="Attach file"
-          >
-            <i class="pi pi-paperclip text-sm"></i>
-            <input
-              type="file"
-              class="hidden"
-              accept="image/*,.pdf,.doc,.docx,.txt"
-              (change)="onFileSelect($event)"
-            />
-          </label>
+        <!-- </div> -->
+
+        <!-- Bottom Toolbar -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5">
+            <i class="pi pi-folder text-zinc-400 text-xs"></i>
+            <span class="text-xs text-zinc-400">test-2</span>
+          </div>
+
+          <div class="flex items-center gap-0.5">
+            <!-- Format Button -->
+            <button
+              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors text-xs font-bold"
+              title="Bold"
+              (click)="wrapSelection('**', '**')"
+            >
+              B
+            </button>
+
+            <!-- Submit -->
+            <button
+              (click)="submitComment()"
+              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-blue-500 transition-colors"
+              title="Post comment"
+            >
+              <i class="pi pi-send text-sm"></i>
+            </button>
+
+            <!-- More -->
+            <button
+              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
+              title="More options"
+            >
+              <i class="pi pi-ellipsis-h text-sm"></i>
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- </div> -->
-
-      <!-- Bottom Toolbar -->
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-1.5">
-          <i class="pi pi-folder text-zinc-400 text-xs"></i>
-          <span class="text-xs text-zinc-400">test-2</span>
-        </div>
-
-        <div class="flex items-center gap-0.5">
-          <!-- Format Button -->
-          <button
-            class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors text-xs font-bold"
-            title="Bold"
-            (click)="wrapSelection('**', '**')"
-          >
-            B
-          </button>
-
-          <!-- Submit -->
-          <button
-            (click)="submitComment()"
-            class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-blue-500 transition-colors"
-            title="Post comment"
-          >
-            <i class="pi pi-send text-sm"></i>
-          </button>
-
-          <!-- More -->
-          <button
-            class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors"
-            title="More options"
-          >
-            <i class="pi pi-ellipsis-h text-sm"></i>
-          </button>
-        </div>
-      </div>
+      <!-- Emoji Popover -->
+      <p-popover
+        #op
+        [style]="{
+          padding: '0',
+          border: 'none',
+          borderRadius: '12px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+          overflow: 'hidden',
+          width: '320px',
+        }"
+      >
+        <emoji-mart
+          (emojiSelect)="addEmoji($event)"
+          [darkMode]="true"
+          [showPreview]="false"
+          [perLine]="8"
+          [emojiTooltip]="false"
+          [style]="{ width: '100%' }"
+        />
+      </p-popover>
     </div>
-
-    <!-- Emoji Popover -->
-  <p-popover
-  #op
-  [style]="{
-    padding: '0',
-    border: 'none',
-    borderRadius: '12px',
-    boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-    overflow: 'hidden',
-    width: '320px'
-  }"
->
-  <emoji-mart
-    (emojiSelect)="addEmoji($event)"
-    [darkMode]="true"
-    [showPreview]="false"
-    [perLine]="8"
-    [emojiTooltip]="false"
-    [style]="{ width: '100%' }"
-  />
-</p-popover>
-  </div>
   }
-    
 </div>
 
+<!-- Tag selector -->
 @if (isTagSelectorVisible) {
   <div class="fixed inset-0 z-50 flex items-center justify-center">
     <app-tag-selector
@@ -415,4 +422,19 @@
       (result)="tagsSectorEventHandler($event)"
     ></app-tag-selector>
   </div>
+}
+
+<!-- image preview -->
+@if (selectedImagePreviewUrl) {
+  <div
+    class="fixed inset-0 z-50 flex flex-col items-center justify-center content-between  bg-black/70"
+    (click)="selectedImagePreviewUrl = null"
+  >
+  <div class="pi pi-times-circle text-3xl p-5 rounded-full bg-gray-400/20"></div>
+   <img
+                  [src]="selectedImagePreviewUrl"
+                  alt="preview"
+                  class="w-[90rem]"
+                />
+</div>
 }

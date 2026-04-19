@@ -19,6 +19,8 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ContextMenuBarService } from '../../../config/context-menu-bar.service';
+import { TaskService } from '../../../services/task.service';
+import { Task } from '../../../models/task';
 
 @Component({
   selector: 'app-list',
@@ -28,7 +30,7 @@ import { ContextMenuBarService } from '../../../config/context-menu-bar.service'
     CommonModule,
     CreateFolderComponent,
     Menu,
-    ConfirmDialog
+    ConfirmDialog,
   ],
   providers: [ConfirmationService],
   templateUrl: './list.component.html',
@@ -38,7 +40,7 @@ export class ListComponent implements OnInit {
   private projectService = inject(ProjectService);
   private confirmationService = inject(ConfirmationService);
   private contextMenuService = inject(ContextMenuBarService);
-  
+  private taskService = inject(TaskService);
 
   allFolders = computed(() => {
     const data = this.folderService.allFolders$().map((folder) => ({
@@ -50,7 +52,7 @@ export class ListComponent implements OnInit {
     }));
     return data;
   });
-  allProject = computed(() => this.projectService.projects$())
+  allProject = computed(() => this.projectService.projects$());
   allArchives = computed(() =>
     this.projectService.projects$().filter((p) => p.isArchived),
   );
@@ -198,35 +200,36 @@ export class ListComponent implements OnInit {
 
   /**ungroup folder */
   ungropFolder(folderId: string) {
-     this.confirmationService.confirm({
+    this.confirmationService.confirm({
       message: 'List inside within the folder shows directly inside the folder',
       header: 'Ungroup Folder',
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger p-button-sm',
       rejectButtonStyleClass: 'p-button-sm',
       accept: () => {
-        this.projectService.fetchProjectByFolderId(folderId).subscribe((data) => {
-      data.forEach((project) => {
         this.projectService
-          .updateProject(project.id, {
-            ...project,
-            folderId: (project.folderId = null),
-          })
-          .subscribe();
-      });
-      this.folderService.deleteFolder(folderId).subscribe({
-        next: () => {
-          this.reinitializedIds();
-        },
-        error: () => {
-          this.reloaddata();
-          this.reinitializedIds();
-        },
-      });
+          .fetchProjectByFolderId(folderId)
+          .subscribe((data) => {
+            data.forEach((project) => {
+              this.projectService
+                .updateProject(project.id, {
+                  ...project,
+                  folderId: (project.folderId = null),
+                })
+                .subscribe();
+            });
+            this.folderService.deleteFolder(folderId).subscribe({
+              next: () => {
+                this.reinitializedIds();
+              },
+              error: () => {
+                this.reloaddata();
+                this.reinitializedIds();
+              },
+            });
+          });
+      },
     });
-      }
-    });
-    
   }
 
   updateFolder(folderId: string, updatedName: any) {
@@ -340,12 +343,42 @@ export class ListComponent implements OnInit {
     return this.openFolders.has(index);
   }
 
+  // deleteProject(id: string) {
+  //   this.projectService.deleteProject(id).subscribe((data) => {
+  //     console.info('project Deleted', data);
+  //     this.reloaddata();
+  //   });
+  // }
   deleteProject(id: string) {
-    this.projectService.deleteProject(id).subscribe((data) => {
-      console.info('project Deleted', data);
-      this.reloaddata();
+    this.deleteTaskInsideProject(id)
+    this.projectService.deleteProject(id).subscribe({
+      next: () => {
+        this.deleteTaskInsideProject(id);
+        this.projectService.loadAllProjects();
+      },
+      error: () => {
+        this.deleteTaskInsideProject(id);
+        this.projectService.loadAllProjects();
+      },
     });
   }
+
+  deleteTaskInsideProject(projectId: string) {
+    const taskIds = computed(() =>
+      this.taskService
+        .allTasks$()
+        .filter((t) => t.projectId == projectId)
+        .map(t => t.id),
+    );
+
+    taskIds().forEach(id =>{
+      this.taskService.deleteTask(id)
+    })
+    console.log("Task ids :: ",taskIds());
+    
+
+  }
+
 
   @HostListener('document:keydown.escape')
   handleEsc() {
@@ -362,7 +395,7 @@ export class ListComponent implements OnInit {
 
   reloaddata() {
     this.projectService.loadAllProjects();
-    this.folderService.loadAllFolders()
+    this.folderService.loadAllFolders();
     // this.folderWithProjectService.fetchFolderWithProjects();
   }
 }

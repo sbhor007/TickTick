@@ -5,5 +5,6 @@ export interface Attachment {
   fileSize: number;
   fileData: string; 
   createdAt: string;
+  URL?: any;
 
 }

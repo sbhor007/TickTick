@@ -1,4 +1,5 @@
 import { EntityType } from '../enums/entity-type';
+import { Attachment } from './attachment';
 
 export interface TaskComment {
   id: string;
@@ -9,5 +10,5 @@ export interface TaskComment {
   entityType: EntityType;
   updatedAt: Date | string ;
   completedAt?: Date | string ;
-  attachmentURL?:any
+  attachment?:Attachment |null
 }
