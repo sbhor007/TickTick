@@ -369,7 +369,8 @@ export class TaskInputComponent implements OnInit {
       updatedAt: new Date().toISOString(),
       completedAt: null,
     };
-
+    
+    
     console.log('task-Data: ', taskData);
     this.taskService.crateTask(this.project.id, taskData);
     this.cleanupInputField();
@@ -449,13 +450,9 @@ export class TaskInputComponent implements OnInit {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: any) {
     this.isExpanded = false;
-
-    // if (this.isDateTimePikerVisible) this.isDateTimePikerVisible = false;
   }
 
-  closeDateTimeHandler(event: any) {
-    console.log('EVENT::', event);
-  }
+  
 
   /**tag selector */
   tagsSelectorEventHandler(event: any) {
