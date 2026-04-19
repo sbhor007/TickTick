@@ -4,7 +4,7 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root'
 })
 export class UiStateService {
-  detailPanelVisible = signal(false);
+  isListPanelCollapsed = signal(false);
 
   constructor() { }
 }

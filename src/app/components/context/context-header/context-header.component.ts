@@ -76,10 +76,7 @@ export class ContextHeaderComponent implements OnInit {
     console.log('RouteData:', this.routeData);
   }
 
-  /**toggele */
-  togglePanel() {
-  this.ui.detailPanelVisible.update(v => !v);
-}
+ 
   /**load route data */
   loadRoutData() {
     const route = this.routeData?.();

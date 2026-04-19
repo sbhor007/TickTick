@@ -15,18 +15,7 @@ import { UiStateService } from '../../../services/ui-state.service';
 })
 export class ListActionPageComponent  {
   ui = inject(UiStateService);
-  splitterSizes = computed(() =>
-  this.ui.detailPanelVisible() ? [25, 75] : [0, 100]
-);
 
-// force p-splitter DOM update
-splitterKey = computed(() =>
-  this.ui.detailPanelVisible() ? 'show' : 'hide'
-);
-
-panelSizes = computed(() =>
-  this.ui.detailPanelVisible() ? [25, 75] : [0, 100]
-);
 
 
 }
