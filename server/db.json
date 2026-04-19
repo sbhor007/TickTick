@@ -328,7 +328,7 @@
           "dueDate": null,
           "dueDateTime": null,
           "createdAt": "2026-04-17T05:52:09.436Z",
-          "updatedAt": "2026-04-17T14:35:53.441Z",
+          "updatedAt": "2026-04-19T11:02:17.256Z",
           "completedAt": null
         },
         {
@@ -351,7 +351,7 @@
           "dueDate": null,
           "dueDateTime": null,
           "createdAt": "2026-04-17T07:37:34.501Z",
-          "updatedAt": "2026-04-17T14:35:55.691Z",
+          "updatedAt": "2026-04-19T11:02:19.185Z",
           "completedAt": null
         }
       ],
@@ -384,7 +384,7 @@
       "entityType": "TASK",
       "dueDate": "2026-04-23T18:30:00.000Z",
       "createdAt": "2026-04-17T05:51:17.403Z",
-      "updatedAt": "2026-04-17T14:35:55.691Z",
+      "updatedAt": "2026-04-19T11:02:20.796Z",
       "completedAt": null,
       "repeat": {
         "type": "on-the-day"
@@ -397,7 +397,7 @@
       "id": "3654d7f5-efde-4ca3-8bce-f082f1f3773a",
       "userId": null,
       "projectId": "21fc218c-766e-4207-ab1c-0e62d24d3ed8",
-      "title": "testing-",
+      "title": "",
       "description": "",
       "status": "PENDING",
       "priority": "HIGH",
@@ -414,9 +414,9 @@
       "repeat": {
         "type": "on-the-day"
       },
-      "dueDate": "2026-04-22T18:30:00.000Z",
+      "dueDate": "2026-04-19T18:30:00.000Z",
       "createdAt": "2026-04-17T05:51:30.614Z",
-      "updatedAt": "2026-04-18T01:59:49.688Z",
+      "updatedAt": "2026-04-19T10:15:27.834Z",
       "completedAt": null
     },
     {
@@ -594,6 +594,48 @@
       "dueDate": null,
       "createdAt": "2026-04-19T07:10:55.841Z",
       "updatedAt": "2026-04-19T07:31:49.723Z",
+      "completedAt": null
+    },
+    {
+      "id": "834be9c4-9792-4011-9531-948cf085b46c",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "@",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-19T11:07:38.963Z",
+      "updatedAt": "2026-04-19T11:07:38.963Z",
+      "completedAt": null
+    },
+    {
+      "id": "7060d1c2-1fbb-4e3a-8c4b-aceb5189fe3b",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "!",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-19T11:50:08.238Z",
+      "updatedAt": "2026-04-19T11:50:08.239Z",
       "completedAt": null
     }
   ],

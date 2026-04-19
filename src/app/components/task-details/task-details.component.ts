@@ -252,15 +252,14 @@ export class TaskDetailsComponent implements OnInit {
 
     /**update title */
     this.taskTitle.valueChanges.pipe(debounceTime(500)).subscribe((val) => {
-      if (this.task.entityType == EntityType.TASK && val) {
+      if (this.task.entityType == EntityType.TASK ) {
         this.taskService.updateTask(this.task.id, {
           ...this.task,
           title: this.taskTitle.value ?? this.task.title,
         });
       } else if (
         this.task.entityType === EntityType.SUBTASK &&
-        this.task.parentId &&
-        val
+        this.task.parentId 
       ) {
         this.taskService.updateSubTask(this.task.parentId, this.task.id, {
           ...this.task,

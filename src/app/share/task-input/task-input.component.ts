@@ -60,14 +60,16 @@ export class TaskInputComponent implements OnInit {
   private projectService = inject(ProjectService);
   private contextMenuService = inject(ContextMenuBarService);
   private attachmentService = inject(AttachmentService);
-  private tagService = inject(TagsService)
+  private tagService = inject(TagsService);
+
+  /**input suggestions */
 
   @Input() project!: any;
 
   projectPlaceHolder: string = this.project?.name;
 
   taskTitle = '';
-  taskPriority: TaskPriority = TaskPriority.NONE;
+  
   taskAttachmentId: string | null = null;
   taskDueDate: Date | string | null = null;
   taskDueDateTime: Date | string | null = null;
@@ -84,8 +86,7 @@ export class TaskInputComponent implements OnInit {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
 
-  /**selected Tags */
-  selectedTags:Tag[] = []
+ 
 
   @ViewChild('contextMenuPopover') contextMenuPopover!: Popover;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -128,6 +129,57 @@ export class TaskInputComponent implements OnInit {
     const priority = TaskPriority;
     console.log(priority);
   }
+
+  /**input sugetions */
+  
+selectedTags: Set<Tag> = new Set();
+suggestions: string[] = [];
+triggerChar = '';
+taskPriority: TaskPriority = TaskPriority.NONE;
+tags = computed(() => this.tagService.allTags$());
+priorities = Object.values(TaskPriority);
+
+onInputChange(event: Event) {
+  const val = (event.target as HTMLInputElement).value;
+  const match = val.match(/[#!](\w*)$/);
+
+  if (!match) { this.suggestions = []; return; }
+
+  this.triggerChar = match[0][0];
+  const list = this.triggerChar === '#' ? this.tags().map(t => t.name) : this.priorities;
+  this.suggestions = list.filter(x => x.toLowerCase().startsWith(match[1].toLowerCase()));
+}
+
+select(item: string) {
+  this.taskTitle = ''
+
+  if (this.triggerChar === '#') {
+    const tag = this.tags().find(t => t.name === item);
+    if (tag && ![...this.selectedTags].some(t => t.id === tag.id)) {
+      this.selectedTags.add(tag);
+    }
+  } else {
+    this.taskPriority = item as TaskPriority;
+  }
+
+  this.suggestions = [];
+}
+
+removeTag(tag: Tag) {
+  this.selectedTags.forEach(t => {
+    if (t.name === tag.id) this.selectedTags.delete(t);
+  });
+}
+
+onBackspace(event: KeyboardEvent) {
+  if (event.key !== 'Backspace' || this.taskTitle.length > 0) return;
+  if (this.selectedTags.size > 0) {
+    const last = [...this.selectedTags].at(-1)!;
+    this.selectedTags.delete(last);
+  } else if (this.taskPriority !== TaskPriority.NONE) {
+    this.taskPriority = TaskPriority.NONE;
+  }
+}
 
   /**move to */
   onMouse(event: any) {
@@ -268,11 +320,11 @@ export class TaskInputComponent implements OnInit {
       isPinned: false,
       parentId: null,
       subtasks: [],
-      tags: this.selectedTags ?? [],
+      tags: Array.from(this.selectedTags) ?? [],
       comments: [],
       attachmentId: this.taskAttachmentId ?? null, // ✅ now set correctly
       entityType: EntityType.TASK,
-      isNote:false,
+      isNote: false,
       reminder: this.lastSelection()?.reminder,
       repeat: this.lastSelection()?.repeat,
       dueDate: this.lastSelection()?.date?.toISOString() ?? null,
@@ -283,7 +335,7 @@ export class TaskInputComponent implements OnInit {
     };
 
     console.log('task-Data: ', taskData);
-    this.taskService.crateTask(this.project.id, taskData);
+    // this.taskService.crateTask(this.project.id, taskData);
     this.cleanupInputField();
   }
 
@@ -299,13 +351,7 @@ export class TaskInputComponent implements OnInit {
     this.lastSelection.set(null);
     this.selectedProject = null;
     this.projectPlaceHolder = this.project.name;
-    this.selectedTags = []
-  }
-
-  onInputChange(event: Event): void {
-    console.log('on-input-change', event);
-
-    // handle input change
+    this.selectedTags = new Set();
   }
 
   selectPriorityOrTag(event: any) {
@@ -387,23 +433,24 @@ export class TaskInputComponent implements OnInit {
 
   /**tag selector */
   tagsSectorEventHandler(event: any) {
-    console.log("tag selector event::",event);
-    this.isTagSelectorVisible = false
+    console.log('tag selector event::', event);
+    this.isTagSelectorVisible = false;
     if (event.action == 'cancel') return;
     switch (event.action) {
       case 'add':
-        this.selectedTags = event.payload
+        this.selectedTags = event.payload;
         break;
       case 'create':
-        this.tagService.createTags({name:event.payload})
-        setTimeout(() =>{
-          const tag =  this.tagService.allTags$().find(t => t.name == event.payload)
-          if(tag){
-            this.selectedTags.push(tag)
+        this.tagService.createTags({ name: event.payload });
+        setTimeout(() => {
+          const tag = this.tagService
+            .allTags$()
+            .find((t) => t.name == event.payload);
+          if (tag) {
+            this.selectedTags.add(tag);
           }
-          console.log("is Tag created",tag);
-          
-        },100 )
+          console.log('is Tag created', tag);
+        }, 100);
         break;
     }
   }

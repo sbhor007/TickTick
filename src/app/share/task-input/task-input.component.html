@@ -1,49 +1,124 @@
 <div class="relative">
-<!-- Option/Context menu -->
-<p-popover
-  #contextMenuPopover
-  [dismissable]="true"
-  [appendTo]="'body'"
-  styleClass="task-context-popover"
->
-  <div class="ctx-menu">
-    <!-- Date & Priority Sections -->
-    @for (section of menuSections; track section.action) {
-      <div class="ctx-section">
-        <span class="ctx-section-label">{{ section.label }}</span>
-        <div class="ctx-icon-grid">
-          @for (child of section.items; track child.action) {
-            <button
-              class="ctx-icon-btn"
-              [title]="child.label"
-              (click)="onSectionItemClick(section.action, child.action)"
-            >
-              @if (child.color) {
-                <i [class]="child.icon" [style.color]="child.color"></i>
-              } @else {
-                <i [class]="child.icon"></i>
-              }
-            </button>
-          }
+  <!-- Option/Context menu -->
+  <p-popover
+    #contextMenuPopover
+    [dismissable]="true"
+    [appendTo]="'body'"
+    styleClass="task-context-popover"
+  >
+    <div class="ctx-menu">
+      <!-- Date & Priority Sections -->
+      @for (section of menuSections; track section.action) {
+        <div class="ctx-section">
+          <span class="ctx-section-label">{{ section.label }}</span>
+          <div class="ctx-icon-grid">
+            @for (child of section.items; track child.action) {
+              <button
+                class="ctx-icon-btn"
+                [title]="child.label"
+                (click)="onSectionItemClick(section.action, child.action)"
+              >
+                @if (child.color) {
+                  <i [class]="child.icon" [style.color]="child.color"></i>
+                } @else {
+                  <i [class]="child.icon"></i>
+                }
+              </button>
+            }
+          </div>
         </div>
-      </div>
-    }
-
-    <!-- Regular Menu Items -->
-    @for (item of menuRegularItems; track item.action) {
-      @if (item.isDivider) {
-        <div class="ctx-divider"></div>
       }
-      @else if (item.label === "Move to") {
-        <!-- Move To Button -->
-        <div
-          class="relative"
-          (mouseenter)="showMoveTo = true"
-          (mouseleave)="showMoveTo = false"
-        >
+
+      <!-- Regular Menu Items -->
+      @for (item of menuRegularItems; track item.action) {
+        @if (item.isDivider) {
+          <div class="ctx-divider"></div>
+        } @else if (item.label === "Move to") {
+          <!-- Move To Button -->
+          <div
+            class="relative"
+            (mouseenter)="showMoveTo = true"
+            (mouseleave)="showMoveTo = false"
+          >
+            <button
+              class="ctx-menu-item w-full"
+              [class.ctx-danger]="item.isDanger"
+            >
+              <span
+                class="material-symbols-outlined ctx-item-icon"
+                [class.ctx-danger-icon]="item.isDanger"
+              >
+                {{ item.icon }}
+              </span>
+              <span class="ctx-item-label">{{ item.label }}</span>
+              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+            </button>
+
+            <!-- Submenu positioned to the right -->
+            @if (showMoveTo) {
+              <div
+                class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[60] border border-gray-700"
+                (mouseenter)="showMoveTo = true"
+                (mouseleave)="showMoveTo = false"
+              >
+                @for (fp of folderProject(); track fp.id) {
+                  <div
+                    class="relative"
+                    (mouseenter)="onFolderHover(fp.id)"
+                    (mouseleave)="onFolderLeave()"
+                  >
+                    <button
+                      class="ctx-menu-item w-full flex justify-between items-center"
+                    >
+                      @if (
+                        fp.entityType === "FOLDER" && fp.projects.length > 0
+                      ) {
+                        <i class="pi pi-folder"></i>
+                        <span class="flex-1">{{ fp.name }}</span>
+                        <i class="pi pi-angle-right"></i>
+                      } @else if (fp.entityType === "PROJECT") {
+                        <i class="pi pi-align-justify"></i>
+                        <span
+                          class="flex-1"
+                          (click)="
+                            assignToAnotherProject(fp, item.action);
+                            showMoveTo = false
+                          "
+                        >
+                          {{ fp.name }}
+                        </span>
+                      }
+                    </button>
+
+                    <!-- 3rd level: Projects inside Folder -->
+                    @if (hoveredFolderId === fp.id && fp.projects?.length) {
+                      <div
+                        class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[70] border border-gray-700"
+                      >
+                        @for (project of fp.projects; track project.id) {
+                          <button
+                            class="ctx-menu-item w-full text-left"
+                            (click)="
+                              assignToAnotherProject(project, item.action);
+                              showMoveTo = false
+                            "
+                          >
+                            <i class="pi pi-align-justify"></i>
+                            <span>{{ project.name }}</span>
+                          </button>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        } @else {
           <button
-            class="ctx-menu-item w-full"
+            class="ctx-menu-item"
             [class.ctx-danger]="item.isDanger"
+            (click)="onRegularItemClick(item)"
           >
             <span
               class="material-symbols-outlined ctx-item-icon"
@@ -52,149 +127,127 @@
               {{ item.icon }}
             </span>
             <span class="ctx-item-label">{{ item.label }}</span>
-            <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+            @if (item.hasSubmenu) {
+              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+            }
           </button>
-
-          <!-- Submenu positioned to the right -->
-          @if (showMoveTo) {
-            <div
-              class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[60] border border-gray-700"
-              (mouseenter)="showMoveTo = true"
-              (mouseleave)="showMoveTo = false"
-            >
-              @for (fp of folderProject(); track fp.id) {
-                <div
-                  class="relative"
-                  (mouseenter)="onFolderHover(fp.id)"
-                  (mouseleave)="onFolderLeave()"
-                >
-                  <button class="ctx-menu-item w-full flex justify-between items-center">
-                    @if (fp.entityType === "FOLDER" && fp.projects.length > 0) {
-                      <i class="pi pi-folder"></i>
-                      <span class="flex-1">{{ fp.name }}</span>
-                      <i class="pi pi-angle-right"></i>
-                    } @else if (fp.entityType === "PROJECT") {
-                      <i class="pi pi-align-justify"></i>
-                      <span
-                        class="flex-1"
-                        (click)="assignToAnotherProject(fp, item.action); showMoveTo = false"
-                      >
-                        {{ fp.name }}
-                      </span>
-                    }
-                  </button>
-
-                  <!-- 3rd level: Projects inside Folder -->
-                  @if (hoveredFolderId === fp.id && fp.projects?.length) {
-                    <div
-                      class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[70] border border-gray-700"
-                    >
-                      @for (project of fp.projects; track project.id) {
-                        <button
-                          class="ctx-menu-item w-full text-left"
-                          (click)="assignToAnotherProject(project, item.action); showMoveTo = false"
-                        >
-                          <i class="pi pi-align-justify"></i>
-                          <span>{{ project.name }}</span>
-                        </button>
-                      }
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          }
-        </div>
+        }
       }
-      @else {
-        <button
-          class="ctx-menu-item"
-          [class.ctx-danger]="item.isDanger"
-          (click)="onRegularItemClick(item)"
-        >
-          <span
-            class="material-symbols-outlined ctx-item-icon"
-            [class.ctx-danger-icon]="item.isDanger"
-          >
-            {{ item.icon }}
-          </span>
-          <span class="ctx-item-label">{{ item.label }}</span>
-          @if (item.hasSubmenu) {
-            <i class="pi pi-angle-right ctx-submenu-arrow"></i>
-          }
-        </button>
-      }
-    }
-  </div>
-</p-popover>
+    </div>
+  </p-popover>
 
   <!-- Input Wrapper -->
 
   <div
     class="relative bg-neutral-900 border border-white/10 rounded-xl focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20 transition-all"
   >
-  <span *ngIf="taskPriority"
-        class="text-xs px-2 py-0.5 rounded  text-white">
-    {{ taskPriority }}
-  </span>
-    <!-- Main Input Row -->
+
     <div class="flex items-center gap-1 px-3 py-1.5 min-h-[44px]">
-      <input
-        class="flex-1 bg-transparent border-none outline-none text-neutral-200 text-sm placeholder-neutral-600 caret-blue-500"
-        type="text"
-        [placeholder]="'Add task ' +  projectPlaceHolder"
-        autocomplete="off"
-        [(ngModel)]="taskTitle"
-        (keydown.enter)="onInputKeydown($event)"
-        (onKeydown)="selectPriorityOrTag($event)"
-        (focus)="isExpanded = true"
-      />
- 
+  
+  <!-- Input + Suggestions wrapper -->
+   <div class="relative flex-1">
 
-      <!-- Calendar Icon -->
-      <p class="text-[10px] text-blue-400" (click)="toggeleDateTimePiker($event)">
-        {{ lastSelection()?.date | date }}
-      </p>
-      <button
-        type="button"
-        class="flex items-center justify-center p-1.5 rounded-md transition-all"
-        [class.text-blue-500]="isDateTimePikerVisible"
-        [class.text-neutral-500]="!isDateTimePikerVisible"
-        [class.hover:text-neutral-300]="!isDateTimePikerVisible"
-        (click)="toggeleDateTimePiker($event)"
-      >
-        <i class="pi pi-calendar text-[13px]" (click)="toggeleDateTimePiker($event)"></i>
+  <!-- Chips + Input row -->
+  <div class="flex flex-wrap items-center gap-1">
 
-      </button>
-      <!-- Date Time Picker Dropdown -->
+    <!-- Priority chip -->
+    @if (taskPriority !== 'NONE') {
+      <span class="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium"
+        [ngClass]="{
+          ' text-red-400':       taskPriority === 'HIGH',
+          ' text-yellow-400': taskPriority === 'MEDIUM',
+          ' text-blue-400':     taskPriority === 'LOW'
+        }">
+        ! {{ taskPriority }}
+        
+      </span>
+    }
+
+    <!-- Tag chips -->
+    @for (tag of selectedTags; track tag.id) {
+      <span class="flex items-center gap-1 text-[11px]">
+
+       #{{tag.name}}
+      </span>
+    }
+
+    <!-- Input -->
+    <input
+      class="flex-1 min-w-[120px] bg-transparent border-none outline-none text-neutral-200 text-sm placeholder-neutral-600 caret-blue-500"
+      type="text"
+      [placeholder]="'Add task ' + projectPlaceHolder"
+      autocomplete="off"
+      [(ngModel)]="taskTitle"
+      (keydown.enter)="onInputKeydown($event)"
+      (keydown)="onBackspace($event)"
+      (focus)="isExpanded = true"
+      (input)="onInputChange($event)"
+    />
+  </div>
+
+  <!-- Suggestions dropdown -->
+  @if (suggestions.length) {
+    <ul class="absolute left-0 top-full mt-1 w-48 bg-neutral-800 border border-neutral-700 rounded-md shadow-lg z-50 py-1">
+      @for (item of suggestions; track item) {
+        <li class="px-3 py-1.5 text-sm text-neutral-200 hover:bg-neutral-700 cursor-pointer"
+          (mousedown)="select(item)">
+          <span class="text-blue-400">{{ triggerChar }}</span>{{ item }}
+        </li>
+      }
+    </ul>
+  }
+
+</div>
+  <!-- Calendar date label -->
+  <p class="text-[10px] text-blue-400" (click)="toggeleDateTimePiker($event)">
+    {{ lastSelection()?.date | date }}
+  </p>
+
+  <!-- Calendar button -->
+  <button
+    type="button"
+    class="flex items-center justify-center p-1.5 rounded-md transition-all"
+    [class.text-blue-500]="isDateTimePikerVisible"
+    [class.text-neutral-500]="!isDateTimePikerVisible"
+    [class.hover:text-neutral-300]="!isDateTimePikerVisible"
+    (click)="toggeleDateTimePiker($event)"
+  >
+    <i class="pi pi-calendar text-[13px]"></i>
+  </button>
+
+  <!-- Date Time Picker Dropdown -->
   <p-popover
-  #dateTimePopover
-  [dismissable]="true"
-  [appendTo]="'body'"
-  styleClass="date-time-popover"
-  (onHide)="isDateTimePikerVisible = false"
->
-      <app-date-time-picker
-        [initialDate]="initialDate()"
-        [initialTime]="initialTime()"
-        (confirmed)="onConfirmed($event)"
-        (cleared)="isDateTimePikerVisible = false"
-        (closed)="isDateTimePikerVisible = false"
-      />
+    #dateTimePopover
+    [dismissable]="true"
+    [appendTo]="'body'"
+    styleClass="date-time-popover"
+    (onHide)="isDateTimePikerVisible = false"
+  >
+    <app-date-time-picker
+      [initialDate]="initialDate()"
+      [initialTime]="initialTime()"
+      (confirmed)="onConfirmed($event)"
+      (cleared)="isDateTimePikerVisible = false"
+      (closed)="isDateTimePikerVisible = false"
+    />
+  </p-popover>
 
-</p-popover>
-
-
-      <i (click)="openFolderMenu($event)" class="pi pi-angle-up cursor-pointer"></i>
-    </div>
+  <i (click)="openFolderMenu($event)" class="pi pi-angle-up cursor-pointer"></i>
+</div>
 
     <!-- Attachment Preview -->
     @if (attachedFiles) {
       <div class="flex items-center gap-2 px-3 pb-2 pt-1">
-        <div class="flex items-center gap-1.5 bg-neutral-800 border border-white/10 rounded-lg px-2 py-1 text-xs text-neutral-300">
-          <span class="material-symbols-outlined text-[14px] text-blue-400">image</span>
+        <div
+          class="flex items-center gap-1.5 bg-neutral-800 border border-white/10 rounded-lg px-2 py-1 text-xs text-neutral-300"
+        >
+          <span class="material-symbols-outlined text-[14px] text-blue-400"
+            >image</span
+          >
           <span class="max-w-[120px] truncate">{{ attachedFiles.name }}</span>
-          <span class="text-neutral-500 text-[10px]">({{ formatFileSize(attachedFiles.size) }})</span>
+          <span class="text-neutral-500 text-[10px]"
+            >({{ formatFileSize(attachedFiles.size) }})</span
+          >
           <button
             type="button"
             class="ml-0.5 text-neutral-500 hover:text-red-400 transition-colors"
@@ -205,27 +258,21 @@
         </div>
       </div>
     }
-
-    </div>
-    
-     
   </div>
-  @if (isTagSelectorVisible) {
-    <div class="fixed inset-0 z-50 flex items-center justify-center">
-  <app-tag-selector (result)="tagsSectorEventHandler($event)"></app-tag-selector>
 </div>
-  }
+@if (isTagSelectorVisible) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center">
+    <app-tag-selector
+      (result)="tagsSectorEventHandler($event)"
+    ></app-tag-selector>
+  </div>
+}
 
-  <!-- Hidden File Input for Attachment (image only, single file) -->
-  <input
-    #fileInput
-    type="file"
-    accept="image/*"
-    class="hidden"
-    (change)="onFileSelected($event)"
-  />
-
- 
-  
-
-  
+<!-- Hidden File Input for Attachment (image only, single file) -->
+<input
+  #fileInput
+  type="file"
+  accept="image/*"
+  class="hidden"
+  (change)="onFileSelected($event)"
+/>

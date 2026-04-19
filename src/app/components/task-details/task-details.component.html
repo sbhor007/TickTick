@@ -118,13 +118,17 @@
             type="text"
             [formControl]="taskTitle"
             [placeholder]="'What we like To Do?'"
-            class="  w-full outline-none font-semibold"
+            class="w-full outline-none font-semibold"
           />
         </div>
         <!-- image section -->
         <div>
-          @if (attachment ) {
-            <img [src]="attachment.fileData" alt="preview" (click)="selectedImagePreviewUrl = attachment.fileData"/>
+          @if (attachment) {
+            <img
+              [src]="attachment.fileData"
+              alt="preview"
+              (click)="selectedImagePreviewUrl = attachment.fileData"
+            />
           }
           <input
             type="text"
@@ -427,14 +431,12 @@
 <!-- image preview -->
 @if (selectedImagePreviewUrl) {
   <div
-    class="fixed inset-0 z-50 flex flex-col items-center justify-center content-between  bg-black/70"
+    class="fixed inset-0 z-50 flex flex-col items-center justify-center content-between bg-black/70"
     (click)="selectedImagePreviewUrl = null"
   >
-  <div class="pi pi-times-circle text-3xl p-5 rounded-full bg-gray-400/20"></div>
-   <img
-                  [src]="selectedImagePreviewUrl"
-                  alt="preview"
-                  class="w-[90rem]"
-                />
-</div>
+    <div
+      class="pi pi-times-circle text-3xl p-5 rounded-full bg-gray-400/20"
+    ></div>
+    <img [src]="selectedImagePreviewUrl" alt="preview" class="w-[90rem]" />
+  </div>
 }
