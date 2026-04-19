@@ -10,10 +10,10 @@ import { SummaryComponent } from './components/summary/summary.component';
 
 export const routes: Routes = [
   {
-  path: '',
-  redirectTo: 'task',
-  pathMatch: 'full'
-},
+    path: '',
+    redirectTo: 'task',
+    pathMatch: 'full',
+  },
   {
     path: '',
     component: NavigationComponent,
@@ -22,121 +22,122 @@ export const routes: Routes = [
         path: 'task',
         component: ListActionPageComponent,
         children: [
+         
           {
             path: 'folder/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.FOLDER },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'project/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.PROJECT },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'ALL/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.ALL },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'TODAY/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.TODAY },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'INBOX/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.INBOX },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'TOMORROW/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.TOMORROW },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'NEXT_SEVEN_DAYS/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.NEXT_SEVEN_DAYS },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'completed/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.COMPLETED },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'tags/:id',
-            component:ContextPageComponent,
+            component: ContextPageComponent,
             data: { entityType: EntityType.TAG_VIEW },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
           },
           {
             path: 'SUMMARY/:id',
-            component:SummaryComponent,
+            component: SummaryComponent,
           },
           {
             path: 'trashed',
-            component:TrashedComponent,
+            component: TrashedComponent,
             data: { entityType: EntityType.TRASHED },
-            children:[
+            children: [
               {
-                path:':entityType/:id',
-                component: TaskDetailsComponent
-              }
-            ]
-          }
-        ]
+                path: ':entityType/:id',
+                component: TaskDetailsComponent,
+              },
+            ],
+          },
+        ],
       },
     ],
   },

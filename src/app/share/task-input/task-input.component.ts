@@ -390,29 +390,19 @@ export class TaskInputComponent implements OnInit {
     this.selectedTags = new Set();
   }
 
-  // selectPriorityOrTag(event: any) {
-  //   console.log('selectPriorityOrTag::', event);
-  // }
-  /**
-   * 
-   * {
-    "date": "2026-04-16T18:30:00.000Z",
-    "time": null,
-    "repeat": {
-        "type": "on-the-day"
-    },
-    "reminder": {
-        "type": "daily"
-    }
-}
-   */
-
   onConfirmed(selection: DateTimeSelection) {
     console.log('DateTimePiker Event:: ', selection);
 
     this.lastSelection.set(selection);
     console.log('DAteTimePiker confirmed: ', selection);
     this.isDateTimePikerVisible = false;
+    if (this.isDateTimePikerVisible) {
+      setTimeout(() => {
+        this.dateTimePopover?.show(event);
+      }, 10);
+    } else {
+      this.dateTimePopover?.hide();
+    }
   }
 
   onCleared() {

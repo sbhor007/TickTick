@@ -633,9 +633,9 @@
       "attachmentId": null,
       "entityType": "TASK",
       "isNote": false,
-      "dueDate": null,
+      "dueDate": "2026-04-18T18:30:00.000Z",
       "createdAt": "2026-04-19T11:50:08.238Z",
-      "updatedAt": "2026-04-19T13:23:47.121Z",
+      "updatedAt": "2026-04-19T13:53:54.781Z",
       "completedAt": null
     },
     {
@@ -683,6 +683,48 @@
       "createdAt": "2026-04-19T13:22:57.242Z",
       "updatedAt": "2026-04-19T13:25:02.389Z",
       "completedAt": null
+    },
+    {
+      "id": "1db3c14b-b876-41fe-a1e5-92f46d154ff8",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "test",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-19T13:37:08.562Z",
+      "updatedAt": "2026-04-19T13:37:08.562Z",
+      "completedAt": null
+    },
+    {
+      "id": "e5a2b27a-1ccb-4ae2-97b0-efd77afe8667",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "fd",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": "2026-04-19T18:30:00.000Z",
+      "createdAt": "2026-04-19T13:42:54.849Z",
+      "updatedAt": "2026-04-19T13:53:58.541Z",
+      "completedAt": null
     }
   ],
   "tags": [
@@ -707,8 +749,8 @@
       ],
       "isPinned": false,
       "createdAt": "2026-04-17T05:53:05.991Z",
-      "updatedAt": "2026-04-18T03:25:53.288Z",
-      "isShared": true
+      "updatedAt": "2026-04-19T13:29:09.855Z",
+      "isShared": false
     },
     {
       "name": "tag-4",
@@ -719,8 +761,8 @@
       "childTag": [],
       "isPinned": false,
       "createdAt": "2026-04-17T05:53:20.367Z",
-      "updatedAt": "2026-04-18T03:25:43.796Z",
-      "isShared": true
+      "updatedAt": "2026-04-19T13:29:13.311Z",
+      "isShared": false
     },
     {
       "name": "tag-5",
@@ -731,8 +773,8 @@
       "childTag": [],
       "isPinned": false,
       "createdAt": "2026-04-17T05:53:44.209Z",
-      "updatedAt": "2026-04-18T03:25:50.522Z",
-      "isShared": true
+      "updatedAt": "2026-04-19T13:29:16.963Z",
+      "isShared": false
     },
     {
       "name": "new",

@@ -137,8 +137,8 @@ export function applyRepeatOffset(date: Date, repeatType: string): Date | null {
 export interface DateTimeSelection {
   date: Date | null;
   time: string | null;
-  repeat?: RepeatConfig;
-  reminder?: ReminderConfig;
+  repeat?: RepeatConfig | null;
+  reminder?: ReminderConfig | null;
 }
 
 export interface RepeatConfig {
@@ -152,8 +152,8 @@ export interface ReminderConfig {
   custom?: string;
 }
 
-export const DEFAULT_REPEAT: RepeatConfig = { type: 'on-the-day' };
-export const DEFAULT_REMINDER: ReminderConfig = { type: 'daily' };
+export const DEFAULT_REPEAT: RepeatConfig | null = null;
+export const DEFAULT_REMINDER: ReminderConfig | null = null;
 
 export type RepeatType =
   | 'on-the-day'

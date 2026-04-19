@@ -192,12 +192,12 @@
           <div class="flex flex-col pb-1.5 gap-px">
             @for (opt of reminderOptions; track opt.value) {
               <button
-                [attr.aria-pressed]="reminderConfig().type === opt.value"
+                [attr.aria-pressed]="reminderConfig()?.type === opt.value"
                 (click)="selectReminder(opt.value)"
-                [class]="reminderConfig().type === opt.value
+                [class]="reminderConfig()?.type === opt.value
                   ? 'flex items-center gap-2 px-2 py-2 rounded-lg border-none bg-blue-500/10 text-blue-400 text-[12px] font-medium cursor-pointer text-left transition-all duration-200'
                   : 'flex items-center gap-2 px-2 py-2 rounded-lg border-none bg-transparent text-[#8e8e93] hover:bg-[#2c2c2e] hover:text-[#f2f2f7] text-[12px] cursor-pointer text-left transition-all duration-200'">
-                @if (reminderConfig().type === opt.value) {
+                @if (reminderConfig()?.type === opt.value) {
                   <svg class="text-blue-400 shrink-0" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
@@ -234,12 +234,12 @@
           <div class="flex flex-col pb-1.5 gap-px">
             @for (opt of repeatOptions; track opt.value) {
               <button
-                [attr.aria-pressed]="repeatConfig().type === opt.value"
+                [attr.aria-pressed]="repeatConfig()?.type === opt.value"
                 (click)="selectRepeat(opt.value)"
-                [class]="repeatConfig().type === opt.value
+                [class]="repeatConfig()?.type === opt.value
                   ? 'flex items-center gap-2 px-2 py-2 rounded-lg border-none bg-blue-500/10 text-blue-400 text-[12px] font-medium cursor-pointer text-left transition-all duration-200'
                   : 'flex items-center gap-2 px-2 py-2 rounded-lg border-none bg-transparent text-[#8e8e93] hover:bg-[#2c2c2e] hover:text-[#f2f2f7] text-[12px] cursor-pointer text-left transition-all duration-200'">
-                @if (repeatConfig().type === opt.value) {
+                @if (repeatConfig()?.type === opt.value) {
                   <svg class="text-blue-400 shrink-0" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
