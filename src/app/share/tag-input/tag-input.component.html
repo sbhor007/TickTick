@@ -18,15 +18,21 @@
       </button>
     </div>
 
-    <div class="card flex ] w-full mb-5">
-      <input
-        type="text"
-        class="w-full px-3"
-        pInputText
-        formControlName="name"
-        placeholder="nane"
-      />
-    </div>
+    <div class="w-full mb-5">
+  <div class="flex items-center  border-gray-200 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-blue-500">
+    
+    <input
+      type="text"
+      formControlName="name"
+      placeholder="Name"
+      class="w-full px-4 py-2 bg-transparent outline-none border rounded-md border-gray-500/50 text-gray-700 placeholder-gray-400"
+    />
+
+  </div>
+  @if (tagForm.get('name')?.invalid && tagForm.get('name')?.touched) {
+        <span class="text-red-600 -mt-3.5 pb-3">List Name Required</span>
+      }
+</div>
 
     <!-- color picker -->
     <div

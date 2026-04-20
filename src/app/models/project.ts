@@ -17,5 +17,7 @@ export interface Project {
   isSmartView: boolean;
   icon: string;
   tasks: Task[];
+  hidden?: boolean;
+  showIfNotEmpty?: boolean;
 }
 

@@ -117,7 +117,33 @@ export class SmartViewComponent {
     this.contextMenuOptions.toggle(event);
   }
 
-  handleAction(entityType: EntityType, action: any, id: string): void {
-    // handle actions
+  handleAction(entityType: EntityType, action: string, id: string): void {
+    console.log("handle action", action);
+    
+   const project = this.projectService.projects$().find(p => p.id == id)
+
+    switch (action) {
+
+      case 'show':
+        this.projectService.updateProject(id, {...project ,hidden: false, showIfNotEmpty: false }).subscribe()
+        break;
+
+      case 'hide':
+        this.projectService.updateProject(id, {...project ,hidden: true, showIfNotEmpty: false }).subscribe()
+        break;
+
+      case 'showIfNotEmpty':
+        this.projectService.updateProject(id, {...project ,hidden: false, showIfNotEmpty: true }).subscribe()
+        break;
+
+
+
+      case 'edit':
+        this.router.navigate(['settings', 'smart-views', id]);
+        break;
+
+      default:
+        console.warn(`[SmartViewComponent] Unhandled action "${action}" for entity "${entityType}"`);
+    }
   }
 }

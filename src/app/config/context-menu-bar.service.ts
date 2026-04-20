@@ -378,6 +378,7 @@ export class ContextMenuBarService {
     isArchived: boolean = false,
     isShared: boolean = false,
     isNote: boolean = false,
+    isWantToDo: boolean = false
   ): ContextMenuItem[] {
     const menu = [...(this.CONTEXT_MENU_MAP[type] || [])];
 
@@ -408,19 +409,21 @@ export class ContextMenuBarService {
     }
 
   if (type === EntityType.TASK) {
-      const noteItem: ContextMenuItem = isNote
+    insertAfterEdit(
+      isNote
         ? {
+            label: 'Convert to Task',
+            icon: 'note_alt',
+            action: 'convert_to_task',
+          }
+        : {
             label: 'Convert to Note',
             icon: 'note_alt',
             action: 'convert_to_note',
           }
-        : {
-            label: 'Convert to Task',
-            icon: 'note_alt',
-            action: 'convert_to_Task',
-          };
-           insertAfterEdit(noteItem);
-    }
+    );
+  }
+
 
     //share and unshare tag
     if ([EntityType.TAG].includes(type)) {
@@ -432,6 +435,12 @@ export class ContextMenuBarService {
           }
         : { label: 'Move to Shared Tags', icon: '', action: 'shareUnshareTag' };
       insertAfterEdit(sharedItem);
+    }
+    if ([EntityType.TASK].includes(type)) {
+      const wantToDoItems: ContextMenuItem = isWantToDo
+        ? { label: "Won't Do", icon: 'block', action: 'wont_do' }
+        : { label: "restore", icon: 'refresh', action: 'restore' }
+      insertAfterEdit(wantToDoItems);
     }
 
     // ✅ Archive / Unarchive (ONLY for PROJECT)

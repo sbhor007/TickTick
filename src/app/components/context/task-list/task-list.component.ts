@@ -35,7 +35,7 @@ import { DateTimeSelection } from '../../../models/date';
 
 import { Tag } from '../../../models/tag';
 import { TagsService } from '../../../config/tags.service';
-import { Popover } from "primeng/popover";
+import { Popover } from 'primeng/popover';
 import { filter } from 'rxjs';
 // import { DropdownModule } from 'primeng/dropdown';
 // import { AutoCompleteModule } from 'primeng/autocomplete';
@@ -48,8 +48,8 @@ import { filter } from 'rxjs';
     ShortDatePipe,
     TagSelectorComponent,
     DateTimePickerComponent,
-    Popover
-],
+    Popover,
+  ],
   templateUrl: './task-list.component.html',
 })
 export class TaskListComponent implements OnInit {
@@ -72,7 +72,6 @@ export class TaskListComponent implements OnInit {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
   selectedTask: Task | null = null;
-  
 
   // @Input() sortGroupData: any = { groupBy: 'none', sortBy: 'Title' };
 
@@ -119,15 +118,15 @@ export class TaskListComponent implements OnInit {
     let data: Task[] = [];
 
     if (routerData.entityType === EntityType.FOLDER) {
-      const projectIds = this.projectService
-        .projects$()
-        .filter((p) => p.folderId === routerData.id)
-        .map((p) => p.id);
+  const projectIds = this.projectService
+    .projects$()
+    .filter((p) => p.folderId === routerData.id)
+    .map((p) => p.id);
+  data = this.taskService
+    .allTasks$()
+    .filter((t) => projectIds.includes(t.projectId));
 
-      data = this.taskService
-        .allTasks$()
-        .filter((t) => projectIds.includes(t.projectId));
-    } else if (routerData.entityType === EntityType.PROJECT) {
+} else if (routerData.entityType === EntityType.PROJECT) {
       data = this.taskService
         .allTasks$()
         .filter((t) => t.projectId === routerData.id);
@@ -153,20 +152,30 @@ export class TaskListComponent implements OnInit {
       const trash = this.trashService.allTrash$();
       data = trash.filter((t) => !t.parentId);
     } else if (routerData.entityType === EntityType.COMPLETED) {
-      data = this.taskService.allTasks$().filter((t) => t.status === 'COMPLETED');
-    }else if(routerData.entityType === EntityType.TAG_VIEW){
-      data =  this.taskService.allTasks$().filter(t =>
-    t.tags?.some(tag => tag.name.toLowerCase().includes(routerData.id.toLowerCase()))
-  );
+      data = this.taskService
+        .allTasks$()
+        .filter((t) => t.status === 'COMPLETED');
+    } else if (routerData.entityType === EntityType.TAG_VIEW) {
+      data = this.taskService
+        .allTasks$()
+        .filter((t) =>
+          t.tags?.some((tag) =>
+            tag.name.toLowerCase().includes(routerData.id.toLowerCase()),
+          ),
+        );
     }
 
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
 
+    
     if (routerData.entityType === EntityType.COMPLETED) {
       return this.groupByFn(data, 'Date', true);
     }
 
-    
+    // if (routerData.entityType === EntityType.FOLDER) {
+    //   return this.groupByFn(data, 'Project', true);
+    // }
+
 
     if (groupBy !== 'None') {
       return this.groupByFn(data, groupBy);
@@ -292,7 +301,7 @@ export class TaskListComponent implements OnInit {
     if (isCompletedView) {
       data.forEach((t) => {
         const key = this.getCompletedDateGroup(
-          t.updatedAt ?? t.completedAt ?? t.dueDate
+          t.updatedAt ?? t.completedAt ?? t.dueDate,
         );
         if (!groups.has(key)) groups.set(key, []);
         groups.get(key)!.push(t);
@@ -310,7 +319,7 @@ export class TaskListComponent implements OnInit {
       return Array.from(groups.entries())
         .sort(
           ([a], [b]) =>
-            completedDateOrder.indexOf(a) - completedDateOrder.indexOf(b)
+            completedDateOrder.indexOf(a) - completedDateOrder.indexOf(b),
         )
         .map(([key, tasks]) => ({ key, label: key, tasks }));
     }
@@ -324,6 +333,11 @@ export class TaskListComponent implements OnInit {
     rest.forEach((t) => {
       let key: string;
       switch (groupBy) {
+        case 'Project':
+          key =
+            this.projectService.projects$().find((p) => p.id === t.projectId)
+              ?.name ?? 'No Project';
+          break;
         case 'Priority':
           key = t.priority ?? 'No Priority';
           break;
@@ -350,7 +364,7 @@ export class TaskListComponent implements OnInit {
           }
           return;
         default:
-          key = 'Other';
+          key = 'unpinned';
       }
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key)!.push(t);
@@ -368,7 +382,7 @@ export class TaskListComponent implements OnInit {
     const sortedGroups =
       groupBy === 'Date'
         ? Array.from(groups.entries()).sort(
-            ([a], [b]) => dateOrder.indexOf(a) - dateOrder.indexOf(b)
+            ([a], [b]) => dateOrder.indexOf(a) - dateOrder.indexOf(b),
           )
         : Array.from(groups.entries()).sort(([a], [b]) => {
             if (a === 'No Tag') return 1;
@@ -383,7 +397,7 @@ export class TaskListComponent implements OnInit {
     }
 
     result.push(
-      ...sortedGroups.map(([key, tasks]) => ({ key, label: key, tasks }))
+      ...sortedGroups.map(([key, tasks]) => ({ key, label: key, tasks })),
     );
 
     if (completed.length > 0) {
@@ -401,7 +415,7 @@ export class TaskListComponent implements OnInit {
     const due = new Date(dueDate);
     due.setHours(0, 0, 0, 0);
     const diffDays = Math.round(
-      (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+      (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (diffDays < 0) return 'Overdue';
@@ -420,7 +434,7 @@ export class TaskListComponent implements OnInit {
     completed.setHours(0, 0, 0, 0);
 
     const diffDays = Math.round(
-      (today.getTime() - completed.getTime()) / (1000 * 60 * 60 * 24)
+      (today.getTime() - completed.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (diffDays === 0) return 'Today';
@@ -560,14 +574,17 @@ export class TaskListComponent implements OnInit {
         this.toggleDateTime();
         break;
       case 'convert_to_note':
-        case 'convert_to_Task':
-       if(event.entityType != EntityType.SUBTASK && !event.payload.subtask){
-         this.taskService.updateTask(event.entityId,{...event.payload, isNote: !event.payload.isNote})
-       }else{
-        console.log("not Allow");
-       }
-        
-        break
+      case 'convert_to_Task':
+        if (event.entityType != EntityType.SUBTASK && !event.payload.subtask) {
+          this.taskService.updateTask(event.entityId, {
+            ...event.payload,
+            isNote: !event.payload.isNote,
+          });
+        } else {
+          console.log('not Allow');
+        }
+
+        break;
 
       case 'set_priority_high':
         this.updateTaskOrSubTask(event, { priority: TaskPriority.HIGH });
@@ -643,7 +660,6 @@ export class TaskListComponent implements OnInit {
         });
         break;
 
-
       case 'delete':
         this.trashService.addTrash({
           ...task,
@@ -656,14 +672,6 @@ export class TaskListComponent implements OnInit {
         }
         break;
 
-      case 'restore':
-        console.log('Task Item Event Handler::', event);
-        this.trashService.restoreTask(event.entityId);
-        break;
-
-      case 'delete_forever':
-        this.trashService.deleteTrash(event.entityId);
-        break;
     }
   }
 

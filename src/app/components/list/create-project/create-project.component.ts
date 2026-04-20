@@ -131,23 +131,6 @@ export class CreateProjectComponent implements OnInit {
     
     if (this.mode === 'update' && this.projectId) {
 
-      // const projectData = this.projectForm.value;
-      // // debugger;
-      // this.projectService
-      //   .updateProject(this.projectId, {
-      //     ...projectData,
-      //   })
-      //   .subscribe((data: any) => {
-      //     // debugger;
-      //     if (data.folderId) {
-      //       this..fetchFolderWithProjects();
-      //     } else {
-      //       this.projectService.loadAllProjects();
-      //     }
-      //     this.projectService.loadArchivedProjects();
-
-      //     this.closeForm();
-      //   });
 
        this.formHandler.emit({
         action:"update",

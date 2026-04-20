@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  effect,
   HostListener,
   inject,
   OnInit,
@@ -56,6 +57,8 @@ export class ListComponent implements OnInit {
   allArchives = computed(() =>
     this.projectService.projects$().filter((p) => p.isArchived),
   );
+
+
   // folderWithProjects = this.folderWithProjectService.foldersWithProjects$;
 
   isShowCreateForm = false;
@@ -67,6 +70,12 @@ export class ListComponent implements OnInit {
   activeFolderId: string | null = null;
   mode: 'create' | 'update' = 'create';
   projectId: string | null = null;
+
+  constructor(){
+    effect(() =>{
+      this.folderService.allFolders$()
+    })
+  }
 
   ngOnInit(): void {
     // this.folderWithProjectService.fetchFolderWithProjects();
@@ -220,6 +229,7 @@ export class ListComponent implements OnInit {
             });
             this.folderService.deleteFolder(folderId).subscribe({
               next: () => {
+                 this.reloaddata()
                 this.reinitializedIds();
               },
               error: () => {

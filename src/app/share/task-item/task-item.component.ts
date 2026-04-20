@@ -212,7 +212,8 @@ export class TaskItemComponent implements OnChanges {
     task.isPinned,
     false,
     false,
-    task.isNote ?? false    
+    task.isNote ?? false,
+    task.status == TaskStatus.WONT_DO ? true : false
     );
 
     // Split into sections (Date/Priority) and regular items

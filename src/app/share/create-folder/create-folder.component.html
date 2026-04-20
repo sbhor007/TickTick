@@ -7,7 +7,7 @@
         {{ mode === 'create' ? 'New Folder' : 'Edit Folder' }}
       </h2>
 
-      <button (click)="onClose()" class="text-gray-400 hover:text-white">
+      <button (click)="onClose()" class="text-gray-400 hover:text-white cursor-pointer">
         ✕
       </button>
     </div>
@@ -21,8 +21,9 @@
           placeholder="Folder name"
           class="w-full rounded-md border border-blue-500 bg-[#2a2a2a] px-10 py-2 text-sm text-white"
         />
-        <span class="absolute left-3 top-1/2 -translate-y-1/2">📁</span>
+        <span class="absolute left-3 top-1/2 pi pi-folder -translate-y-1/2"></span>
       </div>
+      
     </div>
 
     <!-- FOOTER -->

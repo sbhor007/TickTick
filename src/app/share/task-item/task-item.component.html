@@ -135,14 +135,15 @@
   <ng-content select="[subtaskToggle]" />
 
   <!-- Left: Checkbox + Title -->
-  <div class="flex items-center gap-2 flex-1 min-w-0">
-    <label class="relative flex items-center cursor-pointer">
+  <div class="flex items-center gap-2 flex-1 min-w-0" [ngClass]="task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-pointer'">
+    <label class="relative flex items-center cursor-pointer" [ngClass]="task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-pointer'">
       @if (!task.isNote) {
         @if (task.status != "WONT_DO") {
           <input
             type="checkbox"
             [formControl]="isCompleted"
             [class]="getCheckboxClass(task.priority)"
+            [ngClass]="task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-pointer'"
           />
         } @else {
           <i

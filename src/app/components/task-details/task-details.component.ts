@@ -80,7 +80,7 @@ import { TaskComment } from '../../models/task-comment';
 export class TaskDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private taskService = inject(TaskService);
+   taskService = inject(TaskService);
   private contextMenuService = inject(ContextMenuBarService);
   private attachmentService = inject(AttachmentService);
   private sanitizer = inject(DomSanitizer);
@@ -96,6 +96,9 @@ export class TaskDetailsComponent implements OnInit {
   attachment: any = null;
   imageUrl: SafeUrl | null = null;
 
+  selectedTaskToLink!: Task;
+  isOpenLinkToParent = false;
+
   selectedImagePreviewUrl: String | null = null;
 
   isDateTimePikerVisible = false;
@@ -110,6 +113,9 @@ export class TaskDetailsComponent implements OnInit {
   selectedTags: Tag[] = [];
 
   priorityOptions = Object.values(TaskPriority);
+  allTags = computed(() => this.tagService.allTags$())
+
+  searchQuery = new FormControl('');
 
   constructor() {
     effect(() => {
@@ -510,6 +516,10 @@ export class TaskDetailsComponent implements OnInit {
         this.createSubTaskFromEvent(event.entityId, task);
         break;
 
+      case 'link_parent':
+        this.isOpenLinkToParent = true;
+        this.selectedTaskToLink = task;
+        break;
       case 'pin':
       case 'unpin':
         this.updateTaskOrSubTask(event, { isPinned: !task.isPinned });
@@ -524,7 +534,17 @@ export class TaskDetailsComponent implements OnInit {
       case 'set_date_next_week':
         this.updateTaskOrSubTask(event, { dueDate: this.getDateISO(7) });
         break;
-
+        case 'convert_to_note':
+      case 'convert_to_Task':
+        if (event.entityType != EntityType.SUBTASK && !event.payload.subtask) {
+          this.taskService.updateTask(event.entityId, {
+            ...event.payload,
+            isNote: !event.payload.isNote,
+          });
+        } else {
+          console.log('not Allow');
+        }
+      break
       case 'set_priority_high':
         this.updateTaskOrSubTask(event, { priority: TaskPriority.HIGH });
         break;
@@ -603,6 +623,20 @@ export class TaskDetailsComponent implements OnInit {
       case 'delete_forever':
         this.trashService.deleteTrash(event.entityId);
         break;
+    }
+  }
+
+  /**move to parent */
+  linkToParent(selectedTaskId: string) {
+    this.isOpenLinkToParent = false;
+    if (
+      selectedTaskId != null ||
+      (selectedTaskId != '' && this.selectedTaskToLink)
+    ) {
+      this.taskService.linkToParentTask(
+        selectedTaskId,
+        this.selectedTaskToLink,
+      );
     }
   }
 
