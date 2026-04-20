@@ -1,0 +1,42 @@
+<div
+  class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[60] border border-gray-700"
+  (mouseleave)="closed.emit()"
+>
+  @for (fp of folderProject(); track fp.id) {
+    <div
+      class="relative"
+      (mouseenter)="onFolderHover(fp.id)"
+      (mouseleave)="onFolderLeave()"
+    >
+      <button class="ctx-menu-item w-full flex justify-between items-center">
+        @if (fp.entityType === 'FOLDER' && fp.projects?.length > 0) {
+          <i class="pi pi-folder"></i>
+          <span class="flex-1">{{ fp.name }}</span>
+          <i class="pi pi-angle-right"></i>
+        } @else if (fp.entityType === 'PROJECT') {
+          <i class="pi pi-align-justify"></i>
+          <span class="flex-1" (click)="moveTO(fp)">
+            {{ fp.name }} +
+          </span>
+        }
+      </button>
+
+      <!-- 3rd level submenu -->
+      @if (hoveredFolderId === fp.id && fp.projects?.length) {
+        <div
+          class="absolute left-full top-0 ml-1 w-[200px] bg-[#1c1c1e] rounded-lg shadow-2xl py-1 z-[70] border border-gray-700"
+        >
+          @for (project of fp.projects; track project.id) {
+            <button
+              class="ctx-menu-item w-full text-left"
+              (click)="moveTO(project)"
+            >
+              <i class="pi pi-align-justify"></i>
+              <span>{{ project.name }}</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

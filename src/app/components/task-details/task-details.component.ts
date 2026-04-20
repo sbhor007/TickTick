@@ -36,6 +36,7 @@ import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { CommentService } from '../../services/comment.service';
 import { TimeAgoPipe } from '../../pipe/time-ago.pipe';
 import { TaskComment } from '../../models/task-comment';
+import { MoveToProjectComponent } from '../../share/move-to-project/move-to-project.component';
 
 @Component({
   selector: 'app-task-details',
@@ -52,6 +53,7 @@ import { TaskComment } from '../../models/task-comment';
     TagSelectorComponent,
     PickerComponent,
     TimeAgoPipe,
+    MoveToProjectComponent,
   ],
   templateUrl: './task-details.component.html',
   styles: [
@@ -80,7 +82,7 @@ import { TaskComment } from '../../models/task-comment';
 export class TaskDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-   taskService = inject(TaskService);
+  taskService = inject(TaskService);
   private contextMenuService = inject(ContextMenuBarService);
   private attachmentService = inject(AttachmentService);
   private sanitizer = inject(DomSanitizer);
@@ -113,7 +115,7 @@ export class TaskDetailsComponent implements OnInit {
   selectedTags: Tag[] = [];
 
   priorityOptions = Object.values(TaskPriority);
-  allTags = computed(() => this.tagService.allTags$())
+  allTags = computed(() => this.tagService.allTags$());
 
   searchQuery = new FormControl('');
 
@@ -173,7 +175,7 @@ export class TaskDetailsComponent implements OnInit {
             { emitEvent: false },
           );
           this.priority.setValue(result.subtask.priority, { emitEvent: false });
-          this.attachment = null
+          this.attachment = null;
           /**get comment data */
           const filtered = this.commentsService
             .allComments$()
@@ -258,14 +260,14 @@ export class TaskDetailsComponent implements OnInit {
 
     /**update title */
     this.taskTitle.valueChanges.pipe(debounceTime(500)).subscribe((val) => {
-      if (this.task.entityType == EntityType.TASK ) {
+      if (this.task.entityType == EntityType.TASK) {
         this.taskService.updateTask(this.task.id, {
           ...this.task,
           title: this.taskTitle.value ?? this.task.title,
         });
       } else if (
         this.task.entityType === EntityType.SUBTASK &&
-        this.task.parentId 
+        this.task.parentId
       ) {
         this.taskService.updateSubTask(this.task.parentId, this.task.id, {
           ...this.task,
@@ -534,7 +536,7 @@ export class TaskDetailsComponent implements OnInit {
       case 'set_date_next_week':
         this.updateTaskOrSubTask(event, { dueDate: this.getDateISO(7) });
         break;
-        case 'convert_to_note':
+      case 'convert_to_note':
       case 'convert_to_Task':
         if (event.entityType != EntityType.SUBTASK && !event.payload.subtask) {
           this.taskService.updateTask(event.entityId, {
@@ -544,7 +546,7 @@ export class TaskDetailsComponent implements OnInit {
         } else {
           console.log('not Allow');
         }
-      break
+        break;
       case 'set_priority_high':
         this.updateTaskOrSubTask(event, { priority: TaskPriority.HIGH });
         break;
@@ -560,9 +562,12 @@ export class TaskDetailsComponent implements OnInit {
 
       case 'wont_do':
         this.updateTaskOrSubTask(event, {
-          status: event.payload.status === TaskStatus.WONT_DO ? TaskStatus.PENDING : TaskStatus.WONT_DO,
+          status:
+            event.payload.status === TaskStatus.WONT_DO
+              ? TaskStatus.PENDING
+              : TaskStatus.WONT_DO,
         });
-        break
+        break;
       case 'move_to':
         if (event.entityType == EntityType.SUBTASK) {
           this.taskService.deleteSubTask(
@@ -1064,4 +1069,7 @@ export class TaskDetailsComponent implements OnInit {
   deleteComment(commentID: string) {
     this.commentsService.deleteComment(commentID);
   }
+
+  /**move to another folder */
+  showMoveToProject = false;
 }

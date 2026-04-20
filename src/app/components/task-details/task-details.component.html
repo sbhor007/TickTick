@@ -358,9 +358,19 @@
 
         <!-- Bottom Toolbar -->
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
+          <div class="flex items-center gap-1.5 relative">
+            <!-- Dropdown anchored to this container -->
+
             <i class="pi pi-folder text-zinc-400 text-xs"></i>
             <span class="text-xs text-zinc-400">test-2</span>
+
+            <!-- Trigger -->
+            <button
+              class="text-xs text-zinc-400"
+              (click)="showMoveToProject = !showMoveToProject"
+            >
+              <i class="pi pi-chevron-down text-xs"></i>
+            </button>
           </div>
 
           <div class="flex items-center gap-0.5">
@@ -450,12 +460,16 @@
   ></div>
 
   <!-- Dialog -->
-  <div class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+  >
     <div
       class="w-[26rem] bg-white dark:bg-neutral-900 rounded-xl border border-gray-200/60 dark:border-white/10 pointer-events-auto overflow-hidden flex flex-col p-2"
     >
       <!-- Search -->
-      <div class="border-b border-b-blue-500 py-1 flex items-center justify-center gap-2">
+      <div
+        class="border-b border-b-blue-500 py-1 flex items-center justify-center gap-2"
+      >
         <i class="pi pi-search text-gray-500"></i>
         <input
           type="search"
@@ -481,7 +495,9 @@
               class="w-3 h-3 rounded-full border-[1.5px] flex-shrink-0"
               [class]="getCheckboxClass(task.priority)"
             ></span>
-            <span class="flex-1 text-[13px] text-gray-700 dark:text-gray-200 truncate">
+            <span
+              class="flex-1 text-[13px] text-gray-700 dark:text-gray-200 truncate"
+            >
               {{ task.title }}
             </span>
             <span
@@ -499,3 +515,12 @@
   </div>
 }
 
+@if (showMoveToProject) {
+  <div class="relative -top-[17rem]  z-50">
+    <app-move-to-project
+      class="absolute"
+      [task]="task"
+      (closed)="showMoveToProject = false"
+    />
+  </div>
+}
