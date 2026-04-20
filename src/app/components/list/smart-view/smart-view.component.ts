@@ -32,7 +32,7 @@ export class SmartViewComponent {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const next7DaysEnd = new Date(today);
-    next7DaysEnd.setDate(next7DaysEnd.getDate() + 7);
+next7DaysEnd.setDate(next7DaysEnd.getDate() + 7);
 
     return this.projectService
       .projects$()
@@ -69,14 +69,13 @@ export class SmartViewComponent {
             break;
 
           case 'NEXT_7_DAYS':
-            const t = allTasks.filter((t) => {
-              if (!t.dueDate) return false;
-              const due = new Date(t.dueDate);
-              due.setHours(0, 0, 0, 0);
-              return due > today && due <= next7DaysEnd; 
-            })
-            count = t.length;
-            break;
+  count = allTasks.filter((t) => {
+    if (!t.dueDate) return false;
+    const due = new Date(t.dueDate);
+    due.setHours(0, 0, 0, 0);
+    return due >= today && due <= next7DaysEnd; 
+  }).length;
+  break;
 
           default:
             count = 0;

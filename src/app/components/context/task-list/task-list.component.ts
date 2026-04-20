@@ -107,6 +107,12 @@ export class TaskListComponent implements OnInit {
     this.searchQuery.valueChanges.subscribe((val) => {
       this.searchTerm.set(val ?? '');
     });
+
+    console.log('--------------------------*-----------------');
+    console.log(this.groupedTasks());
+    
+    console.log('--------------------------*-----------------');
+    
   }
 
   allTaskInsideProject: any;
@@ -601,7 +607,7 @@ export class TaskListComponent implements OnInit {
 
       case 'wont_do':
         this.updateTaskOrSubTask(event, {
-          status: TaskStatus.WONT_DO,
+          status: event.payload.status === TaskStatus.WONT_DO ? TaskStatus.PENDING : TaskStatus.WONT_DO,
         });
         break;
 

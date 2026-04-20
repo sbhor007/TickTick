@@ -559,8 +559,10 @@ export class TaskDetailsComponent implements OnInit {
         break;
 
       case 'wont_do':
-        this.updateTaskOrSubTask(event, { status: TaskStatus.WONT_DO });
-        break;
+        this.updateTaskOrSubTask(event, {
+          status: event.payload.status === TaskStatus.WONT_DO ? TaskStatus.PENDING : TaskStatus.WONT_DO,
+        });
+        break
       case 'move_to':
         if (event.entityType == EntityType.SUBTASK) {
           this.taskService.deleteSubTask(

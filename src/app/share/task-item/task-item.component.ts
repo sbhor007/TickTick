@@ -201,7 +201,7 @@ export class TaskItemComponent implements OnChanges {
     });
   }
 
-  openFolderMenu(event: MouseEvent, task: Task) {
+  optionMenu(event: MouseEvent, task: Task) {
     event.stopPropagation();
     event.preventDefault();
 
@@ -209,11 +209,11 @@ export class TaskItemComponent implements OnChanges {
 
     const context = this.contextMenuService.getContextMenu(
       task.entityType,
-    task.isPinned,
-    false,
-    false,
-    task.isNote ?? false,
-    task.status == TaskStatus.WONT_DO ? true : false
+      task.isPinned,
+      false,
+      false,
+      task.isNote ?? false,
+      task.status == TaskStatus.WONT_DO ? true : false,
     );
 
     // Split into sections (Date/Priority) and regular items

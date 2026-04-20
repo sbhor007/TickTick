@@ -1,5 +1,5 @@
 <div
-  (contextmenu)="openFolderMenu($event, task)"
+  (contextmenu)="optionMenu($event, task)"
   class="flex items-center gap-3 px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors group mb-0.5 w-full"
 >
   <!-- Context Menu Popover -->
@@ -286,7 +286,7 @@
     <!-- Ellipsis Button -->
     <button
       class="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded cursor-pointer"
-      (click)="openFolderMenu($event, task)"
+      (click)="optionMenu($event, task)"
     >
       <i class="pi pi-ellipsis-h text-gray-400 text-[11px]"></i>
     </button>

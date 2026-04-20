@@ -108,7 +108,7 @@
       "updatedAt": "2026-04-01T00:00:00.000Z",
       "isSystem": true,
       "order": 3,
-      "hidden": true,
+      "hidden": false,
       "showIfNotEmpty": false
     },
     {
@@ -127,7 +127,7 @@
       "updatedAt": "2026-04-01T00:00:00.000Z",
       "isSystem": true,
       "order": 3,
-      "hidden": true,
+      "hidden": false,
       "showIfNotEmpty": false
     },
     {
@@ -818,9 +818,9 @@
       "attachmentId": null,
       "entityType": "TASK",
       "isNote": false,
-      "dueDate": null,
+      "dueDate": "2026-04-20T18:30:00.000Z",
       "createdAt": "2026-04-20T06:16:26.868Z",
-      "updatedAt": "2026-04-20T06:16:26.868Z",
+      "updatedAt": "2026-04-20T07:33:44.975Z",
       "completedAt": null
     },
     {
@@ -839,9 +839,9 @@
       "attachmentId": null,
       "entityType": "TASK",
       "isNote": false,
-      "dueDate": null,
+      "dueDate": "2026-04-22T18:30:00.000Z",
       "createdAt": "2026-04-20T06:16:30.845Z",
-      "updatedAt": "2026-04-20T06:16:30.845Z",
+      "updatedAt": "2026-04-20T07:33:53.417Z",
       "completedAt": null
     },
     {
@@ -850,7 +850,7 @@
       "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
       "title": "new-3",
       "description": "",
-      "status": "WONT_DO",
+      "status": "PENDING",
       "priority": "NONE",
       "isPinned": false,
       "parentId": null,
@@ -862,7 +862,7 @@
       "isNote": false,
       "dueDate": null,
       "createdAt": "2026-04-20T06:21:53.715Z",
-      "updatedAt": "2026-04-20T06:33:24.874Z",
+      "updatedAt": "2026-04-20T07:14:09.856Z",
       "completedAt": null
     },
     {
