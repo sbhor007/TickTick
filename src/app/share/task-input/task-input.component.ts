@@ -336,7 +336,7 @@ export class TaskInputComponent implements OnInit {
         },
         error: (err) => {
           console.error('Upload failed:', err);
-          this.buildAndCreateTask(); // create task without attachment on error
+          this.buildAndCreateTask(); 
         },
       });
     } else {
@@ -358,7 +358,7 @@ export class TaskInputComponent implements OnInit {
       subtasks: [],
       tags: Array.from(this.selectedTags) ?? [],
       comments: [],
-      attachmentId: this.taskAttachmentId ?? null, // ✅ now set correctly
+      attachmentId: this.taskAttachmentId ?? null, 
       entityType: EntityType.TASK,
       isNote: false,
       reminder: this.lastSelection()?.reminder,
@@ -370,7 +370,7 @@ export class TaskInputComponent implements OnInit {
       completedAt: null,
     };
     
-    
+
     console.log('task-Data: ', taskData);
     this.taskService.crateTask(this.project.id, taskData);
     this.cleanupInputField();

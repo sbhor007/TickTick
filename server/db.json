@@ -28,6 +28,16 @@
       "projects": [],
       "createdAt": "17/04/2026",
       "updatedAt": "17/04/2026"
+    },
+    {
+      "id": "4a4b3374-e306-4350-a749-82a20490734a",
+      "userId": null,
+      "name": "Three",
+      "isPinned": false,
+      "entityType": "FOLDER",
+      "projects": [],
+      "createdAt": "20/04/2026",
+      "updatedAt": "20/04/2026"
     }
   ],
   "projects": [
@@ -246,6 +256,23 @@
       "id": "858b42ec-da5f-46d9-b974-fd53972ad232",
       "createdAt": "2026-04-17T14:09:50.747Z",
       "updatedAt": "2026-04-17T14:09:50.747Z",
+      "isPinned": false,
+      "isArchived": false,
+      "isSmartView": false,
+      "icon": "pi pi-cog",
+      "tasks": []
+    },
+    {
+      "name": "new List",
+      "color": "#22c55e",
+      "viewType": "",
+      "folderId": "4a4b3374-e306-4350-a749-82a20490734a",
+      "listType": "Task List",
+      "smartList": "All Task",
+      "entityType": "PROJECT",
+      "id": "34fafe25-2206-47e1-bb7a-7cea82ab3cbf",
+      "createdAt": "2026-04-20T05:24:17.693Z",
+      "updatedAt": "2026-04-20T05:24:17.693Z",
       "isPinned": false,
       "isArchived": false,
       "isSmartView": false,
@@ -725,6 +752,51 @@
       "createdAt": "2026-04-19T13:42:54.849Z",
       "updatedAt": "2026-04-19T13:53:58.541Z",
       "completedAt": null
+    },
+    {
+      "id": "db061421-8caa-41b6-8192-8c560de84d81",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "Hell",
+      "description": "",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [
+        {
+          "name": "tag-4",
+          "id": "169c19db-1e58-42c3-8f51-d9763c0e801f",
+          "parentId": null,
+          "entityType": "TAG",
+          "color": "",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-17T05:53:20.367Z",
+          "updatedAt": "2026-04-19T13:29:13.311Z",
+          "isShared": false
+        },
+        {
+          "name": "new",
+          "id": "bf1dde44-89b0-470a-8237-05e9bd8365d7",
+          "parentId": null,
+          "entityType": "TAG",
+          "color": "",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-17T07:22:36.498Z",
+          "updatedAt": "2026-04-17T07:22:36.498Z"
+        }
+      ],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-20T05:25:55.834Z",
+      "updatedAt": "2026-04-20T05:26:03.877Z",
+      "completedAt": null
     }
   ],
   "tags": [
@@ -996,5 +1068,7 @@
       "updatedAt": "2026-04-19T08:06:15.576Z",
       "createdAt": "2026-04-19T08:06:15.576Z"
     }
-  ]
+  ],
+  "reminders": [],
+  "repeats": []
 }
