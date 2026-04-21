@@ -14,8 +14,23 @@ import { UiStateService } from '../../../services/ui-state.service';
   templateUrl: './list-action.page.component.html'
 })
 export class ListActionPageComponent  {
-  ui = inject(UiStateService);
 
+ uiState = inject(UiStateService);
+
+  // Dynamically adjust panel sizes based on collapsed state
+  panelSizes = computed(() =>
+    this.uiState.isListPanelCollapsed() ? [0, 100] : [25, 75]
+  );
+
+  minSizes = computed(() =>
+    this.uiState.isListPanelCollapsed() ? [0, 100] : [15, 50]
+  );
+
+   cardClass = computed(() =>
+    this.uiState.isListPanelCollapsed()
+      ? 'card h-screen w-screen'
+      : 'card h-screen w-full'
+  );
 
 
 }

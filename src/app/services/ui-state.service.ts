@@ -6,5 +6,7 @@ import { Injectable, signal } from '@angular/core';
 export class UiStateService {
   isListPanelCollapsed = signal(false);
 
-  constructor() { }
+  toggleListPanel() {
+    this.isListPanelCollapsed.update(v => !v);
+  }
 }

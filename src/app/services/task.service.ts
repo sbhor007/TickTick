@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
 import { Task } from '../models/task';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, retry } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { EntityType } from '../enums/entity-type';
 
@@ -33,7 +33,7 @@ export class TaskService {
 
   loadAllTasks() {
     this.fetchAllTasks().subscribe((tasks) => {
-      this.allTasks$.set(tasks);
+      this._allTasks.set(tasks);
     });
   }
 
@@ -131,36 +131,25 @@ export class TaskService {
 
 
   /**delete Task */
-  deleteTask(taskId: string) {
-    this.http.delete<void>(`${environment.API}/tasks/${taskId}`).subscribe({
-      next: (data) => {
-        console.log('deleted Data', data);
 
+ deleteTask(taskId: string) {
+  this.http.delete<void>(`${environment.API}/tasks/${taskId}`).pipe(
+    retry(2)
+  ).subscribe({
+    next: (data) => {
+      console.log('deleted Data', data);
+      this.loadAllTasks();
+    },
+    error: (err) => {
+      setTimeout(() =>{
         this.loadAllTasks();
-      },
-      error: (err) => {
-        this.loadAllTasks();
-        console.error('Error Occurs in tag update:', err);
-      },
-    });
-  }
+      console.log('Error Occurs in delete task:', err);
+      },500)
+    },
+  });
+}
 
-  // deleteSubTask(parentTaskId: string, taskId: string) {
-  //   const parentTask = this.allTasks$().find((t) => t.id == parentTaskId);
-
-  //   if (parentTask) {
-  //     const updateSubTask = parentTask.subtasks?.filter(
-  //       (st) => st.id != taskId,
-  //     );
-  //     this.updateTask(parentTask.id, {
-  //       ...parentTask,
-  //       subtasks: updateSubTask,
-  //       updatedAt: new Date().toISOString(),
-  //     });
-  //     console.log("sub task deleted...");
-
-  //   }
-  // }
+ 
   deleteSubTask(parentTaskId: string, taskId: string) {
     if (!parentTaskId) {
       console.warn(

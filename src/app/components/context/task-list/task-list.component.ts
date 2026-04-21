@@ -65,8 +65,6 @@ export class TaskListComponent implements OnInit {
   private tagService = inject(TagsService);
   private injector = inject(Injector);
 
-
-
   @Input() routeData!: any;
 
   isDateTimePikerVisible = false;
@@ -95,16 +93,21 @@ export class TaskListComponent implements OnInit {
   selectedTaskToLink!: Task;
   selectedTags: Tag[] = [];
 
-
   private entityData = signal<any | null>(null);
   sortGroupData = input<any>({ groupBy: 'none', sortBy: 'Title' });
   collapsedGroups = signal<Set<string>>(new Set());
 
   searchQuery = new FormControl('');
+  constructor(){
+    effect(() => {
+      this.trashService.loadAllTrash();
+    this.taskService.loadAllTasks();
+    });
+
+  }
 
   ngOnInit(): void {
-    this.trashService.loadAllTrash();
-    this.taskService.loadAllTasks();
+    
     this.loadRouteData();
 
     /**search*/
@@ -158,7 +161,7 @@ export class TaskListComponent implements OnInit {
         .filter((t) => t.projectId === routerData.id);
     } else if (routerData.entityType === EntityType.TRASHED) {
       const trash = this.trashService.allTrash$();
-      data = trash.filter((t) => !t.parentId);
+      data = trash.filter((t) => t.parentId);
     } else if (routerData.entityType === EntityType.COMPLETED) {
       data = this.taskService
         .allTasks$()
@@ -582,12 +585,12 @@ export class TaskListComponent implements OnInit {
         break;
       case 'set_date_custom':
         this.selectedTask = task;
-  this.initialDate.set(task.dueDate ? new Date(task.dueDate) : null);
-  this.initialTime.set(task.dueDateTime ?? null);
-  setTimeout(() => {
-    this.dateTimePopover.show(event.originalEvent);
-  }, 0);
-  break;
+        this.initialDate.set(task.dueDate ? new Date(task.dueDate) : null);
+        this.initialTime.set(task.dueDateTime ?? null);
+        setTimeout(() => {
+          this.dateTimePopover.show(event.originalEvent);
+        }, 0);
+        break;
       case 'convert_to_note':
       case 'convert_to_task':
         console.log(event.payload.subtasks);
@@ -690,16 +693,26 @@ export class TaskListComponent implements OnInit {
         break;
 
       case 'delete':
-        this.trashService.addTrash({
-          ...task,
-          entityType: EntityType.TRASHED,
-        });
+        
         if (isSubtask) {
           this.taskService.deleteSubTask(task.parentId!, event.entityId);
         } else {
-          this.taskService.deleteTask(event.entityId);
+          this.trashService.addTrash({
+          ...task,
+          entityType: EntityType.TRASHED,
+        });
+         setTimeout(() =>{
+        this.taskService.deleteTask(task.id);
+      },500)
+          this.taskService.deleteTask(task.id);
+          // this.taskService.loadAllTasks()
         }
         break;
+      case 'restore_delete_task':
+        this.trashService.restoreTask(event.entityId);
+        break;
+        case 'delete_forever':
+          this.trashService.deleteTrash(event.entityId);
     }
   }
 
@@ -880,5 +893,4 @@ export class TaskListComponent implements OnInit {
         break;
     }
   }
-
 }

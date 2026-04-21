@@ -10,6 +10,7 @@ import { TaskInputComponent } from '../../../share/task-input/task-input.compone
 import { ProjectService } from '../../../services/project.service';
 import { DateTimePickerComponent } from '../../../share/date-time-picker/date-time-picker.component';
 import { TagsService } from '../../../config/tags.service';
+import { UiStateService } from '../../../services/ui-state.service';
 
 type RouteInfo = {
   id: string | null;
@@ -34,6 +35,7 @@ export class ContextPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private projectService = inject(ProjectService);
   private tagService = inject(TagsService);
+  uiState = inject(UiStateService);
 
   routeData = signal<RouteInfo>({
     id: null,
