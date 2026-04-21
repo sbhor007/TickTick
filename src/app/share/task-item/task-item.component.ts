@@ -33,6 +33,7 @@ import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.co
 import { DateTimeSelection } from '../../models/date';
 import { Project } from '../../models/project';
 import { TagSelectorComponent } from '../tag-selector/tag-selector.component';
+import { MoveToProjectComponent } from "../move-to-project/move-to-project.component";
 
 export type TaskActionType =
   | 'update'
@@ -80,7 +81,8 @@ export interface ContextMenuI {
     Popover,
     DateTimePickerComponent,
     TagSelectorComponent,
-  ],
+    MoveToProjectComponent
+],
   templateUrl: './task-item.component.html',
   styleUrl: './task-item.component.css',
 })
@@ -102,21 +104,22 @@ export class TaskItemComponent implements OnChanges {
 
   /**move to */
   isVisibleFolderMenu = false;
-  folderProject = computed(() => {
-    const folder = this.folderService
-      .allFolders$()
+  // folderProject = computed(() => {
+  //   const folder = this.folderService
+  //     .allFolders$()
 
-      .map((folder) => ({
-        ...folder,
-        projects: this.projectService
-          .projects$()
-          .filter((project) => project.folderId == folder.id),
-      }));
-    const project = this.projectService
-      .projects$()
-      .filter((project) => project.folderId == null && !project.isSmartView);
-    return [...folder, ...project];
-  });
+  //     .map((folder) => ({
+  //       ...folder,
+  //       projects: this.projectService
+  //         .projects$()
+  //         .filter((project) => project.folderId == folder.id),
+  //     }))
+  //     .filter((folder) => folder.projects.length > 0);
+  //   const project = this.projectService
+  //     .projects$()
+  //     .filter((project) => project.folderId == null && !project.isSmartView);
+  //   return [...folder, ...project];
+  // });
 
   isCompleted = new FormControl();
   taskTitle = new FormControl('');

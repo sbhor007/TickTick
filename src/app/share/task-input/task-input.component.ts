@@ -112,7 +112,8 @@ export class TaskInputComponent implements OnInit {
         projects: this.projectService
           .projects$()
           .filter((project) => project.folderId == folder.id),
-      }));
+      }))
+      .filter((folder) => folder.projects.length > 0);
     const project = this.projectService
       .projects$()
       .filter((project) => project.folderId == null && !project.isSmartView);

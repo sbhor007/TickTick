@@ -20,20 +20,22 @@ export class MoveToProjectComponent {
   @Input() task: Task | null = null;
   @Output() closed = new EventEmitter<void>();
    folderProject = computed(() => {
-    const folder = this.folderService
-      .allFolders$()
+  const folder = this.folderService
+    .allFolders$()
+    .map((folder) => ({
+      ...folder,
+      projects: this.projectService
+        .projects$()
+        .filter((project) => project.folderId == folder.id),
+    }))
+    .filter((folder) => folder.projects.length > 0); 
 
-      .map((folder) => ({
-        ...folder,
-        projects: this.projectService
-          .projects$()
-          .filter((project) => project.folderId == folder.id),
-      }));
-    const project = this.projectService
-      .projects$()
-      .filter((project) => project.folderId == null && !project.isSmartView);
-    return [...folder, ...project];
-  });
+  const project = this.projectService
+    .projects$()
+    .filter((project) => project.folderId == null && !project.isSmartView);
+
+  return [...folder, ...project];
+});
  
 
   hoveredFolderId: string | null = null;
@@ -51,9 +53,15 @@ export class MoveToProjectComponent {
     
     if (this.task && this.task.entityType == EntityType.TASK) {
               this.taskService.deleteTask(this.task.id);
+              const updateSubtasks = this.task.subtasks?.map((st: Task) => ({
+            ...st,
+            projectId: entity.id,
+          }));
               this.taskService.crateTask(entity.id, {
                 ...this.task,
                 projectId: entity.id,
+                subtasks: updateSubtasks,
+
               });
             } else if (this.task?.entityType == EntityType.SUBTASK) {
               this.taskService.deleteSubTask(

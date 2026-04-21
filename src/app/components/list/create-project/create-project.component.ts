@@ -171,17 +171,17 @@ export class CreateProjectComponent implements OnInit {
 
     // CREATE
     if (event.action === 'create') {
-      // console.log("Folder created...");
-      
-      this.folderService.loadAllFolders()
-      this.projectForm.patchValue({
-        folderId: event.folderId,
-      });
+     this.folderService.loadAllFolders();
+    this.isShowFolderDialog.set(false); // ✅ close here instead
+    setTimeout(() => {
+      this.projectForm.patchValue({ folderId: event.folderId });
+    }, 100);
       
     }
     //  UPDATE
     if (event.action === 'update') {
-      // console.log('Folder updated:', event.folderName);
+      this.folderService.loadAllFolders();
+    this.isShowFolderDialog.set(false);
     }
   }
 

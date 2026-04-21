@@ -37,6 +37,7 @@ import { Tag } from '../../../models/tag';
 import { TagsService } from '../../../config/tags.service';
 import { Popover } from 'primeng/popover';
 import { filter } from 'rxjs';
+import { toast } from 'ngx-sonner';
 // import { DropdownModule } from 'primeng/dropdown';
 // import { AutoCompleteModule } from 'primeng/autocomplete';
 @Component({
@@ -583,14 +584,16 @@ export class TaskListComponent implements OnInit {
         this.toggleDateTime();
         break;
       case 'convert_to_note':
-      case 'convert_to_Task':
-        if (event.entityType != EntityType.SUBTASK && !event.payload.subtask) {
+      case 'convert_to_task':
+        console.log(event.payload.subtasks);
+        
+        if (event.entityType != EntityType.SUBTASK && !event.payload.subtasks.length) {
           this.taskService.updateTask(event.entityId, {
             ...event.payload,
             isNote: !event.payload.isNote,
           });
         } else {
-          console.log('not Allow');
+          toast.warning('Task With SubTask cant be convert as a note');
         }
 
         break;
@@ -621,9 +624,14 @@ export class TaskListComponent implements OnInit {
       case 'move_to':
         if (event.entityType == EntityType.TASK) {
           this.taskService.deleteTask(event.payload.id);
+          const updateSubtasks = event.payload.subtasks?.map((st: Task) => ({
+            ...st,
+            projectId: event.entityId,
+          }));
           this.taskService.crateTask(event.entityId, {
             ...event.payload,
             projectId: event.entityId,
+            subtasks: updateSubtasks,
           });
         } else if (event.entityType == EntityType.SUBTASK) {
           this.taskService.deleteSubTask(

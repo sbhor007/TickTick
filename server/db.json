@@ -38,6 +38,36 @@
       "projects": [],
       "createdAt": "20/04/2026",
       "updatedAt": "20/04/2026"
+    },
+    {
+      "id": "96652fc2-c531-4b97-9d90-c7cb37599a19",
+      "userId": null,
+      "name": "test folder",
+      "isPinned": false,
+      "entityType": "FOLDER",
+      "projects": [],
+      "createdAt": "21/04/2026",
+      "updatedAt": "21/04/2026"
+    },
+    {
+      "id": "cd804369-142c-4a9c-a3ef-780c2ae4543c",
+      "userId": null,
+      "name": "test-2",
+      "isPinned": false,
+      "entityType": "FOLDER",
+      "projects": [],
+      "createdAt": "21/04/2026",
+      "updatedAt": "21/04/2026"
+    },
+    {
+      "id": "5932481a-8735-4341-9855-5346b4a84ac6",
+      "userId": null,
+      "name": "new test-",
+      "isPinned": false,
+      "entityType": "FOLDER",
+      "projects": [],
+      "createdAt": "21/04/2026",
+      "updatedAt": "21/04/2026"
     }
   ],
   "projects": [
@@ -440,14 +470,15 @@
       "entityType": "TASK",
       "dueDate": "2026-04-23T18:30:00.000Z",
       "createdAt": "2026-04-17T05:51:17.403Z",
-      "updatedAt": "2026-04-19T11:02:20.796Z",
+      "updatedAt": "2026-04-21T04:36:25.803Z",
       "completedAt": null,
       "repeat": {
         "type": "on-the-day"
       },
       "reminder": {
         "type": "daily"
-      }
+      },
+      "isNote": false
     },
     {
       "id": "3654d7f5-efde-4ca3-8bce-f082f1f3773a",
@@ -804,27 +835,6 @@
       "completedAt": null
     },
     {
-      "id": "3a42a989-435e-4994-8fda-61ada379763e",
-      "userId": null,
-      "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "title": "new-3",
-      "description": "",
-      "status": "PENDING",
-      "priority": "NONE",
-      "isPinned": false,
-      "parentId": null,
-      "subtasks": [],
-      "tags": [],
-      "comments": [],
-      "attachmentId": null,
-      "entityType": "TASK",
-      "isNote": false,
-      "dueDate": null,
-      "createdAt": "2026-04-20T06:21:53.715Z",
-      "updatedAt": "2026-04-20T07:14:09.856Z",
-      "completedAt": null
-    },
-    {
       "id": "782c8c96-fe51-43b3-be8a-4390178083de",
       "userId": null,
       "projectId": "782c8c96-fe51-43b3-be8a-4390178083de",
@@ -930,27 +940,6 @@
       "completedAt": null
     },
     {
-      "id": "8bd8c284-b6e3-4af6-ac7b-cbc23f387d7d",
-      "userId": null,
-      "projectId": "c3d4e5f6-a7b8-9012-cdef-345678901234",
-      "title": "testing to mov",
-      "description": "",
-      "status": "PENDING",
-      "priority": "NONE",
-      "isPinned": false,
-      "parentId": null,
-      "subtasks": [],
-      "tags": [],
-      "comments": [],
-      "attachmentId": null,
-      "entityType": "TASK",
-      "isNote": false,
-      "dueDate": "2026-04-21T18:30:00.000Z",
-      "createdAt": "2026-04-20T10:29:38.252Z",
-      "updatedAt": "2026-04-20T12:26:57.088Z",
-      "completedAt": null
-    },
-    {
       "id": "64129ac3-e351-4a00-bcfe-82b05b0d7499",
       "userId": null,
       "projectId": "967b35c1-ffbe-4272-aa91-3167a5e45410",
@@ -974,11 +963,100 @@
     {
       "id": "70d2fed4-dc88-4fe4-b840-edd86ff41e4c",
       "userId": null,
-      "projectId": "967b35c1-ffbe-4272-aa91-3167a5e45410",
+      "projectId": "d4e5f6a7-b8c9-0123-defg-456789012345",
       "title": "new task ",
       "description": "",
       "status": "PENDING",
       "priority": "MEDIUM",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [
+        {
+          "id": "7f5afacc-2ee9-4aab-901e-7d86b46aedad",
+          "userId": null,
+          "parentId": "70d2fed4-dc88-4fe4-b840-edd86ff41e4c",
+          "title": "test convert to note",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "SUBTASK",
+          "reminder": null,
+          "repeat": null,
+          "dueDate": null,
+          "dueDateTime": null,
+          "createdAt": "2026-04-21T04:36:35.727Z",
+          "updatedAt": "2026-04-21T05:11:14.589Z",
+          "completedAt": null
+        }
+      ],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-20T13:52:10.204Z",
+      "updatedAt": "2026-04-21T05:11:14.589Z",
+      "completedAt": null
+    },
+    {
+      "id": "8bd8c284-b6e3-4af6-ac7b-cbc23f387d7d",
+      "userId": null,
+      "projectId": "d4e5f6a7-b8c9-0123-defg-456789012345",
+      "title": "testing to mov",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [
+        {
+          "id": "0a50cb73-7af5-4c5b-976d-47165083b9a8",
+          "userId": null,
+          "parentId": "8bd8c284-b6e3-4af6-ac7b-cbc23f387d7d",
+          "title": "test its worked",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "SUBTASK",
+          "reminder": null,
+          "repeat": null,
+          "dueDate": null,
+          "dueDateTime": null,
+          "createdAt": "2026-04-21T05:12:34.714Z",
+          "updatedAt": "2026-04-21T05:12:43.948Z",
+          "completedAt": null,
+          "projectId": "d4e5f6a7-b8c9-0123-defg-456789012345"
+        }
+      ],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": "2026-04-21T18:30:00.000Z",
+      "createdAt": "2026-04-20T10:29:38.252Z",
+      "updatedAt": "2026-04-21T05:12:43.948Z",
+      "completedAt": null
+    },
+    {
+      "id": "3a42a989-435e-4994-8fda-61ada379763e",
+      "userId": null,
+      "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "title": "new-3",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
       "isPinned": false,
       "parentId": null,
       "subtasks": [],
@@ -988,8 +1066,53 @@
       "entityType": "TASK",
       "isNote": false,
       "dueDate": null,
-      "createdAt": "2026-04-20T13:52:10.204Z",
-      "updatedAt": "2026-04-20T13:54:37.996Z",
+      "createdAt": "2026-04-20T06:21:53.715Z",
+      "updatedAt": "2026-04-20T07:14:09.856Z",
+      "completedAt": null
+    },
+    {
+      "id": "8c2c46cd-395a-434a-8c14-e3d54295c8a6",
+      "userId": null,
+      "projectId": "967b35c1-ffbe-4272-aa91-3167a5e45410",
+      "title": "test tag ",
+      "description": "",
+      "status": "PENDING",
+      "priority": "LOW",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [
+        {
+          "name": "new",
+          "id": "bf1dde44-89b0-470a-8237-05e9bd8365d7",
+          "parentId": null,
+          "entityType": "TAG",
+          "color": "",
+          "childTag": [
+            {
+              "name": "test sub Task",
+              "color": "",
+              "parentId": "bf1dde44-89b0-470a-8237-05e9bd8365d7",
+              "entityType": "CHILD_TAG",
+              "id": "ee494789-628d-430c-8399-a41ee6959864",
+              "childTag": [],
+              "isPinned": false,
+              "createdAt": "2026-04-21T04:45:54.076Z",
+              "updatedAt": "2026-04-21T04:45:54.076Z"
+            }
+          ],
+          "isPinned": false,
+          "createdAt": "2026-04-17T07:22:36.498Z",
+          "updatedAt": "2026-04-21T04:45:54.076Z"
+        }
+      ],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-21T04:46:23.513Z",
+      "updatedAt": "2026-04-21T04:46:23.513Z",
       "completedAt": null
     }
   ],
@@ -1048,21 +1171,22 @@
       "parentId": null,
       "entityType": "TAG",
       "color": "",
-      "childTag": [],
+      "childTag": [
+        {
+          "name": "test sub Task",
+          "color": "",
+          "parentId": "bf1dde44-89b0-470a-8237-05e9bd8365d7",
+          "entityType": "CHILD_TAG",
+          "id": "ee494789-628d-430c-8399-a41ee6959864",
+          "childTag": [],
+          "isPinned": false,
+          "createdAt": "2026-04-21T04:45:54.076Z",
+          "updatedAt": "2026-04-21T04:45:54.076Z"
+        }
+      ],
       "isPinned": false,
       "createdAt": "2026-04-17T07:22:36.498Z",
-      "updatedAt": "2026-04-17T07:22:36.498Z"
-    },
-    {
-      "name": "testing",
-      "id": "f87dee99-0ffb-4223-8669-1231ffa208f4",
-      "parentId": null,
-      "entityType": "TAG",
-      "color": "",
-      "childTag": [],
-      "isPinned": false,
-      "createdAt": "2026-04-17T07:23:56.699Z",
-      "updatedAt": "2026-04-17T07:23:56.699Z"
+      "updatedAt": "2026-04-21T04:45:54.076Z"
     },
     {
       "name": "Santosh",
@@ -1247,6 +1371,50 @@
       "createdAt": "2026-04-20T09:09:08.081Z",
       "updatedAt": "2026-04-20T09:09:08.081Z",
       "completedAt": null
+    },
+    {
+      "id": "bca0eb5c-3858-4288-a00f-72bdcd06aa5d",
+      "userId": null,
+      "projectId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "title": "test tag",
+      "description": "",
+      "status": "PENDING",
+      "priority": "MEDIUM",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-21T04:46:41.091Z",
+      "updatedAt": "2026-04-21T04:46:41.091Z",
+      "completedAt": null
+    },
+    {
+      "id": "3f3b03fb-8095-47d0-bff0-6a1a15c1e16d",
+      "userId": null,
+      "projectId": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+      "parentId": "8bd8c284-b6e3-4af6-ac7b-cbc23f387d7d",
+      "title": "Testing",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TRASHED",
+      "reminder": null,
+      "repeat": null,
+      "dueDate": null,
+      "dueDateTime": null,
+      "createdAt": "2026-04-21T05:12:15.447Z",
+      "updatedAt": "2026-04-21T05:12:20.824Z",
+      "completedAt": null
     }
   ],
   "comments": [
@@ -1377,6 +1545,16 @@
       "entityType": "COMMENT",
       "updatedAt": "2026-04-20T07:40:53.482Z",
       "createdAt": "2026-04-20T07:40:53.482Z"
+    },
+    {
+      "id": "5a95f26c-5ceb-49d5-a4d9-682d411550a9",
+      "name": "sfks;ef",
+      "attachmentId": null,
+      "userId": null,
+      "taskId": "7f5afacc-2ee9-4aab-901e-7d86b46aedad",
+      "entityType": "COMMENT",
+      "updatedAt": "2026-04-21T04:53:11.579Z",
+      "createdAt": "2026-04-21T04:52:22.052Z"
     }
   ],
   "reminders": [],

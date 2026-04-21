@@ -303,15 +303,15 @@
           class="flex dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus-within:border-blue-400 rounded-xl transition-colors"
         >
           <div class="w-[95%]">
-            <textarea
+            <!-- <input type="text" name="" id=""> -->
+            <input type="text"
               #textarea
               [ngModel]="commentText()"
               (ngModelChange)="commentText.set($event)"
               (keydown.enter)="onEnterPress($event)"
-              rows="1"
               placeholder="Write a comment..."
               class="w-full resize-none bg-transparent border-none outline-none px-3.5 pt-3 pb-2 text-sm text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400"
-            ></textarea>
+            >
             <div class="flex flex-wrap gap-1.5 px-3 pb-2">
               @if (attachedFile()) {
                 <div

@@ -2,6 +2,7 @@
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
 @import 'quill/dist/quill.snow.css';
+/* @import 'ngx-sonner/styles.css'; */
 /* @import "@ctrl/ngx-emoji-mart/picker"; */
 body {
   background-color: #0F0F10;

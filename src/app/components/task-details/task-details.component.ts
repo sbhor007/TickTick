@@ -37,6 +37,7 @@ import { CommentService } from '../../services/comment.service';
 import { TimeAgoPipe } from '../../pipe/time-ago.pipe';
 import { TaskComment } from '../../models/task-comment';
 import { MoveToProjectComponent } from '../../share/move-to-project/move-to-project.component';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-task-details',
@@ -399,26 +400,6 @@ export class TaskDetailsComponent implements OnInit {
     });
   }
 
-  /**get attachment and show image */
-  // getAttachmentById(attachmentId: string) {
-  //   this.attachmentService
-  //     .getAttachmentById(attachmentId)
-  //     .subscribe((attachment) => {
-  //       console.log('Attachment response:', attachment);
-  //       // this.attachment = attachment;
-  //       this.showImage();
-  //     });
-  // }
-
-  /**show image */
-  // showImage() {
-  //   if (this.attachment && this.attachment.fileData) {
-  //     // fileData is already a base64 data URL (e.g. "data:image/png;base64,...")
-  //     this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(
-  //       this.attachment.fileData,
-  //     );
-  //   }
-  // }
   /**get sub task */
   getSubTaskById(subtaskId: string) {
     const result = this.taskService.findSubTaskById(subtaskId);
@@ -553,7 +534,7 @@ export class TaskDetailsComponent implements OnInit {
             isNote: !event.payload.isNote,
           });
         } else {
-          console.log('not Allow');
+          toast.warning('Task With SubTask cant be convert as a note');
         }
         break;
       case 'set_priority_high':
@@ -570,6 +551,7 @@ export class TaskDetailsComponent implements OnInit {
         break;
 
       case 'wont_do':
+        case 'restore':
         this.updateTaskOrSubTask(event, {
           status:
             event.payload.status === TaskStatus.WONT_DO
@@ -578,7 +560,18 @@ export class TaskDetailsComponent implements OnInit {
         });
         break;
       case 'move_to':
-        if (event.entityType == EntityType.SUBTASK) {
+        if (event.entityType == EntityType.TASK) {
+          this.taskService.deleteTask(event.payload.id);
+          const updateSubtasks = event.payload.subtasks?.map((st: Task) => ({
+            ...st,
+            projectId: event.entityId,
+          }));
+          this.taskService.crateTask(event.entityId, {
+            ...event.payload,
+            projectId: event.entityId,
+            subtasks: updateSubtasks,
+          });
+        } else if (event.entityType == EntityType.SUBTASK) {
           this.taskService.deleteSubTask(
             event.payload.parentId,
             event.payload.id,

@@ -85,7 +85,7 @@ export class CreateFolderComponent {
       });
       this.onClose();
     });
-    this.onClose();
+    // this.onClose();
   }
 
   updateFolder() {
