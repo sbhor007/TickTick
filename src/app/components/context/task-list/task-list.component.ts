@@ -110,9 +110,8 @@ export class TaskListComponent implements OnInit {
 
     console.log('--------------------------*-----------------');
     console.log(this.groupedTasks());
-    
+
     console.log('--------------------------*-----------------');
-    
   }
 
   allTaskInsideProject: any;
@@ -124,15 +123,14 @@ export class TaskListComponent implements OnInit {
     let data: Task[] = [];
 
     if (routerData.entityType === EntityType.FOLDER) {
-  const projectIds = this.projectService
-    .projects$()
-    .filter((p) => p.folderId === routerData.id)
-    .map((p) => p.id);
-  data = this.taskService
-    .allTasks$()
-    .filter((t) => projectIds.includes(t.projectId));
-
-} else if (routerData.entityType === EntityType.PROJECT) {
+      const projectIds = this.projectService
+        .projects$()
+        .filter((p) => p.folderId === routerData.id)
+        .map((p) => p.id);
+      data = this.taskService
+        .allTasks$()
+        .filter((t) => projectIds.includes(t.projectId));
+    } else if (routerData.entityType === EntityType.PROJECT) {
       data = this.taskService
         .allTasks$()
         .filter((t) => t.projectId === routerData.id);
@@ -173,15 +171,17 @@ export class TaskListComponent implements OnInit {
 
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
 
-    
     if (routerData.entityType === EntityType.COMPLETED) {
       return this.groupByFn(data, 'Date', true);
     }
 
-    // if (routerData.entityType === EntityType.FOLDER) {
-    //   return this.groupByFn(data, 'Project', true);
-    // }
+    if (routerData.entityType === EntityType.FOLDER) {
+      return this.groupByFn(data, 'Project');
+    }
 
+    if (routerData.entityType === EntityType.TAG_VIEW) {
+      return this.groupByFn(data, 'Tag');
+    }
 
     if (groupBy !== 'None') {
       return this.groupByFn(data, groupBy);
@@ -473,14 +473,17 @@ export class TaskListComponent implements OnInit {
 
   isWithinNext7Days(dueDate: any): boolean {
     if (!dueDate) return false;
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
-    const next7Days = new Date();
-    next7Days.setDate(next7Days.getDate() + 7);
-    next7Days.setHours(23, 59, 59, 999);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const due = new Date(dueDate);
-    return due >= tomorrow && due <= next7Days;
+    due.setHours(0, 0, 0, 0);
+
+    const diffDays = Math.round(
+      (due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+    );
+
+    return diffDays >= 2 && diffDays <= 7;
   }
 
   /** priority color */
@@ -606,8 +609,12 @@ export class TaskListComponent implements OnInit {
         break;
 
       case 'wont_do':
+        case 'restore':
         this.updateTaskOrSubTask(event, {
-          status: event.payload.status === TaskStatus.WONT_DO ? TaskStatus.PENDING : TaskStatus.WONT_DO,
+          status:
+            event.payload.status === TaskStatus.WONT_DO
+              ? TaskStatus.PENDING
+              : TaskStatus.WONT_DO,
         });
         break;
 
@@ -677,7 +684,6 @@ export class TaskListComponent implements OnInit {
           this.taskService.deleteTask(event.entityId);
         }
         break;
-
     }
   }
 

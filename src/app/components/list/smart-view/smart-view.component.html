@@ -1,4 +1,7 @@
 <ul>
+  <!-- <pre>
+    {{smartView() | json}}
+  </pre> -->
   @for (s of smartView(); track s.id) {
     <!-- Skip hidden views; for showIfNotEmpty, only render when count > 0 -->
     @if (!s.hidden ) {

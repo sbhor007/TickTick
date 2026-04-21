@@ -25,6 +25,7 @@ import { EntityType } from '../../../enums/entity-type';
 import { CreateFolderComponent } from '../../../share/create-folder/create-folder.component';
 import { ProjectService } from '../../../services/project.service';
 import { FolderProjectService } from '../../../services/folder-project.service';
+import { CommonModule } from '@angular/common';
 
 export interface FormHandlerEvent {
   action: 'create' | 'update' | 'delete' | 'close';
@@ -35,7 +36,7 @@ export interface FormHandlerEvent {
 
 @Component({
   selector: 'app-create-project',
-  imports: [ReactiveFormsModule, CascadeSelectModule, CreateFolderComponent],
+  imports: [ReactiveFormsModule, CascadeSelectModule, CreateFolderComponent,CommonModule],
   templateUrl: './create-project.component.html',
 })
 export class CreateProjectComponent implements OnInit {
@@ -47,6 +48,8 @@ export class CreateProjectComponent implements OnInit {
   @Input() mode: 'create' | 'update' = 'create';
   @Input() projectId: string | null = null;
   @Output() formHandler = new EventEmitter<FormHandlerEvent>();
+
+  isHovered:boolean = false
 
   colorOptions = [
   '#ef4444', // red

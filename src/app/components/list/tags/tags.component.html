@@ -155,7 +155,7 @@
           @for (tag of sharedTags(); track tag.id) {
             <div class="ml-10">
               <div
-                [routerLink]="['tags', tag.name]"
+                [routerLink]="['tags', tag.id]"
                 (contextmenu)="openContextMenu($event, tag)"
                 class="flex items-center gap-2 px-2 py-[5px] rounded-lg mx-1 cursor-pointer hover:bg-white/[0.05] transition-colors group"
               >

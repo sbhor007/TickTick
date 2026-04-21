@@ -115,7 +115,7 @@ export class ContextMenuBarService {
           { label: 'Today', icon: 'pi pi-sun', action: 'set_date_today' },
           {
             label: 'Tomorrow',
-            icon: 'pi pi-cloud-sun',
+            icon: 'pi pi-cloud',
             action: 'set_date_tomorrow',
           },
           {
@@ -172,7 +172,7 @@ export class ContextMenuBarService {
         action: 'link_parent',
       },
       // { label: 'Pin', icon: 'push_pin', action: 'pin' },
-      { label: "Won't Do", icon: 'block', action: 'wont_do' },
+      // { label: "Won't Do", icon: 'block', action: 'wont_do' },
       {
         label: 'Move to',
         icon: 'folder_open',
@@ -185,11 +185,11 @@ export class ContextMenuBarService {
 
       { label: 'Duplicate', icon: 'content_copy', action: 'duplicate' },
       { label: 'Copy Link', icon: 'link', action: 'copy_link' },
-      {
-            label: 'Convert to Note',
-            icon: 'note_alt',
-            action: 'convert_to_note',
-          },
+      // {
+      //       label: 'Convert to Note',
+      //       icon: 'note_alt',
+      //       action: 'convert_to_note',
+      //     },
 
       { label: '', icon: '', action: 'divider', isDivider: true },
 
@@ -263,7 +263,7 @@ export class ContextMenuBarService {
         action: 'link_parent',
       },
       // { label: 'Pin', icon: 'push_pin', action: 'pin' },
-      { label: "Won't Do", icon: 'block', action: 'wont_do' },
+      // { label: "Won't Do", icon: 'block', action: 'wont_do' },
       {
         label: 'Move to',
         icon: 'folder_open',
@@ -378,7 +378,7 @@ export class ContextMenuBarService {
     isArchived: boolean = false,
     isShared: boolean = false,
     isNote: boolean = false,
-    isWantToDo: boolean = false
+    isWantToDo: boolean = false,
   ): ContextMenuItem[] {
     const menu = [...(this.CONTEXT_MENU_MAP[type] || [])];
 
@@ -408,22 +408,21 @@ export class ContextMenuBarService {
       insertAfterEdit(pinItem);
     }
 
-  if (type === EntityType.TASK) {
-    insertAfterEdit(
-      isNote
-        ? {
-            label: 'Convert to Task',
-            icon: 'note_alt',
-            action: 'convert_to_task',
-          }
-        : {
-            label: 'Convert to Note',
-            icon: 'note_alt',
-            action: 'convert_to_note',
-          }
-    );
-  }
-
+    if (type === EntityType.TASK) {
+      insertAfterEdit(
+        isNote
+          ? {
+              label: 'Convert to Task',
+              icon: 'note_alt',
+              action: 'convert_to_task',
+            }
+          : {
+              label: 'Convert to Note',
+              icon: 'note_alt',
+              action: 'convert_to_note',
+            },
+      );
+    }
 
     //share and unshare tag
     if ([EntityType.TAG].includes(type)) {
@@ -436,14 +435,13 @@ export class ContextMenuBarService {
         : { label: 'Move to Shared Tags', icon: '', action: 'shareUnshareTag' };
       insertAfterEdit(sharedItem);
     }
-    if ([EntityType.TASK].includes(type)) {
+    if ([EntityType.TASK, EntityType.SUBTASK].includes(type)) {
       const wantToDoItems: ContextMenuItem = isWantToDo
-        ? { label: "Won't Do", icon: 'block', action: 'wont_do' }
-        : { label: "restore", icon: 'refresh', action: 'restore' }
+        ? { label: 'Restore', icon: 'refresh', action: 'restore' }
+        : { label: "Won't Do", icon: 'block', action: 'wont_do' };
       insertAfterEdit(wantToDoItems);
     }
 
-    // ✅ Archive / Unarchive (ONLY for PROJECT)
     if (type === EntityType.PROJECT) {
       const archiveItem: ContextMenuItem = isArchived
         ? { label: 'Unarchive', icon: 'unarchive', action: 'unarchive' }

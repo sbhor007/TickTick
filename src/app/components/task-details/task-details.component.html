@@ -59,7 +59,6 @@
         }
 
         <!-- Due Date -->
-        <!-- Due Date Trigger -->
         <span
           (click)="toggleDateTime($event)"
           class="text-[11px] font-medium whitespace-nowrap px-3 py-1 rounded-md transition-all cursor-pointer hover:bg-gray-700/50"
@@ -299,7 +298,8 @@
         <!-- Editor area -->
 
         <!-- Textarea -->
-        <div
+        @if (isCommentSectionVisible) {
+          <div
           class="flex dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus-within:border-blue-400 rounded-xl transition-colors"
         >
           <div class="w-[95%]">
@@ -353,40 +353,44 @@
             </label>
           </div>
         </div>
+        }
 
         <!-- </div> -->
 
         <!-- Bottom Toolbar -->
         <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5 relative">
+          <div class="flex items-center gap-1.5 relative cursor-pointer" (click)="showMoveToProject = !showMoveToProject">
             <!-- Dropdown anchored to this container -->
 
             <i class="pi pi-folder text-zinc-400 text-xs"></i>
-            <span class="text-xs text-zinc-400">test-2</span>
+            <span class="text-xs text-zinc-400">{{task.title}}</span>
 
-            <!-- Trigger -->
-            <button
-              class="text-xs text-zinc-400"
-              (click)="showMoveToProject = !showMoveToProject"
-            >
-              <i class="pi pi-chevron-down text-xs"></i>
-            </button>
+           
           </div>
 
-          <div class="flex items-center gap-0.5">
+          <div class="flex items-center gap-0.5 ">
             <!-- Format Button -->
             <button
-              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors text-xs font-bold"
+              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-200 transition-colors text-xs font-bold cursor-pointer"
               title="Bold"
               (click)="wrapSelection('**', '**')"
             >
               A
             </button>
+            
+            <button
+              (click)="isCommentSectionVisible = !isCommentSectionVisible"
+              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-blue-500 transition-colors cursor-pointer"
+              title="Post comment"
+            >
+              <i class="pi pi-envelope text-sm"></i>
+            </button>
+
 
             <!-- Submit -->
             <button
               (click)="submitComment()"
-              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-blue-500 transition-colors"
+              class="p-1.5 rounded-md text-zinc-400 hover:bg-white dark:hover:bg-zinc-700 hover:text-blue-500 transition-colors cursor-pointer"
               title="Post comment"
             >
               <i class="pi pi-send text-sm"></i>
@@ -405,25 +409,25 @@
 
       <!-- Emoji Popover -->
       <p-popover
-        #op
-        [style]="{
-          padding: '0',
-          border: 'none',
-          borderRadius: '12px',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-          overflow: 'hidden',
-          width: '320px',
-        }"
-      >
-        <emoji-mart
-          (emojiSelect)="addEmoji($event)"
-          [darkMode]="true"
-          [showPreview]="false"
-          [perLine]="8"
-          [emojiTooltip]="false"
-          [style]="{ width: '100%' }"
-        />
-      </p-popover>
+  #op
+  [style]="{
+    padding: '0',
+    border: 'none',
+    borderRadius: '12px',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+    overflow: 'hidden',
+    width: '320px'
+  }"
+>
+  <emoji-mart
+    (emojiSelect)="addEmoji($event)"
+    [darkMode]="true"
+    [showPreview]="false"
+    [perLine]="8"
+    [emojiTooltip]="false"
+    [style]="{ width: '100%' }"
+  />
+</p-popover>
     </div>
   }
 </div>

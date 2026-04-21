@@ -76,6 +76,13 @@ import { MoveToProjectComponent } from '../../share/move-to-project/move-to-proj
       ::ng-deep emoji-mart .emoji-mart-search {
         padding: 8px !important;
       }
+      p-popover ::ng-deep .p-popover {
+        scrollbar-width: none;
+      }
+
+      p-popover ::ng-deep .p-popover::-webkit-scrollbar {
+        display: none;
+      }
     `,
   ],
 })
@@ -118,6 +125,8 @@ export class TaskDetailsComponent implements OnInit {
   allTags = computed(() => this.tagService.allTags$());
 
   searchQuery = new FormControl('');
+
+  isCommentSectionVisible = false;
 
   constructor() {
     effect(() => {

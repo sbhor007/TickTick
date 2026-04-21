@@ -32,7 +32,7 @@ export class SmartViewComponent {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const next7DaysEnd = new Date(today);
-next7DaysEnd.setDate(next7DaysEnd.getDate() + 7);
+    next7DaysEnd.setDate(next7DaysEnd.getDate() + 7);
 
     return this.projectService
       .projects$()
@@ -42,8 +42,8 @@ next7DaysEnd.setDate(next7DaysEnd.getDate() + 7);
 
         switch (project.entityType) {
           case 'ALL':
-            count = this.taskService.allTasks$().length
-            break
+            count = this.taskService.allTasks$().length;
+            break;
           case 'INBOX':
             count = allTasks.filter(
               (t) => t.projectId === project.id && t.status !== 'COMPLETED',
@@ -67,15 +67,18 @@ next7DaysEnd.setDate(next7DaysEnd.getDate() + 7);
               return due.getTime() === tomorrow.getTime();
             }).length;
             break;
+          case 'NEXT_SEVEN_DAYS':
+            count = allTasks.filter((t) => {
+              if (!t.dueDate) return false;
+              const due = new Date(t.dueDate);
+              due.setHours(0, 0, 0, 0);
 
-          case 'NEXT_7_DAYS':
-  count = allTasks.filter((t) => {
-    if (!t.dueDate) return false;
-    const due = new Date(t.dueDate);
-    due.setHours(0, 0, 0, 0);
-    return due >= today && due <= next7DaysEnd; 
-  }).length;
-  break;
+              const tomorrow = new Date(today);
+              tomorrow.setDate(today.getDate() + 1); 
+
+              return due >= tomorrow && due <= next7DaysEnd; 
+            }).length;
+            break;
 
           default:
             count = 0;
@@ -117,32 +120,49 @@ next7DaysEnd.setDate(next7DaysEnd.getDate() + 7);
   }
 
   handleAction(entityType: EntityType, action: string, id: string): void {
-    console.log("handle action", action);
-    
-   const project = this.projectService.projects$().find(p => p.id == id)
+    console.log('handle action', action);
+
+    const project = this.projectService.projects$().find((p) => p.id == id);
 
     switch (action) {
-
       case 'show':
-        this.projectService.updateProject(id, {...project ,hidden: false, showIfNotEmpty: false }).subscribe()
+        this.projectService
+          .updateProject(id, {
+            ...project,
+            hidden: false,
+            showIfNotEmpty: false,
+          })
+          .subscribe();
         break;
 
       case 'hide':
-        this.projectService.updateProject(id, {...project ,hidden: true, showIfNotEmpty: false }).subscribe()
+        this.projectService
+          .updateProject(id, {
+            ...project,
+            hidden: true,
+            showIfNotEmpty: false,
+          })
+          .subscribe();
         break;
 
       case 'showIfNotEmpty':
-        this.projectService.updateProject(id, {...project ,hidden: false, showIfNotEmpty: true }).subscribe()
+        this.projectService
+          .updateProject(id, {
+            ...project,
+            hidden: false,
+            showIfNotEmpty: true,
+          })
+          .subscribe();
         break;
-
-
 
       case 'edit':
         this.router.navigate(['settings', 'smart-views', id]);
         break;
 
       default:
-        console.warn(`[SmartViewComponent] Unhandled action "${action}" for entity "${entityType}"`);
+        console.warn(
+          `[SmartViewComponent] Unhandled action "${action}" for entity "${entityType}"`,
+        );
     }
   }
 }
