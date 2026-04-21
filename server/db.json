@@ -759,6 +759,51 @@
       "createdAt": "2026-04-21T09:40:00.461Z",
       "updatedAt": "2026-04-21T09:40:40.720Z",
       "completedAt": null
+    },
+    {
+      "id": "15a9e10d-2aaa-41ed-a40a-eb7f94afdd9a",
+      "userId": null,
+      "projectId": "21fc218c-766e-4207-ab1c-0e62d24d3ed8",
+      "title": "sub trash test",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [
+        {
+          "id": "bc69ba7d-a87a-4669-b37b-f5582b2b233d",
+          "userId": null,
+          "projectId": "21fc218c-766e-4207-ab1c-0e62d24d3ed8",
+          "parentId": "15a9e10d-2aaa-41ed-a40a-eb7f94afdd9a",
+          "title": "Child",
+          "description": "",
+          "status": "PENDING",
+          "priority": "NONE",
+          "isPinned": false,
+          "subtasks": [],
+          "tags": [],
+          "comments": [],
+          "attachmentId": null,
+          "entityType": "SUBTASK",
+          "reminder": null,
+          "repeat": null,
+          "dueDate": null,
+          "dueDateTime": null,
+          "createdAt": "2026-04-21T10:01:12.276Z",
+          "updatedAt": "2026-04-21T10:01:19.308Z",
+          "completedAt": null
+        }
+      ],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "dueDate": null,
+      "createdAt": "2026-04-21T10:01:08.439Z",
+      "updatedAt": "2026-04-21T10:01:19.308Z",
+      "completedAt": null
     }
   ],
   "tags": [

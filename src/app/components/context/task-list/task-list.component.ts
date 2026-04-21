@@ -98,16 +98,14 @@ export class TaskListComponent implements OnInit {
   collapsedGroups = signal<Set<string>>(new Set());
 
   searchQuery = new FormControl('');
-  constructor(){
+  constructor() {
     effect(() => {
       this.trashService.loadAllTrash();
-    this.taskService.loadAllTasks();
+      this.taskService.loadAllTasks();
     });
-
   }
 
   ngOnInit(): void {
-    
     this.loadRouteData();
 
     /**search*/
@@ -161,7 +159,7 @@ export class TaskListComponent implements OnInit {
         .filter((t) => t.projectId === routerData.id);
     } else if (routerData.entityType === EntityType.TRASHED) {
       const trash = this.trashService.allTrash$();
-      data = trash.filter((t) => t.parentId);
+      data = trash.filter((t) => !t.parentId);
     } else if (routerData.entityType === EntityType.COMPLETED) {
       data = this.taskService
         .allTasks$()
@@ -294,7 +292,8 @@ export class TaskListComponent implements OnInit {
         !task.isPinned &&
         task.status !== TaskStatus.COMPLETED &&
         task.status !== TaskStatus.WONT_DO &&
-        task.entityType != EntityType.SUBTASK
+        task.entityType != EntityType.SUBTASK &&
+        task.entityType != EntityType.SUB_TRASHED
           ? [task]
           : [];
 
@@ -693,26 +692,33 @@ export class TaskListComponent implements OnInit {
         break;
 
       case 'delete':
-        
         if (isSubtask) {
           this.taskService.deleteSubTask(task.parentId!, event.entityId);
         } else {
           this.trashService.addTrash({
-          ...task,
-          entityType: EntityType.TRASHED,
-        });
-         setTimeout(() =>{
-        this.taskService.deleteTask(task.id);
-      },500)
+            ...task,
+            entityType: EntityType.TRASHED,
+          });
+          setTimeout(() => {
+            this.taskService.deleteTask(task.id);
+          }, 500);
           this.taskService.deleteTask(task.id);
           // this.taskService.loadAllTasks()
         }
         break;
       case 'restore_delete_task':
+      case 'restore_delete_subtask':
+        setTimeout(() => {
+          this.trashService.restoreTask(event.entityId);
+        }, 500);
+
         this.trashService.restoreTask(event.entityId);
         break;
-        case 'delete_forever':
-          this.trashService.deleteTrash(event.entityId);
+      // case 'restore_delete_subtask':
+      //   this.trashService.restoreSubTask( event.entityId);
+      //   break
+      case 'delete_forever':
+        this.trashService.deleteTrash(event.entityId);
     }
   }
 

@@ -104,7 +104,7 @@
       </div>
 
       <!-- title section -->
-      <div class="py-2 border-b border-gray-200/20">
+      <div class="py-2 pb-5 ">
         @if (parentTask) {
           <span
             (click)="navigateTo(parentTask.entityType, parentTask.id)"
@@ -136,7 +136,7 @@
             class="w-full placeholder-transparent hover:placeholder-gray-400/50 transition-all duration-300 outline-none text-gray-500"
           />
           <!-- description section -->
-          <div class="py-2"></div>
+
 
           <!-- tags section -->
           @if (task.tags?.length) {
@@ -207,7 +207,7 @@
       </div>
       <!-- subtask section -->
       @if (task.subtasks?.length) {
-        <div>
+        <div class="border-t border-gray-200/20">
           @for (subtask of task.subtasks; track $index) {
             <app-task-item
               [task]="subtask"

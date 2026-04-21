@@ -290,6 +290,15 @@ export class ContextMenuBarService {
         action: 'delete_forever',
       },
     ],
+    [EntityType.SUB_TRASHED]: [
+      { label: 'Restore', icon: 'refresh', action: 'restore_delete_subtask' },
+      // { label: 'Pin', icon: 'pin', action: 'pin' },
+      {
+        label: 'Delete forever',
+        icon: 'delete',
+        action: 'delete_forever_sub',
+      },
+    ],
     [EntityType.TASK_INPUT]: [
       {
         label: 'Priority',

@@ -35,7 +35,7 @@ export class TrashService {
     if (trashedData?.subtasks) {
       const updateSubTask = trashedData?.subtasks.map((t: Task) => ({
         ...t,
-        entityType: EntityType.TRASHED,
+        entityType: EntityType.SUB_TRASHED,
       }));
       trashedData.subtasks = updateSubTask;
     }
@@ -69,6 +69,29 @@ export class TrashService {
   };
 
   this.taskService.crateTask(restoredTask.projectId, restoredTask);
+}
+
+restoreSubTask(subTaskId: string) {
+  const subTaskData = this.allTrash$()
+    .flatMap((t) => t.subtasks ?? [])
+    .find((st) => st.id === subTaskId);
+
+  if (!subTaskData) return;
+
+  const parentTask = this.allTrash$().find((t) =>
+    t.subtasks?.some((st) => st.id === subTaskId)
+  );
+
+  if (!parentTask) return;
+
+  this.deleteTrash(subTaskId);
+
+  const restoredSubTask: Task = {
+    ...subTaskData,
+    entityType: EntityType.SUBTASK,
+  };
+
+  this.taskService.createSubTask(parentTask.id, restoredSubTask);
 }
 
   removeFromTrash(taskId: string) {
