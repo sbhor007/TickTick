@@ -1,4 +1,20 @@
 <div>
+  <!-- date time picker -->
+  <p-popover
+    #dateTimePopover
+    [dismissable]="true"
+    [appendTo]="'body'"
+    styleClass="date-time-popover"
+    (onHide)="isDateTimePikerVisible = false"
+  >
+    <app-date-time-picker
+      [initialDate]="initialDate()"
+      [initialTime]="initialTime()"
+      (confirmed)="handleDateTimeEvent($event); dateTimePopover.hide()"
+      (cleared)="dateTimePopover.hide()"
+      (closed)="dateTimePopover.hide()"
+    />
+  </p-popover>
   @for (group of groupedTasks(); track group.key) {
     @if (group.tasks.length > 0) {
       <!-- Group Header -->
@@ -24,24 +40,9 @@
       <!-- Tasks -->
       @if (!isCollapsed(group.key)) {
 
-        <!-- Date Time Picker (once per group, anchored via fixed position) -->
-        @if (isDateTimePikerVisible) {
-          <div class="relative">
-            <div
-            class="absolute -right-0 top-10 z-50"
-            [style.left.px]="x"
-            [style.top.px]="y"
-          >
-            <app-date-time-picker
-              [initialDate]="initialDate()"
-              [initialTime]="initialTime()"
-              (confirmed)="handleDateTimeEvent($event)"
-              (cleared)="isDateTimePikerVisible = false"
-              (closed)="isDateTimePikerVisible = false"
-            />
-          </div>
-          </div>
-        }
+        
+
+        
 
         @for (task of group.tasks; track task.id) {
          

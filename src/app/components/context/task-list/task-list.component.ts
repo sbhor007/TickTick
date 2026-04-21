@@ -3,12 +3,14 @@ import {
   Component,
   computed,
   effect,
+  HostListener,
   inject,
   Injector,
   input,
   Input,
   OnInit,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { FolderService } from '../../../services/folder.service';
 import { ProjectService } from '../../../services/project.service';
@@ -63,8 +65,7 @@ export class TaskListComponent implements OnInit {
   private tagService = inject(TagsService);
   private injector = inject(Injector);
 
-  x = 0;
-  y = 0;
+
 
   @Input() routeData!: any;
 
@@ -73,6 +74,7 @@ export class TaskListComponent implements OnInit {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
   selectedTask: Task | null = null;
+  @ViewChild('dateTimePopover') dateTimePopover!: Popover;
 
   // @Input() sortGroupData: any = { groupBy: 'none', sortBy: 'Title' };
 
@@ -92,6 +94,7 @@ export class TaskListComponent implements OnInit {
   isTagSelectorVisible = false;
   selectedTaskToLink!: Task;
   selectedTags: Tag[] = [];
+
 
   private entityData = signal<any | null>(null);
   sortGroupData = input<any>({ groupBy: 'none', sortBy: 'Title' });
@@ -578,16 +581,21 @@ export class TaskListComponent implements OnInit {
         });
         break;
       case 'set_date_custom':
-        this.x = event.clientX + 12;
-        this.y = event.clientY + 12;
         this.selectedTask = task;
-        this.toggleDateTime();
-        break;
+  this.initialDate.set(task.dueDate ? new Date(task.dueDate) : null);
+  this.initialTime.set(task.dueDateTime ?? null);
+  setTimeout(() => {
+    this.dateTimePopover.show(event.originalEvent);
+  }, 0);
+  break;
       case 'convert_to_note':
       case 'convert_to_task':
         console.log(event.payload.subtasks);
-        
-        if (event.entityType != EntityType.SUBTASK && !event.payload.subtasks.length) {
+
+        if (
+          event.entityType != EntityType.SUBTASK &&
+          !event.payload.subtasks.length
+        ) {
           this.taskService.updateTask(event.entityId, {
             ...event.payload,
             isNote: !event.payload.isNote,
@@ -612,7 +620,7 @@ export class TaskListComponent implements OnInit {
         break;
 
       case 'wont_do':
-        case 'restore':
+      case 'restore':
         this.updateTaskOrSubTask(event, {
           status:
             event.payload.status === TaskStatus.WONT_DO
@@ -872,4 +880,5 @@ export class TaskListComponent implements OnInit {
         break;
     }
   }
+
 }

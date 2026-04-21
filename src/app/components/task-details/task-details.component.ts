@@ -121,6 +121,7 @@ export class TaskDetailsComponent implements OnInit {
   isTagSelectorVisible = false;
   selectedTask: Task | null = null;
   selectedTags: Tag[] = [];
+  selectedSubTask:Task | null = null;
 
   priorityOptions = Object.values(TaskPriority);
   allTags = computed(() => this.tagService.allTags$());
@@ -526,6 +527,13 @@ export class TaskDetailsComponent implements OnInit {
       case 'set_date_next_week':
         this.updateTaskOrSubTask(event, { dueDate: this.getDateISO(7) });
         break;
+      case 'set_date_custom':
+        this.selectedSubTask = task
+        this.initialDate.set(task.dueDate ? new Date(task.dueDate) : null);
+        this.initialTime.set(task.dueDateTime ?? null);
+        this.toggleDateTime(event.originalEvent);
+        break;
+
       case 'convert_to_note':
       case 'convert_to_Task':
         if (event.entityType != EntityType.SUBTASK && !event.payload.subtask) {
@@ -551,7 +559,7 @@ export class TaskDetailsComponent implements OnInit {
         break;
 
       case 'wont_do':
-        case 'restore':
+      case 'restore':
         this.updateTaskOrSubTask(event, {
           status:
             event.payload.status === TaskStatus.WONT_DO
@@ -723,17 +731,18 @@ export class TaskDetailsComponent implements OnInit {
   /**dateTimePiker */
   handleDateTimeEvent(selection: DateTimeSelection) {
     const event = {
-      entityType: this.task.entityType,
-      payload: this.task,
+      entityType: this.selectedSubTask?.entityType ?? this.task.entityType,
+      payload: this.selectedSubTask ?? this.task,
     };
     console.log('DateTimePiker Event:: ', selection);
     this.updateTaskOrSubTask(event, {
-      ...this.task,
+      ...this.selectedSubTask ??this.task,
       dueDate: selection.date,
       dueDateTime: selection.time ?? this.task.dueDateTime,
       repeat: selection.repeat,
       reminder: selection.reminder,
     });
+    this.selectedSubTask = null;
     this.isDateTimePikerVisible = false;
   }
 

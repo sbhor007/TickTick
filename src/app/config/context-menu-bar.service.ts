@@ -206,7 +206,7 @@ export class ContextMenuBarService {
           { label: 'Today', icon: 'pi pi-sun', action: 'set_date_today' },
           {
             label: 'Tomorrow',
-            icon: 'pi pi-cloud-sun',
+            icon: 'pi pi-cloud',
             action: 'set_date_tomorrow',
           },
           {

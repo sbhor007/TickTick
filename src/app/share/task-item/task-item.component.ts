@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   EventEmitter,
+  HostListener,
   inject,
   Input,
   OnChanges,
@@ -23,7 +24,7 @@ import { MenuItem } from 'primeng/api';
 import { EntityType } from '../../enums/entity-type';
 import { TooltipModule } from 'primeng/tooltip';
 import { TaskPriority } from '../../enus/task-priority';
-import { combineLatest, debounceTime, map, sequenceEqual } from 'rxjs';
+import { combineLatest, debounceTime, fromEvent, map, sequenceEqual } from 'rxjs';
 import { TaskStatus } from '../../enus/task-status';
 import { Task } from '../../models/task';
 import { FolderService } from '../../services/folder.service';
@@ -65,6 +66,7 @@ export interface ContextMenuI {
   entityType: EntityType;
   entityId: string;
   payload?: Task;
+  originalEvent?:any
 }
 
 @Component({
@@ -93,7 +95,7 @@ export class TaskItemComponent implements OnChanges {
   private contextMenuService = inject(ContextMenuBarService);
 
   @Input() task!: any;
-  @Output() taskEvent = new EventEmitter<TaskEventPayload>();
+  // @Output() taskEvent = new EventEmitter<TaskEventPayload>();
   @Output() contextMenuEvent = new EventEmitter<ContextMenuI>();
 
   isDateTimePikerVisible = false;
@@ -101,6 +103,10 @@ export class TaskItemComponent implements OnChanges {
   initialTime = signal<string | null>(null);
   lastSelection = signal<DateTimeSelection | null>(null);
   showMoveTo = false;
+
+  lastContextEvent:any
+
+
 
   /**move to */
   isVisibleFolderMenu = false;
@@ -141,6 +147,8 @@ export class TaskItemComponent implements OnChanges {
 
   hoveredFolderId: string | null = null;
 
+  
+
   onFolderHover(folderId: string) {
     this.hoveredFolderId = folderId;
   }
@@ -162,6 +170,7 @@ export class TaskItemComponent implements OnChanges {
   ngOnInit(): void {
     this.taskTitle.setValue(this.task?.title ?? '');
     this.isCompleted.setValue(this.task?.status === 'COMPLETED');
+
     /**update title(task and sub task) */
     this.taskTitle.valueChanges.pipe(debounceTime(1000)).subscribe((val) => {
       if (val != null) {
@@ -204,7 +213,7 @@ export class TaskItemComponent implements OnChanges {
     });
   }
 
-  optionMenu(event: MouseEvent, task: Task) {
+  optionMenu(event: any, task: Task) {
     event.stopPropagation();
     event.preventDefault();
 
@@ -218,6 +227,7 @@ export class TaskItemComponent implements OnChanges {
       task.isNote ?? false,
       task.status == TaskStatus.WONT_DO ? true : false,
     );
+    this.lastContextEvent = event;
 
     // Split into sections (Date/Priority) and regular items
     this.menuSections = context.filter((i) => i.isSectionHeader);
@@ -256,6 +266,7 @@ export class TaskItemComponent implements OnChanges {
       entityType: task.entityType,
       entityId: task.id,
       payload: task,
+      originalEvent:this.lastContextEvent
     });
   }
   moveTO(project: Project, action: string) {
@@ -272,6 +283,7 @@ export class TaskItemComponent implements OnChanges {
       entityType: this.task.entityType,
       entityId: project.id,
       payload: this.task,
+      originalEvent:this.lastContextEvent
     });
   }
 
@@ -386,4 +398,6 @@ export class TaskItemComponent implements OnChanges {
       });
     }
   }
+
+ 
 }

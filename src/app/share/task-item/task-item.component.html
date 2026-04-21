@@ -1,7 +1,9 @@
 <div
   (contextmenu)="optionMenu($event, task)"
   class="flex items-center gap-3 px-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors group mb-0.5 w-full"
-  [ngClass]="task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-default'"
+  [ngClass]="
+    task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-default'
+  "
 >
   <!-- Context Menu Popover -->
   <p-popover
@@ -38,31 +40,32 @@
         @if (item.isDivider) {
           <div class="ctx-divider"></div>
         } @else if (item.label === "Move to") {
-  <div
-    class="relative"
-    (mouseenter)="showMoveTo = true"
-    (mouseleave)="showMoveTo = false"
-  >
-    <button class="ctx-menu-item w-full" [class.ctx-danger]="item.isDanger">
-      <span
-        class="material-symbols-outlined ctx-item-icon"
-        [class.ctx-danger-icon]="item.isDanger"
-      >
-        {{ item.icon }}
-      </span>
-      <span class="ctx-item-label">{{ item.label }}</span>
-      <i class="pi pi-angle-right ctx-submenu-arrow"></i>
-    </button>
+          <div
+            class="relative"
+            (mouseenter)="showMoveTo = true"
+            (mouseleave)="showMoveTo = false"
+          >
+            <button
+              class="ctx-menu-item w-full"
+              [class.ctx-danger]="item.isDanger"
+            >
+              <span
+                class="material-symbols-outlined ctx-item-icon"
+                [class.ctx-danger-icon]="item.isDanger"
+              >
+                {{ item.icon }}
+              </span>
+              <span class="ctx-item-label">{{ item.label }}</span>
+              <i class="pi pi-angle-right ctx-submenu-arrow"></i>
+            </button>
 
-    @if (showMoveTo) {
-      <div class="absolute left-full top-0 ml-1 z-[60]">
-        <app-move-to-project
-          [task]="task"
-        />
-      </div>
-    }
-  </div>
-} @else {
+            @if (showMoveTo) {
+              <div class="absolute left-full top-0 ml-1 z-[60]">
+                <app-move-to-project [task]="task" />
+              </div>
+            }
+          </div>
+        } @else {
           <button
             class="ctx-menu-item"
             [class.ctx-danger]="item.isDanger"
@@ -91,7 +94,9 @@
   <div class="flex items-center gap-2 flex-1 min-w-0">
     <label
       class="relative flex items-center"
-      [ngClass]="task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-pointer'"
+      [ngClass]="
+        task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-pointer'
+      "
     >
       @if (!task.isNote) {
         @if (task.status != "WONT_DO") {
@@ -99,7 +104,11 @@
             type="checkbox"
             [formControl]="isCompleted"
             [class]="getCheckboxClass(task.priority)"
-            [ngClass]="task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-pointer'"
+            [ngClass]="
+              task.entityType === 'TRASHED'
+                ? 'cursor-not-allowed'
+                : 'cursor-pointer'
+            "
           />
         } @else {
           <i
@@ -132,7 +141,9 @@
         type="text"
         [formControl]="taskTitle"
         class="w-full bg-transparent text-[13px] text-gray-200 outline-none placeholder:text-gray-500"
-        [ngClass]="task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-text'"
+        [ngClass]="
+          task.entityType === 'TRASHED' ? 'cursor-not-allowed' : 'cursor-text'
+        "
         [placeholder]="task.title ?? ''"
       />
     </div>
