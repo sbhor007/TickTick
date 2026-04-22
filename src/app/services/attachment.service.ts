@@ -70,4 +70,19 @@ export class AttachmentService {
         }),
       );
   }
+
+  deleteAttachment(attachmentId:string){
+     return this.http
+      .delete<any>(`${environment.API}/attachments/${attachmentId}`)
+       .subscribe({
+        next: () => {
+          console.log('Comment deleted...');
+          this.loadAllAllAttachments();
+        },
+        error: (err) => {
+          this.loadAllAllAttachments();
+          console.error('Error occurred when deleting comment:: ', err);
+        },
+      });
+  }
 }

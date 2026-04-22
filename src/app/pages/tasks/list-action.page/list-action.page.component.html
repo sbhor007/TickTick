@@ -1,26 +1,24 @@
-
 <div [class]="cardClass()">
-  <p-splitter 
-    [panelSizes]="panelSizes()" 
-    [minSizes]="minSizes()"
-    styleClass="h-full"
-    class="w-full h-full"
-  >
+  <div class=" h-full flex">
     <!-- Left: List Panel -->
     @if (!uiState.isListPanelCollapsed()) {
-      <ng-template pTemplate="panel">
-        <div class="flex justify-center h-full p-2 overflow-y-auto">
+      <div class="flex justify-center h-full p-2 overflow-y-auto">
           <app-list-action class="w-full"></app-list-action>
-        </div>
-      </ng-template>
+      </div>
     }
 
-    <!-- Right: ContextPageComponent renders here -->
-    <ng-template pTemplate="panel">
-      <div class="h-full overflow-hidden">
-        <router-outlet></router-outlet>
-      </div>
-    </ng-template>
-
-  </p-splitter>
+    <!-- Right: Splitter wraps only the routed content -->
+    <p-splitter
+      [panelSizes]="panelSizes()"
+      [minSizes]="minSizes()"
+      styleClass="h-full"
+      class="flex-1 h-full"
+    >
+      <ng-template pTemplate="panel">
+        <div class="h-full overflow-hidden">
+          <router-outlet></router-outlet>
+        </div>
+      </ng-template>
+    </p-splitter>
+  </div>
 </div>

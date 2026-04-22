@@ -197,7 +197,10 @@ export class TaskItemComponent implements OnChanges {
               ...st,
               status: TaskStatus.COMPLETED,
             }))
-          : this.task.subtasks;
+          : this.task.subtasks.map((st: Task) => ({
+              ...st,
+              status: TaskStatus.PENDING,
+            }));
 
         this.taskService.updateTask(this.task.id, {
           ...this.task,

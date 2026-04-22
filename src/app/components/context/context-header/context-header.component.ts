@@ -34,7 +34,7 @@ export type SubMenuType = 'group' | 'sort' | null;
 export class ContextHeaderComponent implements OnInit {
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
-  private ui = inject(UiStateService);
+   ui = inject(UiStateService);
 
   @Input() routeData!: Signal<any>;
   

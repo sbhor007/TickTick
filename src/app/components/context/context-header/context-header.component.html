@@ -3,7 +3,7 @@
   <!-- Left: Icon + Title -->
   <div class="flex items-center gap-2">
     <div class="w-7 h-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center flex-shrink-0">
-      <i class="pi pi-sliders-h text-sm text-gray-400 cursor-pointer"></i>
+      <i class="pi pi-sliders-h text-sm text-gray-400 cursor-pointer" (click)="ui.toggleListPanel()"></i>
     </div>
     @if ( data?.entityType == 'FOLDER' || data?.entityType == 'PROJECT') {
       <input

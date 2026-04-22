@@ -13,7 +13,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TaskService } from '../../services/task.service';
 import { EntityType } from '../../enums/entity-type';
 import { Task } from '../../models/task';
-import { JsonPipe, NgClass } from '@angular/common';
+import { JsonPipe, NgClass, NgStyle } from '@angular/common';
 import { TaskPriority } from '../../enus/task-priority';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TaskStatus } from '../../enus/task-status';
@@ -55,7 +55,8 @@ import { toast } from 'ngx-sonner';
     PickerComponent,
     TimeAgoPipe,
     MoveToProjectComponent,
-  ],
+    NgStyle
+],
   templateUrl: './task-details.component.html',
   styles: [
     `
@@ -987,15 +988,16 @@ export class TaskDetailsComponent implements OnInit {
         next: (attachmentId) => {
           this.commentAttachmentId = attachmentId;
 
-          this.createComment();
+          this.createComment(text);
+          this.attachmentService.loadAllAllAttachments()
         },
         error: (err) => {
           console.error('Upload failed:', err);
-          this.createComment();
+          this.createComment(text);
         },
       });
     } else {
-      this.createComment();
+      this.createComment(text);
     }
 
     console.log('✅ Comment Submitted');
@@ -1006,7 +1008,7 @@ export class TaskDetailsComponent implements OnInit {
     this.attachedFile.set(null);
   }
 
-  createComment() {
+  createComment(commentData:string) {
     if (this.commentAttachmentId) {
       const url = this.attachmentService
         .getAttachmentById(this.commentAttachmentId)
@@ -1016,7 +1018,7 @@ export class TaskDetailsComponent implements OnInit {
     }
     const comment = {
       id: crypto.randomUUID(),
-      name: this.commentText().trim(),
+      name: commentData,
       attachmentId: this.commentAttachmentId,
       userId: null,
       taskId: this.task.id,
@@ -1077,9 +1079,24 @@ export class TaskDetailsComponent implements OnInit {
     this.editingCommentId = null;
   }
 
-  deleteComment(commentID: string) {
+  deleteComment(commentID: string,attachmentId:string | null) {
     this.commentsService.deleteComment(commentID);
+    if(attachmentId){
+      this.attachmentService.deleteAttachment(attachmentId)
+    }
+
   }
+  // deleteAttachment(attachmentId: string,commentId:string) {
+  //   const commentData = this.commentsService.allComments$().find(c => c.id === commentId);
+  //   this.attachmentService.deleteAttachment(attachmentId)
+  //  if(commentData){
+  //    this.commentsService.updateComment(commentId,{
+  //     ...commentData,
+  //     attachmentId: null
+  //   })
+  //  }
+    
+  // }
 
   /**move to another folder */
   showMoveToProject = false;
