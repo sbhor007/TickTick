@@ -388,6 +388,7 @@ export class ContextMenuBarService {
     isShared: boolean = false,
     isNote: boolean = false,
     isWantToDo: boolean = false,
+    isHidden: boolean = false,
   ): ContextMenuItem[] {
     const menu = [...(this.CONTEXT_MENU_MAP[type] || [])];
 
@@ -457,6 +458,37 @@ export class ContextMenuBarService {
         : { label: 'Archive', icon: 'archive', action: 'archive' };
 
       insertAfterEdit(archiveItem);
+    }
+
+    if (
+      [
+        EntityType.ALL,
+        EntityType.TODAY,
+        EntityType.TOMORROW,
+        EntityType.NEXT_SEVEN_DAYS,
+        EntityType.ASSIGNED_TO_ME,
+        EntityType.INBOX,
+        EntityType.SUMMARY,
+      ].includes(type)
+    ) {
+      const filtered = menu.filter(
+        (i) => !['hide', 'show', 'showIfNotEmpty'].includes(i.action),
+      );
+      menu.length = 0;
+      menu.push(...filtered);
+
+      if (isHidden) {
+        menu.push({ label: 'Show', icon: 'visibility', action: 'show' });
+      } else {
+        menu.push(
+          { label: 'Hide', icon: 'visibility_off', action: 'hide' },
+          {
+            label: 'Show if Not Empty',
+            icon: 'visibility',
+            action: 'showIfNotEmpty',
+          },
+        );
+      }
     }
 
     return menu;
