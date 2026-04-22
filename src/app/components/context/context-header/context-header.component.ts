@@ -99,7 +99,6 @@ export class ContextHeaderComponent implements OnInit {
           this.titleControl.setValue(project.name);
         });
     } else {
-      // For non-editable views (ALL, TODAY, TOMORROW, INBOX, etc.)
       const nameMap: Record<string, string> = {
         [EntityType.ALL]: 'All',
         [EntityType.TODAY]: 'Today',
@@ -111,12 +110,20 @@ export class ContextHeaderComponent implements OnInit {
         [EntityType.TRASHED]: 'Trash',
         [EntityType.TAG_VIEW]: this.routeData().id
       };
+      if(route.entityType === EntityType.TAG_VIEW){
+        this.data = {
+          entityType: EntityType.TAG,
+          name: nameMap[route.entityType] ?? route.id,
+        };
+        this.titleControl.setValue('#' + this.data.name);
+      }else{
       this.data = {
         entityType: route.entityType,
         name: nameMap[route.entityType] ?? route.entityType,
       };
       this.titleControl.setValue(this.data.name);
     }
+  }
   }
   /**update title for only project and folder */
   updateTitle(value: string) {

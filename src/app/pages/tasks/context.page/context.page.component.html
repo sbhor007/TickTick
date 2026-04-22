@@ -12,10 +12,12 @@
 
         @if (entityData()) {
           <div class="mb-4">
-          <app-task-input [project]="entityData()"></app-task-input>
+          <app-task-input [project]="entityData()"
+          [selectedTagInput]="selectedTag()"
+          ></app-task-input>
+
         </div>
         }
-
         <div class="flex-1">
           <app-task-list
             [routeData]="routeData"

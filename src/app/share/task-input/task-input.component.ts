@@ -1,13 +1,16 @@
 import {
   Component,
   computed,
+  effect,
   ElementRef,
   HostListener,
   inject,
   Input,
   input,
+  OnChanges,
   OnInit,
   signal,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { DatePicker } from 'primeng/datepicker';
@@ -54,7 +57,7 @@ import { TagsService } from '../../config/tags.service';
   templateUrl: './task-input.component.html',
   styles: ``,
 })
-export class TaskInputComponent implements OnInit {
+export class TaskInputComponent implements OnInit, OnChanges {
   private taskService = inject(TaskService);
   private folderService = inject(FolderService);
   private projectService = inject(ProjectService);
@@ -65,6 +68,7 @@ export class TaskInputComponent implements OnInit {
   /**input suggestions */
 
   @Input() project!: any;
+  @Input() selectedTagInput!:any
 
   projectPlaceHolder: string = this.project?.name;
 
@@ -120,14 +124,36 @@ export class TaskInputComponent implements OnInit {
     return [...folder, ...project];
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) {
+    effect(() =>{
+      this.projectService.loadAllProjects()
+    })
+  }
 
   ngOnInit(): void {
     this.projectPlaceHolder = this.project?.name;
     console.log('Test Priorities');
     const priority = TaskPriority;
     console.log(priority);
+    console.log("project Data: ",this.project);
+    
+    if(this.selectedTagInput){
+     this.selectedTags.add(this.selectedTagInput)
+    }
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+  if (changes['project']) {
+    this.projectPlaceHolder = this.project?.name;
+  }
+
+  if (changes['selectedTagInput'] && this.selectedTagInput) {
+    this.selectedTags.clear();                      // ✅ clear stale tags on input change
+    this.selectedTags.add(this.selectedTagInput);
+  }
+}
+
+  
 
   /**input sugetions */
 

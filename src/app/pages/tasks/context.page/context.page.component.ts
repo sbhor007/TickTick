@@ -42,11 +42,14 @@ export class ContextPageComponent implements OnInit {
     entityType: EntityType.FOLDER,
   });
 
+
   entityData = signal<any>(null);
+  selectedTag =  signal<any>(null);
 
   sortGroupData = signal<any>({ groupBy: 'none', sortBy: 'Title' });
 
   ngOnInit(): void {
+    this.tagService.loadAllTags()
     // this.projectService.loadAllProjects()
     this.route.paramMap
       .pipe(
@@ -87,15 +90,23 @@ export class ContextPageComponent implements OnInit {
         EntityType.TOMORROW,
         EntityType.NEXT_SEVEN_DAYS,
         EntityType.INBOX,
+        
       ].includes(entityType)
     ) {
       this.projectService.fetchProjectById('inbox').subscribe((data) => {
         console.log('Project data::', data);
         this.entityData.set(data);
+        
       });
-    } else if (EntityType.TAG) {
-      const tag = this.tagService.allTags$().find((t) => t.id == id);
-      this.entityData.set(tag);
+    } else if (EntityType.TAG_VIEW) {
+       this.projectService.fetchProjectById('inbox').subscribe((data) => {
+        console.log('Project data::', data);
+        this.entityData.set(data);
+        this.selectedTag.set(                         
+        this.tagService.allTags$().find((t) => t.name === id)
+      );
+       })
+      
     }
   }
 

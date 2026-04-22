@@ -155,7 +155,7 @@
 
     <!-- Priority chip -->
     @if (taskPriority !== 'NONE') {
-      <span class="flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium"
+      <span class="flex items-center gap-1 px-2 rounded text-sm font-medium"
         [ngClass]="{
           ' text-red-400':       taskPriority === 'HIGH',
           ' text-yellow-400': taskPriority === 'MEDIUM',
@@ -168,7 +168,7 @@
 
     <!-- Tag chips -->
     @for (tag of selectedTags; track tag.id) {
-      <span class="flex items-center gap-1 text-[11px]">
+      <span class="flex text-blue-600 items-center gap-1 text-sm">
 
        #{{tag.name}}
       </span>
