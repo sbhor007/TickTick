@@ -1,10 +1,12 @@
-import { EntityType } from "../enums/entity-type";
+import { EntityType } from '../enums/entity-type';
 
 export interface Repeat {
-     id: string;
+  id: string;
   taskId: string;
-  type: EntityType;
-  custom?: string | null;
-  createdAt?: Date | string | null;
-  updatedAt?: Date | string | null;
+  type: string;
+  repeatDate: string | null;
+  nextOccurrence: string | null;
+  lastOccurrence: string | null;
+  isActive: boolean;
+  createdAt: string;
 }

@@ -11,6 +11,7 @@ import { ProjectService } from '../../../services/project.service';
 import { DateTimePickerComponent } from '../../../share/date-time-picker/date-time-picker.component';
 import { TagsService } from '../../../config/tags.service';
 import { UiStateService } from '../../../services/ui-state.service';
+import { TaskDetailsComponent } from "../../../components/task-details/task-details.component";
 
 type RouteInfo = {
   id: string | null;
@@ -27,7 +28,8 @@ type RouteInfo = {
     TagInputComponent,
     TaskInputComponent,
     DateTimePickerComponent,
-  ],
+    TaskDetailsComponent
+],
   templateUrl: './context.page.component.html',
   styles: ``,
 })
@@ -41,6 +43,9 @@ export class ContextPageComponent implements OnInit {
     id: null,
     entityType: EntityType.FOLDER,
   });
+
+  selectedTaskId: string | null = null;
+  selectedTaskEntityType: EntityType | null = null;
 
 
   entityData = signal<any>(null);
@@ -90,7 +95,6 @@ export class ContextPageComponent implements OnInit {
         EntityType.TOMORROW,
         EntityType.NEXT_SEVEN_DAYS,
         EntityType.INBOX,
-        
       ].includes(entityType)
     ) {
       this.projectService.fetchProjectById('inbox').subscribe((data) => {
@@ -106,12 +110,16 @@ export class ContextPageComponent implements OnInit {
         this.tagService.allTags$().find((t) => t.name === id)
       );
        })
-      
     }
   }
 
   sortEventHandler(event: any): void {
     console.log('Sort event::', event);
     this.sortGroupData.set(event);
+  }
+
+  onTaskClick(config:any){
+    this.selectedTaskId = config.id;
+    this.selectedTaskEntityType = config.entityType;
   }
 }

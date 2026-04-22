@@ -3,12 +3,14 @@ import {
   Component,
   computed,
   effect,
+  EventEmitter,
   HostListener,
   inject,
   Injector,
   input,
   Input,
   OnInit,
+  Output,
   signal,
   ViewChild,
 } from '@angular/core';
@@ -66,6 +68,7 @@ export class TaskListComponent implements OnInit {
   private injector = inject(Injector);
 
   @Input() routeData!: any;
+  @Output() onTaskClick = new EventEmitter<any>();
 
   isDateTimePikerVisible = false;
   initialDate = signal<Date | null>(null);
@@ -793,9 +796,10 @@ export class TaskListComponent implements OnInit {
 
   /**navigate to task details */
   navigateToTaskDetails(id: string, entityType: string) {
-    this.router.navigate([entityType.toLowerCase(), id], {
-      relativeTo: this.route,
-    });
+    // this.router.navigate([entityType.toLowerCase(), id], {
+    //   relativeTo: this.route,
+    // });
+    this.onTaskClick.emit({ id, entityType });
   }
 
   /**dateTimePiker */

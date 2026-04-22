@@ -3,10 +3,14 @@ import {
   computed,
   effect,
   ElementRef,
+  HostListener,
   inject,
   Injector,
+  Input,
+  OnChanges,
   OnInit,
   signal,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -88,7 +92,7 @@ import { toast } from 'ngx-sonner';
     `,
   ],
 })
-export class TaskDetailsComponent implements OnInit {
+export class TaskDetailsComponent implements OnInit,OnChanges {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   taskService = inject(TaskService);
@@ -100,8 +104,8 @@ export class TaskDetailsComponent implements OnInit {
   private injector = inject(Injector);
   private commentsService = inject(CommentService);
 
-  entityType!: any;
-  entityId!: any;
+  @Input() entityType!: any;
+  @Input() entityId!: any;
   task!: Task;
   parentTask!: any;
   attachment: any = null;
@@ -131,7 +135,7 @@ export class TaskDetailsComponent implements OnInit {
 
   isCommentSectionVisible = false;
 
-  constructor() {
+  constructor(private el: ElementRef) {
     effect(() => {
       const allTasks = this.taskService.allTasks$();
 
@@ -217,6 +221,16 @@ export class TaskDetailsComponent implements OnInit {
   contextMenu: MenuItem[] = [];
   priorityMenu: ContextMenuItem[] = [];
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.taskService.loadAllTasks();
+      if (this.entityType == 'TASK') {
+        this.taskService.loadAllTasks();
+        this.getTaskById(this.entityId);
+      } else if (this.entityType == 'SUBTASK') {
+        this.getSubTaskById(this.entityId);
+      }
+  }
+  
   ngOnInit() {
     this.attachmentService.loadAllAllAttachments();
     this.commentsService.loadAllComments();
@@ -634,6 +648,10 @@ export class TaskDetailsComponent implements OnInit {
         if (isSubtask) {
           this.taskService.deleteSubTask(task.parentId!, event.entityId);
         } else {
+          // 
+          setTimeout(() => {
+            this.taskService.deleteTask(event.entityId);
+          }, 500);
           this.taskService.deleteTask(event.entityId);
         }
         break;
@@ -1100,4 +1118,16 @@ export class TaskDetailsComponent implements OnInit {
 
   /**move to another folder */
   showMoveToProject = false;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+   const clickedInside = this.el.nativeElement.contains(event.target);
+
+    if (!clickedInside) {
+      console.log('clicked outside');
+      this.showTagInput = false;
+    }
+
+  }
+  // showTagInput = true
 }

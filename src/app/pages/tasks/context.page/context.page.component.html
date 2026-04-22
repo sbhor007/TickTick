@@ -21,7 +21,10 @@
         <div class="flex-1">
           <app-task-list
             [routeData]="routeData"
-            [sortGroupData]="sortGroupData()">
+            [sortGroupData]="sortGroupData()"
+            (onTaskClick)="onTaskClick($event)"
+            >
+            
           </app-task-list>
         </div>
 
@@ -29,7 +32,11 @@
     </ng-template>
     <ng-template #panel>
       <div class="h-full overflow-y-auto">
-        <router-outlet></router-outlet>
+        <!-- <router-outlet></router-outlet> -->
+         <app-task-details
+         [entityId]="selectedTaskId"
+         [entityType]="selectedTaskEntityType"
+         ></app-task-details>
       </div>
     </ng-template>
   </p-splitter>

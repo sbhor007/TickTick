@@ -172,7 +172,7 @@ export class CreateProjectComponent implements OnInit {
     // CREATE
     if (event.action === 'create') {
      this.folderService.loadAllFolders();
-    this.isShowFolderDialog.set(false); // ✅ close here instead
+    this.isShowFolderDialog.set(false); 
     setTimeout(() => {
       this.projectForm.patchValue({ folderId: event.folderId });
     }, 100);

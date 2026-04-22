@@ -41,6 +41,9 @@ import { ProjectService } from '../../services/project.service';
 import { TagSelectorComponent } from '../tag-selector/tag-selector.component';
 import { Tag } from '../../models/tag';
 import { TagsService } from '../../config/tags.service';
+import { catchError, forkJoin, of } from 'rxjs';
+import { ReminderService } from '../../services/reminder.service';
+import { RepeatService } from '../../services/repeat.service';
 
 @Component({
   selector: 'app-task-input',
@@ -64,11 +67,13 @@ export class TaskInputComponent implements OnInit, OnChanges {
   private contextMenuService = inject(ContextMenuBarService);
   private attachmentService = inject(AttachmentService);
   private tagService = inject(TagsService);
+  private reminderService = inject(ReminderService);
+  private repeatService = inject(RepeatService);
 
   /**input suggestions */
 
   @Input() project!: any;
-  @Input() selectedTagInput!:any
+  @Input() selectedTagInput!: any;
 
   projectPlaceHolder: string = this.project?.name;
 
@@ -125,9 +130,9 @@ export class TaskInputComponent implements OnInit, OnChanges {
   });
 
   constructor(private fb: FormBuilder) {
-    effect(() =>{
-      this.projectService.loadAllProjects()
-    })
+    effect(() => {
+      this.projectService.loadAllProjects();
+    });
   }
 
   ngOnInit(): void {
@@ -135,25 +140,23 @@ export class TaskInputComponent implements OnInit, OnChanges {
     console.log('Test Priorities');
     const priority = TaskPriority;
     console.log(priority);
-    console.log("project Data: ",this.project);
-    
-    if(this.selectedTagInput){
-     this.selectedTags.add(this.selectedTagInput)
+    console.log('project Data: ', this.project);
+
+    if (this.selectedTagInput) {
+      this.selectedTags.add(this.selectedTagInput);
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-  if (changes['project']) {
-    this.projectPlaceHolder = this.project?.name;
-  }
+    if (changes['project']) {
+      this.projectPlaceHolder = this.project?.name;
+    }
 
-  if (changes['selectedTagInput'] && this.selectedTagInput) {
-    this.selectedTags.clear();                      // ✅ clear stale tags on input change
-    this.selectedTags.add(this.selectedTagInput);
+    if (changes['selectedTagInput'] && this.selectedTagInput) {
+      this.selectedTags.clear(); // ✅ clear stale tags on input change
+      this.selectedTags.add(this.selectedTagInput);
+    }
   }
-}
-
-  
 
   /**input sugetions */
 
@@ -355,25 +358,67 @@ export class TaskInputComponent implements OnInit, OnChanges {
       return;
     }
 
-    if (this.attachedFiles) {
-      this.attachmentService.uploadAttachment(this.attachedFiles).subscribe({
-        next: (attachmentId) => {
-          this.taskAttachmentId = attachmentId;
-          this.buildAndCreateTask();
-        },
-        error: (err) => {
-          console.error('Upload failed:', err);
-          this.buildAndCreateTask(); 
-        },
-      });
-    } else {
-      this.buildAndCreateTask();
-    }
+    const selection = this.lastSelection();
+    const taskId = crypto.randomUUID();
+    const dueDate = selection?.date?.toISOString() ?? null;
+
+    const attachment$ = this.attachedFiles
+      ? this.attachmentService.uploadAttachment(this.attachedFiles).pipe(
+          catchError((err) => {
+            console.error('Error get all tasks:', err);
+            return of(null);
+          }),
+        )
+      : of(null);
+
+    const reminder$ = selection?.reminder
+      ? this.reminderService.create(selection?.reminder, taskId,dueDate).pipe(
+          catchError((err) => {
+            console.error('Error get all tasks:', err);
+            return of(null);
+          }),
+        )
+      : of(null);
+
+    const repeat$ = selection?.repeat
+      ? this.repeatService.create(selection?.repeat, taskId, dueDate).pipe(
+          catchError((err) => {
+            console.error('Error get all tasks:', err);
+            return of(null);
+          }),
+        )
+      : of(null);
+
+    forkJoin([attachment$, reminder$, repeat$]).subscribe({
+      next: ([attachmentId, reminder, repeat]) => {
+        this.taskAttachmentId = attachmentId;
+        this.lastSelection.update((prev: any) => {
+          const hasReminder = !!reminder;
+          const hasRepeat = !!repeat;
+
+          return {
+            ...prev,
+            date: prev?.date
+              ? prev.date
+              : hasReminder || hasRepeat
+                ? new Date()
+                : null,
+            reminder: reminder ?? null,
+            repeat: repeat ?? null,
+          };
+        });
+        this.buildAndCreateTask(taskId);
+      },
+      error: (err) => {
+        console.error('Error during task creation:', err);
+        this.buildAndCreateTask(taskId);
+      },
+    });
   }
 
-  private buildAndCreateTask(): void {
+  private buildAndCreateTask(taskId: string): void {
     const taskData: Task = {
-      id: crypto.randomUUID(),
+      id: taskId ?? crypto.randomUUID(),
       userId: null,
       projectId: this.selectedProject?.id ?? this.project.id ?? null,
       title: this.taskTitle,
@@ -385,18 +430,17 @@ export class TaskInputComponent implements OnInit, OnChanges {
       subtasks: [],
       tags: Array.from(this.selectedTags) ?? [],
       comments: [],
-      attachmentId: this.taskAttachmentId ?? null, 
+      attachmentId: this.taskAttachmentId ?? null,
       entityType: EntityType.TASK,
       isNote: false,
-      reminder: this.lastSelection()?.reminder,
-      repeat: this.lastSelection()?.repeat,
+      reminder: this.lastSelection()?.reminder ?? null,
+      repeat: this.lastSelection()?.repeat ?? null,
       dueDate: this.lastSelection()?.date?.toISOString() ?? null,
       dueDateTime: this.lastSelection()?.time?.toString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       completedAt: null,
     };
-    
 
     console.log('task-Data: ', taskData);
     this.taskService.crateTask(this.project.id, taskData);
@@ -479,8 +523,6 @@ export class TaskInputComponent implements OnInit, OnChanges {
     this.isExpanded = false;
   }
 
-  
-
   /**tag selector */
   tagsSelectorEventHandler(event: any) {
     console.log('tag selector event::', event);
@@ -488,8 +530,8 @@ export class TaskInputComponent implements OnInit, OnChanges {
     if (event.action == 'cancel') return;
     switch (event.action) {
       case 'add':
-        event.payload.forEach((element:Tag) => {
-          this.selectedTags.add(element)
+        event.payload.forEach((element: Tag) => {
+          this.selectedTags.add(element);
         });
         break;
       case 'create':

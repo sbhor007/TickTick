@@ -224,10 +224,10 @@
 
     <!-- comment section -->
 
-    <div class="flex flex-col gap-2 w-full">
+    <div class="flex flex-col gap-2 w-full ">
       <!-- list out comments -->
       @if (allComments().length > 0) {
-        <div class="px-4 py-1 border-t border-gray-200/20">
+        <div class="px-4 py-1 border-t  border-gray-200/20 overflow-y-auto">
           @for (c of allComments(); track $index) {
             <div
               class="flex items-center gap-3 px-4 py-3 hover:bg-gray-500/10 rounded-xl mb-2 border border-transparent hover:border-gray-600/50 transition-all duration-200 group"
