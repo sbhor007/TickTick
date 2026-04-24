@@ -2,14 +2,322 @@
 @import "tailwindcss";
 @import "primeicons/primeicons.css";
 @import 'quill/dist/quill.snow.css';
-/* @import 'ngx-sonner/styles.css'; */
-/* @import "@ctrl/ngx-emoji-mart/picker"; */
+
+/* styles.css */
+@import "tailwindcss";
+
+
+/* ===== CORE VARIABLES ===== */
+.fc {
+  background-color: transparent !important;
+  font-family: inherit !important;
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: transparent;
+  --fc-list-event-hover-bg-color: rgba(255,255,255,0.04);
+  --fc-theme-standard-bg-color: transparent;
+  --fc-border-color: rgba(255,255,255,0.06);
+  --fc-today-bg-color: transparent;
+  --fc-highlight-color: rgba(59,130,246,0.15);
+}
+
+/* ===== GLOBAL BORDERS ===== */
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid {
+  border: none !important;
+}
+
+/* ===== TOOLBAR ===== */
+.fc .fc-toolbar {
+  padding: 0.5rem 0 1.5rem 0 !important;
+  background: transparent !important;
+}
+
+.fc .fc-toolbar-title {
+  color: #e5e7eb !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+}
+
+.fc .fc-button {
+  background: transparent !important;
+  border: 1px solid #3f3f46 !important;
+  color: #a1a1aa !important;
+  border-radius: 6px !important;
+  padding: 4px 12px !important;
+  font-size: 0.8rem !important;
+  box-shadow: none !important;
+  text-transform: capitalize !important;
+  transition: all 0.15s ease !important;
+}
+
+.fc .fc-button:hover {
+  background: #27272a !important;
+  color: #ffffff !important;
+  border-color: #52525b !important;
+}
+
+.fc .fc-button-active,
+.fc .fc-button:focus {
+  background: #3f3f46 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ===== MULTIMONTH (YEAR VIEW) ===== */
+.fc .fc-multimonth {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 2rem 2.5rem !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.fc .fc-multimonth-month {
+  background-color: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.fc .fc-multimonth-title {
+  color: #e5e7eb !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  padding-bottom: 0.6rem !important;
+  background-color: transparent !important;
+  border: none !important;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* ===== COL HEADERS ===== */
+.fc .fc-col-header-cell {
+  padding: 4px 0 !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: #52525b !important;
+  font-size: 0.65rem !important;
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== DAYGRID (MONTH VIEW) ===== */
+.fc .fc-daygrid-day {
+  background: transparent;  /* no !important - allows dayCellClassNames to work */
+}
+
+.fc .fc-daygrid-day-top {
+  justify-content: center !important;
+}
+
+.fc .fc-daygrid-day-number {
+  color: #9ca3af !important;
+  font-size: 0.8rem !important;
+  width: 100% !important;
+  text-align: center !important;
+  padding: 5px 0 !important;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.fc .fc-daygrid-day-number:hover {
+  background-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+.fc .fc-day-today {
+  background-color: transparent !important;
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.fc .fc-day-other .fc-daygrid-day-number {
+  color: #3f3f46 !important;
+}
+
+/* ===== MULTIMONTH COMPACT (year view only) ===== */
+.fc .fc-multimonth .fc-daygrid-day {
+  height: 28px !important;
+  max-height: 28px !important;
+  background: transparent;  /* no !important */
+}
+
+.fc .fc-multimonth .fc-daygrid-body tr {
+  height: 28px !important;
+}
+
+.fc .fc-multimonth .fc-daygrid-day-events,
+.fc .fc-multimonth .fc-daygrid-day-bottom {
+  display: none !important;
+}
+
+/* ===== YEAR VIEW TASK HIGHLIGHTS ===== */
+.has-tasks-low {
+  background: rgba(165, 211, 252, 0.1) !important;
+  border-radius: 4px;
+}
+
+.has-tasks-mid {
+  background: rgba(68, 176, 239, 0.1) !important;
+  border-radius: 4px;
+}
+
+.has-tasks-high {
+  background: rgba(28, 143, 185, 0.1) !important;
+  border-radius: 4px;
+}
+
+.has-tasks-max {
+  background: rgba(27, 103, 153, 0.1) !important;
+  border-radius: 4px;
+}
+
+/* ===== TIME GRID (WEEK / DAY / MULTI-DAY) ===== */
+.fc .fc-timegrid-slot {
+  height: 48px !important;
+  border-color: rgba(255,255,255,0.05) !important;
+}
+
+.fc .fc-timegrid-slot-label {
+  color: #52525b !important;
+  font-size: 0.7rem !important;
+  vertical-align: top;
+  padding-top: 4px;
+}
+
+.fc .fc-timegrid-slot-lane {
+  border-color: rgba(255,255,255,0.04) !important;
+}
+
+.fc .fc-timegrid-now-indicator-line {
+  border-color: #3b82f6 !important;
+  border-width: 1.5px !important;
+}
+
+.fc .fc-timegrid-now-indicator-arrow {
+  border-top-color: #3b82f6 !important;
+  border-bottom-color: #3b82f6 !important;
+}
+
+.fc .fc-timegrid-col {
+  background: transparent !important;
+}
+
+.fc .fc-timegrid-col.fc-day-today {
+  background: rgba(59, 130, 246, 0.04) !important;
+}
+
+/* ===== LIST / AGENDA VIEW ===== */
+.fc .fc-list {
+  border: none;
+}
+
+.fc .fc-list-event {
+  border: none !important;
+  background: transparent !important;
+}
+
+.fc .fc-list-event:hover td {
+  background: transparent !important;
+}
+
+.fc .fc-list-event > td {
+  padding: 3px 8px;
+  vertical-align: middle;
+}
+
+.fc .fc-list-event-dot {
+  display: none;
+}
+
+.fc .fc-list-event-time {
+  color: #6b7280 !important;
+  font-size: 0.75rem !important;
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+.fc .fc-list-event-title {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.fc .fc-list-day th {
+  background: transparent !important;
+  border-top: 1px solid rgba(255,255,255,0.06) !important;
+  border-bottom: none !important;
+  padding: 16px 8px 4px;
+}
+
+.fc .fc-list-day-cushion {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fc .fc-list-empty {
+  background: transparent !important;
+  color: #52525b;
+  font-size: 0.875rem;
+}
+
+/* ===== SCROLLBAR ===== */
+.fc ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.fc ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fc ::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border-radius: 4px;
+}
+
+.fc ::-webkit-scrollbar-thumb:hover {
+  background: #52525b;
+}
+
+
+
+
 body {
   background-color: #0F0F10;
   color: aliceblue;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+
 
 @layer utilities {
   .scrollbar-none {

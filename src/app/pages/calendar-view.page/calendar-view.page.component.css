@@ -1,0 +1,59 @@
+/* agenda-calendar.component.scss */
+.agenda-wrapper {
+  background: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+
+  /* Day header rows (e.g. "6 Wed") */
+  ::ng-deep .fc-list-day th {
+    background: #161616 !important;
+    border-bottom: 1px solid #2e2e2e;
+    padding: 8px 14px;
+
+    .fc-list-day-cushion {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      background: transparent !important;
+    }
+
+    .fc-list-day-text {
+      font-size: 22px;
+      font-weight: 600;
+      color: rgb(23, 23, 23); /* blue date number */
+    }
+
+    .fc-list-day-side-text {
+      font-size: 12px;
+      font-weight: 400;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+
+  /* Event rows */
+  ::ng-deep .fc-list-event {
+    border: none !important;
+    border-bottom: 1px solid #2a2a2a !important;
+  }
+
+  /* Time column */
+  ::ng-deep .fc-list-event-time {
+    white-space: nowrap;
+    width: 130px;
+    vertical-align: middle;
+  }
+
+  /* Remove table cell borders */
+  ::ng-deep .fc-list-table td {
+    border: none !important;
+  }
+
+  /* No events */
+  ::ng-deep .fc-list-empty {
+    background: #1e1e1e;
+    color: #666;
+  }
+}

@@ -7,6 +7,8 @@ import { EntityType } from './enums/entity-type';
 import { TrashedComponent } from './components/trashed/trashed.component';
 import { TaskDetailsComponent } from './components/task-details/task-details.component';
 import { SummaryComponent } from './components/summary/summary.component';
+import { CalendarViewPageComponent } from './pages/calendar-view.page/calendar-view.page.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
@@ -139,6 +141,15 @@ export const routes: Routes = [
           },
         ],
       },
+      {
+      path: 'calenderView',
+      component: CalendarViewPageComponent
+      },
+      {
+        path:'dashboardView',
+        component:DashboardComponent
+      },
     ],
   },
+
 ];

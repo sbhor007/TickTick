@@ -1,0 +1,55 @@
+<div class="w-full h-screen overflow-y-auto p-5">
+  <!-- <pre>
+    {{allTasksDates() | json}}
+  </pre> -->
+  <!-- Calendar View -->
+  <div class="w-full h-screen overflow-y-auto p-5">
+    @if (activeView == "year") {
+      
+      <full-calendar [options]="yearlyCalender"></full-calendar>
+    } @else if (activeView == "month") {
+      <full-calendar [options]="mothCalender"></full-calendar>
+    } @else if (activeView == "week") {
+      <full-calendar [options]="weekCalender"></full-calendar>
+    } @else if (activeView == "day") {
+      <full-calendar [options]="dayCalender"></full-calendar>
+    } @else if (activeView == "agenda") {
+      <full-calendar [options]="listAgendaByDate"></full-calendar>
+    } @else if (activeView == "multi-day") {
+      <full-calendar [options]="dynamicDaysCalender"></full-calendar>
+    } @else if (activeView == "multi-weeks") {
+      <full-calendar [options]="dynamicWeekCalender"></full-calendar>
+    }
+    
+  </div>
+
+  <!-- Options Menu -->
+  <div
+    class="fixed bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-50"
+  >
+    <div class="bg-[#242426] rounded-full p-1.5 flex items-center shadow-2xl">
+      <ul class="flex items-center text-[13px] font-medium text-[#9ca3af] z-50">
+        @for (view of CALENDAR_VIEWS; track $index) {
+          <li
+            (click)="activeView = view.path"
+            [ngClass]="
+              view.path === activeView
+                ? 'bg-[#3f3f41] text-white rounded-full'
+                : 'hover:text-white'
+            "
+            class="cursor-pointer px-4 py-1.5 transition-colors duration-200 whitespace-nowrap"
+          >
+            {{ view.name }}
+          </li>
+        }
+        <li class="ml-2">
+          <button
+            class="bg-[#f58220] hover:bg-[#d97706] text-white px-5 py-1.5 rounded-full text-[13px] font-medium transition-colors shadow-md"
+          >
+            Upgrade Now
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

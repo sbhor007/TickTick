@@ -1,0 +1,20 @@
+<div class="w-full flex h-screen p-5">
+  <!-- completed task-->
+
+  <div class="w-full border-r">
+    <h2 class="text-3xl py-5">Completed Tasks</h2>
+    <app-task-list
+      [routeData]="completedTasks"
+      [sortGroupData]=""
+    ></app-task-list>
+  </div>
+  <!-- pending tasks -->
+  <div class="w-full border-l  pl-3">
+    <h2 class="text-3xl block py-5">PendingTasks</h2>
+    <app-task-list
+    class="overflow-y-auto"
+      [routeData]="pendingTasks"
+      [sortGroupData]=""
+    ></app-task-list>
+  </div>
+</div>

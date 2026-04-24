@@ -379,6 +379,7 @@ export class ContextMenuBarService {
     [EntityType.COMPLETED]: [],
     [EntityType.COMMENT]: [],
     [EntityType.TAG_VIEW]: [],
+    [EntityType.PENDING]: [],
   };
 
   getContextMenu(

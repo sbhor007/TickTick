@@ -167,7 +167,11 @@ export class TaskListComponent implements OnInit {
       data = this.taskService
         .allTasks$()
         .filter((t) => t.status === 'COMPLETED');
-    } else if (routerData.entityType === EntityType.TAG_VIEW) {
+    }else if (routerData.entityType === EntityType.PENDING) {
+      data = this.taskService
+        .allTasks$()
+        .filter((t) => t.status === 'PENDING');
+    }else if (routerData.entityType === EntityType.TAG_VIEW) {
       data = this.taskService
         .allTasks$()
         .filter((t) =>

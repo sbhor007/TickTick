@@ -18,5 +18,6 @@ export enum EntityType {
   PRIORITY = 'PRIORITY',
   COMPLETED = 'COMPLETED',
   COMMENT = 'COMMENT',
-  TAG_VIEW = 'TAG_VIEW'
+  TAG_VIEW = 'TAG_VIEW',
+  PENDING = 'PENDING'
 }
