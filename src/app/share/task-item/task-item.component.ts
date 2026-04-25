@@ -24,7 +24,7 @@ import { MenuItem } from 'primeng/api';
 import { EntityType } from '../../enums/entity-type';
 import { TooltipModule } from 'primeng/tooltip';
 import { TaskPriority } from '../../enus/task-priority';
-import { combineLatest, debounceTime, fromEvent, map, sequenceEqual } from 'rxjs';
+import {  debounceTime } from 'rxjs';
 import { TaskStatus } from '../../enus/task-status';
 import { Task } from '../../models/task';
 import { FolderService } from '../../services/folder.service';
@@ -82,7 +82,6 @@ export interface ContextMenuI {
     TooltipModule,
     Popover,
     DateTimePickerComponent,
-    TagSelectorComponent,
     MoveToProjectComponent
 ],
   templateUrl: './task-item.component.html',

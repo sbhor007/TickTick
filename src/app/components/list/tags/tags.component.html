@@ -37,7 +37,7 @@
     </div>
 
     @if (isExpanded) {
-      @for (tag of notSharedTags(); track tag.id) {
+      @for (tag  of notSharedTags(); track tag.id) {
         <div>
           <div
             [routerLink]="['tags', tag.name]"

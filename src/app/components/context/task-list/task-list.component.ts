@@ -47,7 +47,6 @@ import { toast } from 'ngx-sonner';
 @Component({
   selector: 'app-task-list',
   imports: [
-    JsonPipe,
     TaskItemComponent,
     ReactiveFormsModule,
     ShortDatePipe,
@@ -116,10 +115,10 @@ export class TaskListComponent implements OnInit {
       this.searchTerm.set(val ?? '');
     });
 
-    console.log('--------------------------*-----------------');
-    console.log(this.groupedTasks());
+    // console.log('--------------------------*-----------------');
+    // console.log(this.groupedTasks());
 
-    console.log('--------------------------*-----------------');
+    // console.log('--------------------------*-----------------');
   }
 
   allTaskInsideProject: any;
@@ -347,7 +346,7 @@ export class TaskListComponent implements OnInit {
     const completed = this.getCompletedTasks(data);
     const rest = this.getRestTasks(data);
 
-    console.log('Group By::', groupBy);
+    // console.log('Group By::', groupBy);
 
     rest.forEach((t) => {
       let key: string;
@@ -555,7 +554,7 @@ export class TaskListComponent implements OnInit {
 
   /**task-item-event-handler */
   taskItemEventHandler(event: any) {
-    console.log('Task Item Event Handler::', event);
+    // console.log('Task Item Event Handler::', event);
     const task: Task = event.payload;
     const isSubtask = event.entityType === EntityType.SUBTASK;
 
@@ -599,7 +598,7 @@ export class TaskListComponent implements OnInit {
         break;
       case 'convert_to_note':
       case 'convert_to_task':
-        console.log(event.payload.subtasks);
+        // console.log(event.payload.subtasks);
 
         if (
           event.entityType != EntityType.SUBTASK &&
@@ -694,7 +693,7 @@ export class TaskListComponent implements OnInit {
       case 'copy_link':
         const url = `${window.location.origin}/${task.entityType.toLowerCase()}/${task.id}`;
         navigator.clipboard.writeText(url).then(() => {
-          console.log('Link copied to clipboard:', url);
+          // console.log('Link copied to clipboard:', url);
         });
         break;
 
@@ -814,7 +813,7 @@ export class TaskListComponent implements OnInit {
       this.isDateTimePikerVisible = false;
       return;
     }
-    console.log('event handle::', selection);
+    // console.log('event handle::', selection);
 
     if (
       this.selectedTask.entityType === EntityType.SUBTASK &&
@@ -847,13 +846,13 @@ export class TaskListComponent implements OnInit {
 
   toggleDateTime() {
     this.isDateTimePikerVisible = !this.isDateTimePikerVisible;
-    console.log(this.isDateTimePikerVisible);
+    // console.log(this.isDateTimePikerVisible);
   }
 
   /**tag selector */
 
   tagsSectorEventHandler(event: any) {
-    console.log('tag selector event::', event);
+    // console.log('tag selector event::', event);
     this.isTagSelectorVisible = false;
     if (event.action == 'cancel') return;
     const t = this.selectedTags;

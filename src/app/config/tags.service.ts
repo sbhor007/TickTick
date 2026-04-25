@@ -26,7 +26,7 @@ export class TagsService {
 
   loadAllTags() {
     this.fetchAllTags().subscribe((data) => {
-      console.log('ALL_TAGS_DATA::', data);
+      // console.log('ALL_TAGS_DATA::', data);
       this._allTags$.set(data);
     });
   }

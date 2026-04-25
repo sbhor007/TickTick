@@ -67,13 +67,13 @@ export class ContextHeaderComponent implements OnInit {
     this.titleControl.valueChanges
       .pipe(debounceTime(500))
       .subscribe((value) => {
-        console.log(value);
+        // console.log(value);
         if (value !== null) {
           this.updateTitle(value);
         }
       });
 
-    console.log('RouteData:', this.routeData);
+    // console.log('RouteData:', this.routeData);
   }
 
  
@@ -86,7 +86,7 @@ export class ContextHeaderComponent implements OnInit {
       this.folderService
         .fetchFolderById(route.id)
         .subscribe((folder) => {
-          console.table(folder);
+          // console.table(folder);
           this.data = folder;
           this.titleControl.setValue(folder.name);
         });
@@ -94,7 +94,7 @@ export class ContextHeaderComponent implements OnInit {
       this.projectService
         .fetchProjectById(route.id)
         .subscribe((project) => {
-          console.table(project);
+          // console.table(project);
           this.data = project;
           this.titleControl.setValue(project.name);
         });

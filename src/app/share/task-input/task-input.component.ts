@@ -13,14 +13,10 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { DatePicker } from 'primeng/datepicker';
 import {
   FormBuilder,
-  FormControl,
-  FormGroup,
   FormsModule,
   ReactiveFormsModule,
-  Validators,
 } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.component';
@@ -48,7 +44,6 @@ import { RepeatService } from '../../services/repeat.service';
 @Component({
   selector: 'app-task-input',
   imports: [
-    DatePicker,
     CommonModule,
     FormsModule,
     DatePipe,

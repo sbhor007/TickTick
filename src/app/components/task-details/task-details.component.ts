@@ -17,7 +17,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TaskService } from '../../services/task.service';
 import { EntityType } from '../../enums/entity-type';
 import { Task } from '../../models/task';
-import { JsonPipe, NgClass, NgStyle } from '@angular/common';
+import {  NgClass } from '@angular/common';
 import { TaskPriority } from '../../enus/task-priority';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TaskStatus } from '../../enus/task-status';
@@ -38,7 +38,6 @@ import { Tag } from '../../models/tag';
 import { TagSelectorComponent } from '../../share/tag-selector/tag-selector.component';
 import { PickerComponent } from '@ctrl/ngx-emoji-mart';
 import { CommentService } from '../../services/comment.service';
-import { TimeAgoPipe } from '../../pipe/time-ago.pipe';
 import { TaskComment } from '../../models/task-comment';
 import { MoveToProjectComponent } from '../../share/move-to-project/move-to-project.component';
 import { toast } from 'ngx-sonner';
@@ -51,15 +50,11 @@ import { toast } from 'ngx-sonner';
     Popover,
     NgClass,
     TaskItemComponent,
-    JsonPipe,
-    RouterLink,
     DateTimePickerComponent,
     FormsModule,
     TagSelectorComponent,
     PickerComponent,
-    TimeAgoPipe,
     MoveToProjectComponent,
-    NgStyle
 ],
   templateUrl: './task-details.component.html',
   styles: [
@@ -136,12 +131,16 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
   isCommentSectionVisible = false;
 
   constructor(private el: ElementRef) {
+    
+    this.attachmentService.loadAllAllAttachments()
     effect(() => {
+      console.log("effect call for task details");
+
       const allTasks = this.taskService.allTasks$();
 
       if (!this.entityId) return;
 
-      if (this.entityType === 'task') {
+      if (this.entityType === 'TASK') {
         const updated = allTasks.find((t) => t.id === this.entityId);
         if (updated) {
           this.task = updated;
@@ -160,6 +159,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
               .allAttachments$()
               .find((a) => a.id === updated.attachmentId),
           );
+          
           this.attachment = attachmentData();
           /**comments with attachment files */
           const filteredData = this.commentsService
@@ -177,7 +177,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
             });
           this.allComments.update(() => filteredData ?? []);
         }
-      } else if (this.entityType === 'subtask') {
+      } else if (this.entityType === 'SUBTASK') {
         const result = this.taskService.findSubTaskById(this.entityId);
         if (result) {
           this.task = result.subtask;
@@ -222,13 +222,22 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
   priorityMenu: ContextMenuItem[] = [];
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['entityId'] || changes['entityType']) {
+      console.log("ng-change-call::", this.entityId, this.entityType);
+      console.log("check attachment",this.attachment);
+      
+      
+    this.parentTask = null;
     this.taskService.loadAllTasks();
+    this.attachmentService.loadAllAllAttachments();
+
       if (this.entityType == 'TASK') {
         this.taskService.loadAllTasks();
         this.getTaskById(this.entityId);
       } else if (this.entityType == 'SUBTASK') {
         this.getSubTaskById(this.entityId);
       }
+    }
   }
   
   ngOnInit() {

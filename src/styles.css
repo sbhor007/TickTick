@@ -306,6 +306,63 @@
   background: #52525b;
 }
 
+/* Fix footer toolbar at bottom center */
+.fc-footer-toolbar {
+  position: fixed !important;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+
+  /* Glassmorphism pill style */
+  background: rgba(20, 20, 30, 0.85) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 999px !important;
+  padding: 6px 16px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+
+  /* Only show center section (view switcher) */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 4px;
+}
+
+/* Hide left/right sections, keep only center */
+.fc-footer-toolbar .fc-toolbar-chunk:first-child,
+.fc-footer-toolbar .fc-toolbar-chunk:last-child {
+  display: none !important;
+}
+
+/* Style the view buttons */
+.fc-footer-toolbar .fc-button {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 999px !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  padding: 6px 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.fc-footer-toolbar .fc-button:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+.fc-footer-toolbar .fc-button-active {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+/* Add bottom padding so calendar content isn't hidden behind bar */
+.fc {
+  padding: 16px;
+}
+
 
 
 

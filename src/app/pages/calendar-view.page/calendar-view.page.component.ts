@@ -67,15 +67,6 @@ export class CalendarViewPageComponent implements OnInit {
     this.taskService.loadAllTasks();
   }
 
-  CALENDAR_VIEWS: any[] = [
-    { name: 'Year', path: 'year' },
-    { name: 'Month', path: 'month' },
-    { name: 'Week', path: 'week' },
-    { name: 'Day', path: 'day' },
-    { name: 'Agenda', path: 'agenda' },
-    { name: 'Multi-Day', path: 'multi-day' },
-    { name: 'Multi-Weeks', path: 'multi-weeks' },
-  ];
 
   yearlyCalender: CalendarOptions = {
     plugins: [multiMonthPlugin, interactionPlugin],
@@ -94,7 +85,7 @@ export class CalendarViewPageComponent implements OnInit {
       const grouped = this.allTasksDates();
       const count = grouped[cellDate]?.length ?? 0;
 
-      // console.log("count::",count);
+
 
       if (count === 0) return [];
       if (count <= 2) return ['has-tasks-low'];
@@ -108,132 +99,8 @@ export class CalendarViewPageComponent implements OnInit {
     },
   };
 
-  /**monthly Calender */
-  mothCalender: CalendarOptions = {
-    plugins: [dayGridPlugin, interactionPlugin], 
 
-    initialView: 'dayGridMonth',
-    initialDate: new Date(),
-    displayEventTime: false,
-    slotEventOverlap: true,
-    eventOverlap: true,
-
-    // testing
-    dateClick: (arg) => this.handleDateClick(arg),
-
-    eventDidMount: (arg) => {
-      const priority = arg.event.extendedProps['priority'];
-
-      const styles: Record<string, { bg: string; border: string }> = {
-        [TaskPriority.HIGH]: { bg: 'rgba(255, 0, 0, 0.1)', border: 'red' },
-        [TaskPriority.MEDIUM]: {
-          bg: 'rgba(74, 158, 255, 0.1)',
-          border: '#4a9eff',
-        },
-        [TaskPriority.LOW]: {
-          bg: 'rgba(246, 255, 74, 0.1)',
-          border: '#f6ff4a',
-        },
-        [TaskPriority.NONE]: {
-          bg: 'rgba(255,255,255, 0.05)',
-          border: 'transparent',
-        },
-      };
-
-      const style = styles[priority];
-      if (!style) return;
-
-      const eventEl = arg.el as HTMLElement;
-      eventEl.style.backgroundColor = style.bg;
-      eventEl.style.borderLeft = `3px solid ${style.border}`;
-      eventEl.style.borderRadius = '4px';
-      eventEl.style.marginBottom = '2px';
-
-      const titleEl = eventEl.querySelector('.fc-event-title') as HTMLElement;
-      if (titleEl) {
-        titleEl.style.fontWeight = '600';
-        titleEl.style.fontSize = '11px';
-        titleEl.style.padding = '1px 4px';
-      }
-    },
-    //     dayCellContent: (arg) => {
-    //       const cellDate = arg.date.toISOString().split('T')[0];
-    //       const grouped = this.allTasksDates();
-    //       const tasks = grouped[cellDate] || [];
-
-    //       return {
-    //         html: `
-    //         <div class="p-2 h-full flex flex-col gap-1">
-    //   <div class="text-[11px] font-semibold text-gray-400 mb-1">${arg.dayNumberText}</div>
-    //   ${tasks.map((t) => `
-    //     <div class="
-    //       text-[11px] truncate rounded-md px-2 py-0.5
-    //       font-medium text-white cursor-pointer
-    //       border-l-2 ${this.getPriorityClass(t.priority)}
-    //       ${this.getPriorityClass(t.priority)}
-    //     ">
-    //       ${t.title}
-    //     </div>
-    //   `).join('')}
-    // </div>
-    //       `,
-    //       };
-    //     },
-    events: this.allTasks(),
-
-    headerToolbar: {
-      right: 'prev,dayGridMonth,next',
-    },
-  };
-
-  /**WEEKLY CALENDER */
-  weekCalender: CalendarOptions = {
-    plugins: [timeGridPlugin, interactionPlugin],
-    initialView: 'timeGridWeek',
-    initialDate: new Date(),
-    contentHeight: 'auto',
-    expandRows: true,
-    weekends: true,
-    slotDuration: '01:00:00',
-    slotLabelInterval: '01:00:00',
-    allDaySlot: false,
-    nowIndicator: true,
-    // slotMinTime: '08:00:00',
-    // slotMaxTime: '20:00:00',
-
-    events: this.allTasks(),
-
-    headerToolbar: {
-      right: 'prev,timeGridWeek,next',
-    },
-  };
-
-  /**DAY CALENDER */
-  dayCalender: CalendarOptions = {
-    plugins: [timeGridPlugin, interactionPlugin],
-    initialView: 'timeGridDay',
-    nowIndicator: true,
-    allDaySlot: false,
-    initialDate: new Date(),
-    slotEventOverlap: true,
-
-    // slotMinTime: '08:00:00',
-    // slotMaxTime: '20:00:00',
-
-    events: this.allTasks(),
-
-    // views: {
-    //   timeGridFourDay: {
-    //     type: 'timeGrid',
-    //     duration: { days: 4 },
-    //   },
-    // },
-
-    headerToolbar: {
-      right: 'prev,today,next',
-    },
-  };
-
+ 
   /**List Tasks */
   listAgendaByDate: CalendarOptions = {
     plugins: [listPlugin],
@@ -246,7 +113,7 @@ export class CalendarViewPageComponent implements OnInit {
       day: 'numeric',
       weekday: 'short',
     },
-    //customized default time formate 
+    //customized default time formate
     eventTimeFormat: {
       hour: 'numeric',
       minute: '2-digit',
@@ -323,53 +190,89 @@ export class CalendarViewPageComponent implements OnInit {
       right: 'prev,today,next',
     },
   };
-
+  
   /**Dynamic Days calender */
   selectedDays = 4;
-  dynamicDaysCalender: CalendarOptions = {
-    plugins: [timeGridPlugin],
-    initialView: 'timeGridNDay',
 
-    //button
-    customButtons: {
-      days: {
-        text: 'custom!',
-        click: function () {},
-      },
-    },
-
-    views: {
-      timeGridNDay: {
-        type: 'timeGrid',
-        duration: { days: this.selectedDays },
-      },
-    },
-    events: this.allTasks(),
-    headerToolbar: {
-      right: 'prev,timeGridNDay,next days',
-    },
-  };
 
   /**Dynamic week calender */
   selectedWeeks = 1;
-  dynamicWeekCalender: CalendarOptions = {
-    plugins: [timeGridPlugin],
-    initialView: 'timeGridNWeek', 
+
+
+  /**full calender with all options */
+  fullCalender: CalendarOptions = {
+    plugins: [
+      dayGridPlugin,
+      timeGridPlugin,
+      listPlugin,
+      multiMonthPlugin,
+      interactionPlugin,
+    ],
+    initialView: 'multiMonthYear',
     initialDate: new Date(),
-    contentHeight: 'auto',
-    expandRows: true,
-    weekends: true,
+    displayEventTime: false,
+    slotEventOverlap: true,
+    eventOverlap: true,
+
+    headerToolbar: {
+      left: 'prev today next',
+      right:
+        'multiMonthYear dayGridMonth timeGridWeek timeGridDay listYear MultiDays MultiWeeks',
+      center: 'title',
+      
+    },
+
+    dateClick: (arg) => this.handleDateClick(arg),
+
+    eventDidMount: (arg) => {
+      const priority = arg.event.extendedProps['priority'];
+      const styles: Record<string, { bg: string; border: string }> = {
+        [TaskPriority.HIGH]: { bg: 'rgba(255, 0, 0, 0.1)', border: 'red' },
+        [TaskPriority.MEDIUM]: {
+          bg: 'rgba(74, 158, 255, 0.1)',
+          border: '#4a9eff',
+        },
+        [TaskPriority.LOW]: {
+          bg: 'rgba(246, 255, 74, 0.1)',
+          border: '#f6ff4a',
+        },
+        [TaskPriority.NONE]: {
+          bg: 'rgba(255,255,255, 0.05)',
+          border: 'transparent',
+        },
+      };
+      const style = styles[priority];
+      if (!style) return;
+
+      const eventEl = arg.el as HTMLElement;
+      eventEl.style.backgroundColor = style.bg;
+      eventEl.style.borderLeft = `3px solid ${style.border}`;
+      eventEl.style.borderRadius = '4px';
+      eventEl.style.marginBottom = '2px';
+
+      const titleEl = eventEl.querySelector('.fc-event-title') as HTMLElement;
+      if (titleEl) {
+        titleEl.style.fontWeight = '600';
+        titleEl.style.fontSize = '11px';
+        titleEl.style.padding = '1px 4px';
+      }
+    },
+
     views: {
-      timeGridNWeek: {
+      MultiDays: {
+        type: 'timeGrid',
+        duration: { days: this.selectedDays },
+      },
+      MultiWeeks: {
         type: 'timeGrid',
         duration: { days: this.selectedWeeks * 7 },
       },
+
     },
     events: this.allTasks(),
-    headerToolbar: {
-      right: 'prev,timeGridNWeek,next',
-    },
   };
+
+  
 
   // selectedCalender: CalendarOptions = this.yearlyCalender;
 
@@ -432,6 +335,4 @@ export class CalendarViewPageComponent implements OnInit {
   //       break;
   //   }
   // }
-
- 
 }

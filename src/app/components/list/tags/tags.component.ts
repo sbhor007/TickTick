@@ -48,18 +48,17 @@ export class TagsComponent implements OnInit {
   mode: 'create' | 'update' | 'create_subtag' | 'update_subtag' = 'create';
   selectedTag: any = null;
 
-  // ✅ tracks which tag rows are expanded
   expandedTags = new Set<string>();
 
-  tags = computed(() => this.tagsService.allTags$());
+  tags = computed(() => this.tagsService.allTags$() as Tag[]) 
 
   notSharedTags = computed(() =>
-    this.tagsService.allTags$().filter((t) => !t.isShared),
+    this.tagsService.allTags$().filter((t) => !t.isShared) as Tag[]
   );
 
   sharedTags = computed(() =>
-    this.tagsService.allTags$().filter((t) => t.isShared),
-  );
+    this.tagsService.allTags$().filter((t) => t.isShared)  as Tag[]
+  )
   /**Context menu*/
   @ViewChild('contextMenuOptions') contextMenuOptions!: Menu;
   contextMenu: MenuItem[] = [];

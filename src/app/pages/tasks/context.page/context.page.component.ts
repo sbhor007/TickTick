@@ -2,13 +2,11 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { Splitter } from 'primeng/splitter';
 import { TaskListComponent } from '../../../components/context/task-list/task-list.component';
-import { combineLatest, distinctUntilChanged, map, switchMap } from 'rxjs';
+import {  distinctUntilChanged, map, switchMap } from 'rxjs';
 import { EntityType } from '../../../enums/entity-type';
 import { ContextHeaderComponent } from '../../../components/context/context-header/context-header.component';
-import { TagInputComponent } from '../../../share/tag-input/tag-input.component';
 import { TaskInputComponent } from '../../../share/task-input/task-input.component';
 import { ProjectService } from '../../../services/project.service';
-import { DateTimePickerComponent } from '../../../share/date-time-picker/date-time-picker.component';
 import { TagsService } from '../../../config/tags.service';
 import { UiStateService } from '../../../services/ui-state.service';
 import { TaskDetailsComponent } from "../../../components/task-details/task-details.component";
@@ -25,9 +23,7 @@ type RouteInfo = {
     RouterOutlet,
     TaskListComponent,
     ContextHeaderComponent,
-    TagInputComponent,
     TaskInputComponent,
-    DateTimePickerComponent,
     TaskDetailsComponent
 ],
   templateUrl: './context.page.component.html',
@@ -69,7 +65,7 @@ export class ContextPageComponent implements OnInit {
         distinctUntilChanged((prev, curr) => prev.id === curr.id),
       )
       .subscribe((values) => {
-        console.log('routeData updated:', values);
+        // console.log('routeData updated:', values);
         this.routeData.set(values);
         this.loadEntityData();
       });
@@ -85,7 +81,7 @@ export class ContextPageComponent implements OnInit {
       this.entityData.set(data);
     } else if (entityType === EntityType.PROJECT) {
       this.projectService.fetchProjectById(id ?? '').subscribe((data) => {
-        console.log('Project data::', data);
+        // console.log('Project data::', data);
         this.entityData.set(data);
       });
     } else if (
@@ -98,13 +94,13 @@ export class ContextPageComponent implements OnInit {
       ].includes(entityType)
     ) {
       this.projectService.fetchProjectById('inbox').subscribe((data) => {
-        console.log('Project data::', data);
+        // console.log('Project data::', data);
         this.entityData.set(data);
         
       });
     } else if (EntityType.TAG_VIEW) {
        this.projectService.fetchProjectById('inbox').subscribe((data) => {
-        console.log('Project data::', data);
+        // console.log('Project data::', data);
         this.entityData.set(data);
         this.selectedTag.set(                         
         this.tagService.allTags$().find((t) => t.name === id)
@@ -114,7 +110,7 @@ export class ContextPageComponent implements OnInit {
   }
 
   sortEventHandler(event: any): void {
-    console.log('Sort event::', event);
+    // console.log('Sort event::', event);
     this.sortGroupData.set(event);
   }
 
