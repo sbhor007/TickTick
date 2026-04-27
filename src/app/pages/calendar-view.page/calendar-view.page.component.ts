@@ -18,6 +18,7 @@ import { TaskService } from '../../services/task.service';
 import listPlugin from '@fullcalendar/list';
 import { TaskPriority } from '../../enus/task-priority';
 import { FormsModule } from '@angular/forms';
+import { CalenderTasksService } from '../../services/calender-tasks.service';
 
 @Component({
   selector: 'app-calendar-view.page',
@@ -27,12 +28,14 @@ import { FormsModule } from '@angular/forms';
 })
 export class CalendarViewPageComponent implements OnInit {
   private taskService = inject(TaskService);
+  private calenderTaskService = inject(CalenderTasksService);
 
   selectedCalender!: CalendarOptions;
 
   allTasksDates = computed(() => {
     this.taskService.loadAllTasks();
-    const allTasks = this.taskService.allTasks$();
+    // const allTasks = this.taskService.allTasks$();
+    const allTasks = this.calenderTaskService.allCalenderTasks$()
     return Object.groupBy(allTasks, (task) => {
       const dateSource = task.dueDateTime || task.dueDate;
       if (!dateSource) return 'no-date';
@@ -41,12 +44,27 @@ export class CalendarViewPageComponent implements OnInit {
     });
   });
 
-  allTasks = () =>
-    this.taskService.allTasks$().map((t) => ({
+  // allTasks = () =>
+  //   this.taskService.allTasks$().map((t) => ({
+  //     id: t.id,
+  //     title: t.title ?? '',
+  //     start: t.dueDateTime ?? t.dueDate ?? new Date(),
+  //     end: t.dueDateTime ?? t.dueDate ?? new Date(),
+  //     backgroundColor: this.getPriorityColor(t.priority),
+  //     extendedProps: {
+  //       status: t.status,
+  //       priority: t.priority,
+  //       projectId: t.projectId,
+  //       raw: t,
+  //     },
+  //   }));
+
+  allTasks = computed(() =>
+    this.calenderTaskService.allCalenderTasks$().map((t) => ({
       id: t.id,
       title: t.title ?? '',
-      start: t.dueDateTime ?? t.dueDate ?? new Date(),
-      end: t.dueDateTime ?? t.dueDate ?? new Date(),
+      start: t.startDate ?? new Date(),
+      end: t.dueDateTime ?? new Date(),
       backgroundColor: this.getPriorityColor(t.priority),
       extendedProps: {
         status: t.status,
@@ -54,53 +72,23 @@ export class CalendarViewPageComponent implements OnInit {
         projectId: t.projectId,
         raw: t,
       },
-    }));
+    })),
+  );
 
   constructor() {
     this.taskService.loadAllTasks();
     effect(() => {
+      this.calenderTaskService.loadAllCalenderTasks();
       this.taskService.loadAllTasks();
     });
   }
 
   ngOnInit(): void {
+    this.calenderTaskService.loadAllCalenderTasks();
     this.taskService.loadAllTasks();
   }
 
 
-  yearlyCalender: CalendarOptions = {
-    plugins: [multiMonthPlugin, interactionPlugin],
-    initialView: 'multiMonthYear',
-    initialDate: new Date(),
-    multiMonthMaxColumns: 4,
-
-    dateClick: (arg) => this.handleDateClick(arg),
-    events: [
-      { title: 'event 1', date: '2019-04-01' },
-      { title: 'event 2', date: '2019-04-02' },
-    ],
-
-    dayCellClassNames: (arg) => {
-      const cellDate = arg.date.toISOString().split('T')[0];
-      const grouped = this.allTasksDates();
-      const count = grouped[cellDate]?.length ?? 0;
-
-
-
-      if (count === 0) return [];
-      if (count <= 2) return ['has-tasks-low'];
-      if (count <= 5) return ['has-tasks-mid'];
-      if (count <= 10) return ['has-tasks-high'];
-      return ['has-tasks-max'];
-    },
-
-    headerToolbar: {
-      right: 'prev,today,next',
-    },
-  };
-
-
- 
   /**List Tasks */
   listAgendaByDate: CalendarOptions = {
     plugins: [listPlugin],
@@ -190,14 +178,12 @@ export class CalendarViewPageComponent implements OnInit {
       right: 'prev,today,next',
     },
   };
-  
+
   /**Dynamic Days calender */
   selectedDays = 4;
 
-
   /**Dynamic week calender */
   selectedWeeks = 1;
-
 
   /**full calender with all options */
   fullCalender: CalendarOptions = {
@@ -213,16 +199,35 @@ export class CalendarViewPageComponent implements OnInit {
     displayEventTime: false,
     slotEventOverlap: true,
     eventOverlap: true,
+    allDaySlot:false,
+    
 
     headerToolbar: {
       left: 'prev today next',
       right:
         'multiMonthYear dayGridMonth timeGridWeek timeGridDay listYear MultiDays MultiWeeks',
       center: 'title',
-      
     },
 
     dateClick: (arg) => this.handleDateClick(arg),
+
+    /**cell highlighting */
+    dayCellDidMount: (arg) => {
+      arg.el.style.boxShadow = 'inset 0 0 0 1px rgba(255, 255, 255, 0.025)';
+      if (arg.view.type !== 'multiMonthYear') return;
+      const cellDate = arg.date.toISOString().split('T')[0];
+      const grouped = this.allTasksDates()
+      const count = grouped[cellDate]?.length ?? 0;
+
+      const el = arg.el;
+
+      if (count === 0) return;
+
+      if (count <= 2) el.classList.add('has-tasks-low');
+      else if (count <= 5) el.classList.add('has-tasks-mid');
+      else if (count <= 10) el.classList.add('has-tasks-high');
+      else el.classList.add('has-tasks-max');
+    },
 
     eventDidMount: (arg) => {
       const priority = arg.event.extendedProps['priority'];
@@ -256,7 +261,13 @@ export class CalendarViewPageComponent implements OnInit {
         titleEl.style.fontSize = '11px';
         titleEl.style.padding = '1px 4px';
       }
+
+      if (arg.view.type.startsWith('list')) {
+    eventEl.style.backgroundColor = style.bg;
+  }
     },
+
+    
 
     views: {
       MultiDays: {
@@ -267,28 +278,11 @@ export class CalendarViewPageComponent implements OnInit {
         type: 'timeGrid',
         duration: { days: this.selectedWeeks * 7 },
       },
-
     },
     events: this.allTasks(),
   };
 
   
-
-  // selectedCalender: CalendarOptions = this.yearlyCalender;
-
-  /**GET PRIORITY STYLE */
-  getPriorityClass(priority: string): string {
-    switch (priority) {
-      case 'HIGH':
-        return 'bg-red-500/40';
-      case 'MEDIUM':
-        return 'bg-yellow-500/40';
-      case 'LOW':
-        return 'bg-blue-500/40';
-      default:
-        return 'bg-gray-400/30';
-    }
-  }
   getPriorityColor(priority: string): string {
     switch (priority) {
       case 'HIGH':
@@ -307,32 +301,4 @@ export class CalendarViewPageComponent implements OnInit {
   }
 
   activeView = 'year';
-
-  // navigate(path: string) {
-  //   this.activeView = path;
-
-  //   switch (path) {
-  //     case 'year':
-  //       this.selectedCalender = this.yearlyCalender;
-  //       break;
-  //     case 'month':
-  //       this.selectedCalender = this.mothCalender;
-  //       break;
-  //     case 'week':
-  //       this.selectedCalender = this.weekCalender;
-  //       break;
-  //     case 'day':
-  //       this.selectedCalender = this.dayCalender;
-  //       break;
-  //     case 'agenda':
-  //       this.selectedCalender = this.listAgendaByDate;
-  //       break;
-  //     case 'multi-day':
-  //       this.selectedCalender = this.dynamicDaysCalender;
-  //       break;
-  //     case 'multi-weeks':
-  //       this.selectedCalender = this.dynamicWeekCalender;
-  //       break;
-  //   }
-  // }
 }

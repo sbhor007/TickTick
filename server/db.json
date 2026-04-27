@@ -76,7 +76,9 @@
       "createdAt": "2026-04-01T00:00:00.000Z",
       "updatedAt": "2026-04-01T00:00:00.000Z",
       "isSystem": true,
-      "order": 1
+      "order": 1,
+      "hidden": false,
+      "showIfNotEmpty": false
     },
     {
       "id": "p-2",
@@ -93,7 +95,9 @@
       "createdAt": "2026-04-01T00:00:00.000Z",
       "updatedAt": "2026-04-01T00:00:00.000Z",
       "isSystem": true,
-      "order": 2
+      "order": 2,
+      "hidden": false,
+      "showIfNotEmpty": true
     },
     {
       "id": "p-3",
@@ -110,7 +114,9 @@
       "createdAt": "2026-04-01T00:00:00.000Z",
       "updatedAt": "2026-04-01T00:00:00.000Z",
       "isSystem": true,
-      "order": 2
+      "order": 2,
+      "hidden": false,
+      "showIfNotEmpty": false
     },
     {
       "id": "p-4",
@@ -165,7 +171,9 @@
       "createdAt": "2026-04-01T00:00:00.000Z",
       "updatedAt": "2026-04-01T00:00:00.000Z",
       "isSystem": true,
-      "order": 5
+      "order": 5,
+      "hidden": false,
+      "showIfNotEmpty": true
     },
     {
       "name": "Mobile App Development",
@@ -426,7 +434,7 @@
           "parentId": "1d8d20cc-dd17-4608-ac7a-05618ff99517",
           "title": "Install dependencies",
           "description": "",
-          "status": "COMPLETED",
+          "status": "PENDING",
           "priority": "NONE",
           "isPinned": false,
           "subtasks": [],
@@ -439,7 +447,7 @@
           "dueDate": null,
           "dueDateTime": null,
           "createdAt": "2026-04-21T08:36:47.504Z",
-          "updatedAt": "2026-04-25T07:31:27.048Z",
+          "updatedAt": "2026-04-27T05:25:02.815Z",
           "completedAt": null
         },
         {
@@ -449,7 +457,7 @@
           "parentId": "1d8d20cc-dd17-4608-ac7a-05618ff99517",
           "title": "Configure emulator/simulator",
           "description": "",
-          "status": "COMPLETED",
+          "status": "PENDING",
           "priority": "NONE",
           "isPinned": false,
           "subtasks": [],
@@ -462,7 +470,7 @@
           "dueDate": null,
           "dueDateTime": null,
           "createdAt": "2026-04-21T08:37:04.305Z",
-          "updatedAt": "2026-04-21T08:37:07.712Z",
+          "updatedAt": "2026-04-27T05:25:46.682Z",
           "completedAt": null
         },
         {
@@ -485,7 +493,7 @@
           "dueDate": null,
           "dueDateTime": null,
           "createdAt": "2026-04-21T08:37:12.622Z",
-          "updatedAt": "2026-04-23T04:09:51.486Z",
+          "updatedAt": "2026-04-27T05:25:10.339Z",
           "completedAt": null
         }
       ],
@@ -508,7 +516,7 @@
       "isNote": false,
       "dueDate": "2026-04-22T18:30:00.000Z",
       "createdAt": "2026-04-21T08:36:20.462Z",
-      "updatedAt": "2026-04-25T14:20:44.064Z",
+      "updatedAt": "2026-04-27T05:25:46.682Z",
       "completedAt": null
     },
     {
@@ -584,7 +592,7 @@
       "isNote": false,
       "dueDate": "2026-04-27T18:30:00.000Z",
       "createdAt": "2026-04-21T08:39:20.301Z",
-      "updatedAt": "2026-04-24T10:13:23.650Z",
+      "updatedAt": "2026-04-27T04:00:42.384Z",
       "completedAt": null
     },
     {
@@ -1239,7 +1247,7 @@
       "projectId": "inbox",
       "title": "ne one added testing",
       "description": "",
-      "status": "PENDING",
+      "status": "COMPLETED",
       "priority": "MEDIUM",
       "isPinned": false,
       "parentId": null,
@@ -1254,7 +1262,7 @@
       "dueDate": "2026-04-23T18:30:00.000Z",
       "dueDateTime": "2026-04-24T18:30:00.000Z",
       "createdAt": "2026-04-24T04:19:08.264Z",
-      "updatedAt": "2026-04-24T04:19:19.561Z",
+      "updatedAt": "2026-04-27T05:27:12.400Z",
       "completedAt": null
     },
     {
@@ -1277,7 +1285,7 @@
       "repeat": null,
       "dueDate": "2026-04-23T18:30:00.000Z",
       "createdAt": "2026-04-24T04:29:27.234Z",
-      "updatedAt": "2026-04-24T10:03:44.534Z",
+      "updatedAt": "2026-04-27T04:00:49.520Z",
       "completedAt": null
     },
     {
@@ -1300,7 +1308,7 @@
       "repeat": null,
       "dueDate": "2026-04-24T18:30:00.000Z",
       "createdAt": "2026-04-24T09:36:37.362Z",
-      "updatedAt": "2026-04-24T10:03:22.977Z",
+      "updatedAt": "2026-04-27T04:00:48.458Z",
       "completedAt": null
     },
     {
@@ -1323,7 +1331,78 @@
       "repeat": null,
       "dueDate": "2026-04-25T18:30:00.000Z",
       "createdAt": "2026-04-25T07:20:22.356Z",
-      "updatedAt": "2026-04-25T07:20:22.356Z",
+      "updatedAt": "2026-04-27T05:25:28.332Z",
+      "completedAt": null
+    },
+    {
+      "id": "VCtD-VC4guA",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "due test",
+      "description": "description",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "reminder": null,
+      "repeat": null,
+      "dueDate": "2026-04-27T18:30:00.000Z",
+      "createdAt": "2026-04-27T05:26:39.819Z",
+      "updatedAt": "2026-04-27T06:43:06.706Z",
+      "completedAt": null
+    },
+    {
+      "id": "OYH59tB3m3U",
+      "userId": null,
+      "projectId": "inbox",
+      "title": "test  good",
+      "description": "",
+      "status": "PENDING",
+      "priority": "NONE",
+      "isPinned": false,
+      "parentId": null,
+      "subtasks": [],
+      "tags": [
+        {
+          "name": "tag-3",
+          "id": "ce3771f8-8ebb-4b9d-a444-3a05e4c490f5",
+          "parentId": null,
+          "entityType": "TAG",
+          "color": "",
+          "childTag": [
+            {
+              "name": "hello",
+              "color": "",
+              "parentId": "ce3771f8-8ebb-4b9d-a444-3a05e4c490f5",
+              "entityType": "CHILD_TAG",
+              "id": "59265fcf-2dac-4d69-84de-523357247c43",
+              "childTag": [],
+              "isPinned": false,
+              "createdAt": "2026-04-18T03:19:52.667Z",
+              "updatedAt": "2026-04-18T03:19:52.667Z"
+            }
+          ],
+          "isPinned": false,
+          "createdAt": "2026-04-17T05:53:05.991Z",
+          "updatedAt": "2026-04-19T13:29:09.855Z",
+          "isShared": false
+        }
+      ],
+      "comments": [],
+      "attachmentId": null,
+      "entityType": "TASK",
+      "isNote": false,
+      "reminder": null,
+      "repeat": null,
+      "dueDate": null,
+      "createdAt": "2026-04-27T05:28:54.999Z",
+      "updatedAt": "2026-04-27T05:54:34.230Z",
       "completedAt": null
     }
   ],
@@ -1598,6 +1677,818 @@
       "lastOccurrence": null,
       "isActive": true,
       "createdAt": "2026-04-22T08:50:39.605Z"
+    }
+  ],
+  "calender": [
+    {
+      "id": "t1",
+      "title": "Initial Project Discovery",
+      "startDate": "2026-04-27T09:00:00",
+      "dueDateTime": "2026-04-27T11:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t2",
+      "title": "Design Dashboard Wireframes",
+      "startDate": "2026-04-27T11:30:00",
+      "dueDateTime": "2026-04-27T15:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t3",
+      "title": "Setup Development Environment",
+      "startDate": "2026-04-28T10:00:00",
+      "dueDateTime": "2026-04-28T12:00:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p2"
+    },
+    {
+      "id": "t4",
+      "title": "Database Schema Design",
+      "startDate": "2026-04-28T13:00:00",
+      "dueDateTime": "2026-04-28T17:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t5",
+      "title": "Review Branding Guidelines",
+      "startDate": "2026-04-29T09:00:00",
+      "dueDateTime": "2026-04-29T10:30:00",
+      "priority": "LOW",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t6",
+      "title": "User Interview - Session 1",
+      "startDate": "2026-04-29T11:00:00",
+      "dueDateTime": "2026-04-29T12:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t7",
+      "title": "User Interview - Session 2",
+      "startDate": "2026-04-29T14:00:00",
+      "dueDateTime": "2026-04-29T15:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t8",
+      "title": "API Documentation Draft",
+      "startDate": "2026-04-30T09:30:00",
+      "dueDateTime": "2026-04-30T12:30:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t9",
+      "title": "Weekly Team Sync",
+      "startDate": "2026-04-30T14:00:00",
+      "dueDateTime": "2026-04-30T15:00:00",
+      "priority": "NONE",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t10",
+      "title": "Market Competitor Analysis",
+      "startDate": "2026-04-30T15:30:00",
+      "dueDateTime": "2026-05-01T10:00:00",
+      "priority": "LOW",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t11",
+      "title": "Configure Auth Provider",
+      "startDate": "2026-05-01T11:00:00",
+      "dueDateTime": "2026-05-01T14:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t12",
+      "title": "Frontend Component Audit",
+      "startDate": "2026-05-01T15:00:00",
+      "dueDateTime": "2026-05-01T17:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t13",
+      "title": "Prepare Monthly Billing",
+      "startDate": "2026-05-02T09:00:00",
+      "dueDateTime": "2026-05-02T10:30:00",
+      "priority": "NONE",
+      "status": "COMPLETE",
+      "projectId": "p4"
+    },
+    {
+      "id": "t14",
+      "title": "Client Feedback Workshop",
+      "startDate": "2026-05-02T11:00:00",
+      "dueDateTime": "2026-05-02T13:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t15",
+      "title": "Update Security Protocols",
+      "startDate": "2026-05-02T14:30:00",
+      "dueDateTime": "2026-05-02T16:30:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t16",
+      "title": "Create Marketing Assets",
+      "startDate": "2026-05-03T10:00:00",
+      "dueDateTime": "2026-05-03T15:00:00",
+      "priority": "LOW",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t17",
+      "title": "Legacy Data Migration",
+      "startDate": "2026-05-04T08:30:00",
+      "dueDateTime": "2026-05-04T12:30:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t18",
+      "title": "Refactor Navigation Menu",
+      "startDate": "2026-05-04T13:00:00",
+      "dueDateTime": "2026-05-04T16:00:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t19",
+      "title": "Product Roadmap Review",
+      "startDate": "2026-05-05T10:00:00",
+      "dueDateTime": "2026-05-05T11:30:00",
+      "priority": "NONE",
+      "status": "PENDING",
+      "projectId": "p4"
+    },
+    {
+      "id": "t20",
+      "title": "Unit Test Core Logic",
+      "startDate": "2026-05-05T13:00:00",
+      "dueDateTime": "2026-05-05T17:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t21",
+      "title": "Optimize Image Assets",
+      "startDate": "2026-05-06T09:00:00",
+      "dueDateTime": "2026-05-06T11:00:00",
+      "priority": "LOW",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t22",
+      "title": "Accessibility Compliance Check",
+      "startDate": "2026-05-06T11:30:00",
+      "dueDateTime": "2026-05-06T14:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t23",
+      "title": "Cloud Infrastructure Audit",
+      "startDate": "2026-05-06T15:00:00",
+      "dueDateTime": "2026-05-06T17:30:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t24",
+      "title": "Write Social Media Copy",
+      "startDate": "2026-05-07T10:00:00",
+      "dueDateTime": "2026-05-07T12:00:00",
+      "priority": "LOW",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t25",
+      "title": "Mobile App Bug Fixes",
+      "startDate": "2026-05-07T13:00:00",
+      "dueDateTime": "2026-05-07T17:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p5"
+    },
+    {
+      "id": "t26",
+      "title": "Content Strategy Meeting",
+      "startDate": "2026-05-08T09:30:00",
+      "dueDateTime": "2026-05-08T11:00:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p3"
+    },
+    {
+      "id": "t27",
+      "title": "Fix CSS Grid Layout",
+      "startDate": "2026-05-08T11:30:00",
+      "dueDateTime": "2026-05-08T14:30:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t28",
+      "title": "Setup Error Logging",
+      "startDate": "2026-05-08T15:00:00",
+      "dueDateTime": "2026-05-08T16:30:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t29",
+      "title": "Customer Support Training",
+      "startDate": "2026-05-09T10:00:00",
+      "dueDateTime": "2026-05-09T12:00:00",
+      "priority": "NONE",
+      "status": "PENDING",
+      "projectId": "p4"
+    },
+    {
+      "id": "t30",
+      "title": "Draft Privacy Policy",
+      "startDate": "2026-05-09T13:00:00",
+      "dueDateTime": "2026-05-09T15:00:00",
+      "priority": "LOW",
+      "status": "PENDING",
+      "projectId": "p4"
+    },
+    {
+      "id": "t31",
+      "title": "Integrate Payment Gateway",
+      "startDate": "2026-05-10T09:00:00",
+      "dueDateTime": "2026-05-10T16:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t32",
+      "title": "Email Template Design",
+      "startDate": "2026-05-11T10:00:00",
+      "dueDateTime": "2026-05-11T12:30:00",
+      "priority": "LOW",
+      "status": "COMPLETE",
+      "projectId": "p3"
+    },
+    {
+      "id": "t33",
+      "title": "QA Smoke Testing",
+      "startDate": "2026-05-11T13:30:00",
+      "dueDateTime": "2026-05-11T15:30:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p5"
+    },
+    {
+      "id": "t34",
+      "title": "SEO Keyword Research",
+      "startDate": "2026-05-12T09:00:00",
+      "dueDateTime": "2026-05-12T11:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t35",
+      "title": "Final UI Polish",
+      "startDate": "2026-05-12T11:30:00",
+      "dueDateTime": "2026-05-12T15:30:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t36",
+      "title": "Server Load Testing",
+      "startDate": "2026-05-13T10:00:00",
+      "dueDateTime": "2026-05-13T14:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t37",
+      "title": "Archive Old Projects",
+      "startDate": "2026-05-13T15:00:00",
+      "dueDateTime": "2026-05-13T16:00:00",
+      "priority": "NONE",
+      "status": "COMPLETE",
+      "projectId": "p4"
+    },
+    {
+      "id": "t38",
+      "title": "Investor Deck Presentation",
+      "startDate": "2026-05-14T11:00:00",
+      "dueDateTime": "2026-05-14T12:30:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p4"
+    },
+    {
+      "id": "t39",
+      "title": "Cross-Browser Compatibility",
+      "startDate": "2026-05-14T13:30:00",
+      "dueDateTime": "2026-05-14T17:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t40",
+      "title": "Beta Launch Debrief",
+      "startDate": "2026-05-15T15:00:00",
+      "dueDateTime": "2026-05-15T16:30:00",
+      "priority": "NONE",
+      "status": "PENDING",
+      "projectId": "p5"
+    },
+    {
+      "id": "t41",
+      "title": "Q1 Project Kickoff",
+      "startDate": "2026-03-01T09:00:00",
+      "dueDateTime": "2026-03-01T11:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t42",
+      "title": "Requirement Gathering",
+      "startDate": "2026-03-05T10:00:00",
+      "dueDateTime": "2026-03-10T17:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t43",
+      "title": "Budget Approval",
+      "startDate": "2026-03-12T14:00:00",
+      "dueDateTime": "2026-03-12T15:30:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p4"
+    },
+    {
+      "id": "t44",
+      "title": "Initial Server Provisioning",
+      "startDate": "2026-03-15T08:00:00",
+      "dueDateTime": "2026-03-15T12:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p2"
+    },
+    {
+      "id": "t45",
+      "title": "Logo Concept Sketches",
+      "startDate": "2026-03-18T11:00:00",
+      "dueDateTime": "2026-03-20T16:00:00",
+      "priority": "LOW",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t46",
+      "title": "Contract Signing - Vendor A",
+      "startDate": "2026-03-22T09:30:00",
+      "dueDateTime": "2026-03-22T10:30:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p4"
+    },
+    {
+      "id": "t47",
+      "title": "Environment Security Audit",
+      "startDate": "2026-03-25T13:00:00",
+      "dueDateTime": "2026-03-25T17:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p2"
+    },
+    {
+      "id": "t48",
+      "title": "Frontend Framework Research",
+      "startDate": "2026-03-28T10:00:00",
+      "dueDateTime": "2026-03-28T14:00:00",
+      "priority": "NONE",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t49",
+      "title": "Competitor Benchmarking",
+      "startDate": "2026-04-01T09:00:00",
+      "dueDateTime": "2026-04-02T17:00:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p3"
+    },
+    {
+      "id": "t50",
+      "title": "Database Normalization Task",
+      "startDate": "2026-04-03T11:00:00",
+      "dueDateTime": "2026-04-03T15:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p2"
+    },
+    {
+      "id": "t51",
+      "title": "Stakeholder Interview - HR",
+      "startDate": "2026-04-05T14:00:00",
+      "dueDateTime": "2026-04-05T15:00:00",
+      "priority": "LOW",
+      "status": "COMPLETE",
+      "projectId": "p3"
+    },
+    {
+      "id": "t52",
+      "title": "Stakeholder Interview - Sales",
+      "startDate": "2026-04-06T10:00:00",
+      "dueDateTime": "2026-04-06T11:00:00",
+      "priority": "LOW",
+      "status": "COMPLETE",
+      "projectId": "p3"
+    },
+    {
+      "id": "t53",
+      "title": "API Auth Strategy",
+      "startDate": "2026-04-08T09:00:00",
+      "dueDateTime": "2026-04-08T12:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p2"
+    },
+    {
+      "id": "t54",
+      "title": "Color Palette Selection",
+      "startDate": "2026-04-10T13:00:00",
+      "dueDateTime": "2026-04-10T14:30:00",
+      "priority": "NONE",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t55",
+      "title": "User Story Mapping",
+      "startDate": "2026-04-12T09:30:00",
+      "dueDateTime": "2026-04-13T17:00:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t56",
+      "title": "Legal Review of Terms",
+      "startDate": "2026-04-15T11:00:00",
+      "dueDateTime": "2026-04-15T13:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p4"
+    },
+    {
+      "id": "t57",
+      "title": "Basic Component Library Setup",
+      "startDate": "2026-04-17T10:00:00",
+      "dueDateTime": "2026-04-17T16:00:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t58",
+      "title": "Setup CI/CD Pipelines",
+      "startDate": "2026-04-19T09:00:00",
+      "dueDateTime": "2026-04-19T15:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p2"
+    },
+    {
+      "id": "t59",
+      "title": "Typography Specs",
+      "startDate": "2026-04-20T14:00:00",
+      "dueDateTime": "2026-04-20T15:30:00",
+      "priority": "NONE",
+      "status": "COMPLETE",
+      "projectId": "p1"
+    },
+    {
+      "id": "t60",
+      "title": "Onboarding Deck Draft",
+      "startDate": "2026-04-22T10:00:00",
+      "dueDateTime": "2026-04-22T12:00:00",
+      "priority": "LOW",
+      "status": "COMPLETE",
+      "projectId": "p3"
+    },
+    {
+      "id": "t61",
+      "title": "System Integration Prep",
+      "startDate": "2026-04-23T13:00:00",
+      "dueDateTime": "2026-04-23T17:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p2"
+    },
+    {
+      "id": "t62",
+      "title": "Expense Report Audit",
+      "startDate": "2026-04-24T09:00:00",
+      "dueDateTime": "2026-04-24T11:00:00",
+      "priority": "NONE",
+      "status": "COMPLETE",
+      "projectId": "p4"
+    },
+    {
+      "id": "t63",
+      "title": "Mobile Prototype V1",
+      "startDate": "2026-04-25T11:00:00",
+      "dueDateTime": "2026-04-25T16:00:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p5"
+    },
+    {
+      "id": "t64",
+      "title": "Performance Baseline Test",
+      "startDate": "2026-04-26T10:00:00",
+      "dueDateTime": "2026-04-26T14:00:00",
+      "priority": "HIGH",
+      "status": "COMPLETE",
+      "projectId": "p2"
+    },
+    {
+      "id": "t65",
+      "title": "Internal QA Checklist",
+      "startDate": "2026-04-26T15:00:00",
+      "dueDateTime": "2026-04-26T17:00:00",
+      "priority": "MEDIUM",
+      "status": "COMPLETE",
+      "projectId": "p5"
+    },
+    {
+      "id": "t66",
+      "title": "Marketing Launch Event",
+      "startDate": "2026-05-16T10:00:00",
+      "dueDateTime": "2026-05-16T14:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t67",
+      "title": "Post-Launch Monitoring",
+      "startDate": "2026-05-17T09:00:00",
+      "dueDateTime": "2026-05-17T17:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t68",
+      "title": "Customer Feedback Review",
+      "startDate": "2026-05-18T11:00:00",
+      "dueDateTime": "2026-05-18T13:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t69",
+      "title": "Bug Fix Sprint 1",
+      "startDate": "2026-05-19T08:30:00",
+      "dueDateTime": "2026-05-20T17:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p5"
+    },
+    {
+      "id": "t70",
+      "title": "Update Documentation - v1.1",
+      "startDate": "2026-05-21T10:00:00",
+      "dueDateTime": "2026-05-21T15:00:00",
+      "priority": "LOW",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t71",
+      "title": "Q2 Strategic Planning",
+      "startDate": "2026-05-22T09:00:00",
+      "dueDateTime": "2026-05-22T12:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p4"
+    },
+    {
+      "id": "t72",
+      "title": "User Interview - Round 3",
+      "startDate": "2026-05-23T13:00:00",
+      "dueDateTime": "2026-05-23T15:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t73",
+      "title": "Dark Mode Implementation",
+      "startDate": "2026-05-24T10:00:00",
+      "dueDateTime": "2026-05-24T17:00:00",
+      "priority": "LOW",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t74",
+      "title": "Database Cleanup Task",
+      "startDate": "2026-05-25T09:00:00",
+      "dueDateTime": "2026-05-25T11:00:00",
+      "priority": "NONE",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t75",
+      "title": "Social Media Campaign Start",
+      "startDate": "2026-05-26T08:00:00",
+      "dueDateTime": "2026-05-26T10:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t76",
+      "title": "Scalability Testing",
+      "startDate": "2026-05-27T13:00:00",
+      "dueDateTime": "2026-05-27T17:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t77",
+      "title": "New Team Onboarding",
+      "startDate": "2026-05-28T09:00:00",
+      "dueDateTime": "2026-05-28T16:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p4"
+    },
+    {
+      "id": "t78",
+      "title": "Annual Security Recertification",
+      "startDate": "2026-05-29T10:00:00",
+      "dueDateTime": "2026-05-29T12:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t79",
+      "title": "Mobile App V2 Mockups",
+      "startDate": "2026-05-30T11:00:00",
+      "dueDateTime": "2026-05-30T16:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p5"
+    },
+    {
+      "id": "t80",
+      "title": "June Monthly Sync",
+      "startDate": "2026-06-01T09:00:00",
+      "dueDateTime": "2026-06-01T10:30:00",
+      "priority": "NONE",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t81",
+      "title": "Refactor Legacy API Hooks",
+      "startDate": "2026-06-02T13:00:00",
+      "dueDateTime": "2026-06-02T17:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t82",
+      "title": "Press Release Draft",
+      "startDate": "2026-06-03T10:00:00",
+      "dueDateTime": "2026-06-03T12:00:00",
+      "priority": "LOW",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t83",
+      "title": "Server OS Patching",
+      "startDate": "2026-06-04T22:00:00",
+      "dueDateTime": "2026-06-05T01:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t84",
+      "title": "Visual Regression Testing",
+      "startDate": "2026-06-05T09:00:00",
+      "dueDateTime": "2026-06-05T12:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p1"
+    },
+    {
+      "id": "t85",
+      "title": "Employee Feedback Survey",
+      "startDate": "2026-06-06T14:00:00",
+      "dueDateTime": "2026-06-06T15:30:00",
+      "priority": "NONE",
+      "status": "PENDING",
+      "projectId": "p4"
+    },
+    {
+      "id": "t86",
+      "title": "Tablet Layout Optimization",
+      "startDate": "2026-06-08T10:00:00",
+      "dueDateTime": "2026-06-08T16:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p5"
+    },
+    {
+      "id": "t87",
+      "title": "Upgrade Analytics Engine",
+      "startDate": "2026-06-10T11:00:00",
+      "dueDateTime": "2026-06-10T14:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p3"
+    },
+    {
+      "id": "t88",
+      "title": "Cloud Storage Migration",
+      "startDate": "2026-06-12T08:00:00",
+      "dueDateTime": "2026-06-12T17:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p2"
+    },
+    {
+      "id": "t89",
+      "title": "Partnership Review Meeting",
+      "startDate": "2026-06-14T15:00:00",
+      "dueDateTime": "2026-06-14T16:00:00",
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "projectId": "p4"
+    },
+    {
+      "id": "t90",
+      "title": "Final Performance Audit",
+      "startDate": "2026-06-15T09:00:00",
+      "dueDateTime": "2026-06-15T12:00:00",
+      "priority": "HIGH",
+      "status": "PENDING",
+      "projectId": "p1"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
