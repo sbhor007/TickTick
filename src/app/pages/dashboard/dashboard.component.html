@@ -1,7 +1,41 @@
-<div class="w-full flex h-screen p-5">
+<div class="w-full flex h-screen py-5">
   <!-- completed task-->
+ @if(smartView().length > 0){
+   <div class="w-[30%] border-r px-2.5">
+    <h2 class="text-3xl py-5">hidden Projects</h2>
+    <!-- <app-smart-view></app-smart-view> -->
+    @for (s of smartView(); track s.id) {
+      <li
+        [routerLink]="[s.entityType, s.id]"
+        class="group py-3 hover:bg-[#1c1c1f] rounded-xl cursor-pointer px-4 flex items-center justify-between relative"
+        (contextmenu)="contextMenuAction($event, s.id, s.entityType)"
+      >
+        <p-menu
+          #contextMenuOptions
+          [model]="contextMenu"
+          [popup]="true"
+          appendTo="body"
+        />
 
-  <div class="w-full border-r">
+        <!-- Name + icon -->
+        <span class="flex items-center">
+          <i [ngClass]="[s.icon, 'mr-2 text-sm text-gray-400']"></i>
+          {{ s.name }}
+        </span>
+
+        <!-- Count + ••• trigger -->
+        <div class="ml-auto relative w-6 text-right group">
+          <i
+            class="pi pi-ellipsis-h absolute inset-0 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-400 cursor-pointer"
+            (click)="contextMenuAction($event, s, s.entityType)"
+          ></i>
+        </div>
+      </li>
+    }
+  </div>
+ }
+
+  <div class="w-full border-r px-2.5">
     <h2 class="text-3xl py-5">Completed Tasks</h2>
     <app-task-list
       [routeData]="completedTasks"
@@ -9,10 +43,10 @@
     ></app-task-list>
   </div>
   <!-- pending tasks -->
-  <div class="w-full border-l  pl-3">
+  <div class="w-full border-l pl-3 px-2.5">
     <h2 class="text-3xl block py-5">PendingTasks</h2>
     <app-task-list
-    class="overflow-y-auto"
+      class="overflow-y-auto"
       [routeData]="pendingTasks"
       [sortGroupData]=""
     ></app-task-list>

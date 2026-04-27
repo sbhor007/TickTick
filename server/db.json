@@ -96,8 +96,8 @@
       "updatedAt": "2026-04-01T00:00:00.000Z",
       "isSystem": true,
       "order": 2,
-      "hidden": false,
-      "showIfNotEmpty": true
+      "hidden": true,
+      "showIfNotEmpty": false
     },
     {
       "id": "p-3",
@@ -173,7 +173,7 @@
       "isSystem": true,
       "order": 5,
       "hidden": false,
-      "showIfNotEmpty": true
+      "showIfNotEmpty": false
     },
     {
       "name": "Mobile App Development",

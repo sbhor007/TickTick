@@ -264,6 +264,10 @@ export class CalendarViewPageComponent implements OnInit {
 
       if (arg.view.type.startsWith('list')) {
     eventEl.style.backgroundColor = style.bg;
+      eventEl.style.borderLeft = `3px solid ${style.border}`;
+      eventEl.style.borderRadius = '4px';
+      eventEl.style.marginBottom = '2px';
+    
   }
     },
 

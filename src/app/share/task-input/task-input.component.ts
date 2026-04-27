@@ -13,11 +13,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe } from '@angular/common';
 import { DateTimePickerComponent } from '../date-time-picker/date-time-picker.component';
 import { DateTimeSelection } from '../../models/date';
@@ -367,7 +363,7 @@ export class TaskInputComponent implements OnInit, OnChanges {
       : of(null);
 
     const reminder$ = selection?.reminder
-      ? this.reminderService.create(selection?.reminder, taskId,dueDate).pipe(
+      ? this.reminderService.create(selection?.reminder, taskId, dueDate).pipe(
           catchError((err) => {
             console.error('Error get all tasks:', err);
             return of(null);

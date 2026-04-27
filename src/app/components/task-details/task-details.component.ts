@@ -17,7 +17,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TaskService } from '../../services/task.service';
 import { EntityType } from '../../enums/entity-type';
 import { Task } from '../../models/task';
-import {  NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { TaskPriority } from '../../enus/task-priority';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TaskStatus } from '../../enus/task-status';
@@ -55,7 +55,7 @@ import { toast } from 'ngx-sonner';
     TagSelectorComponent,
     PickerComponent,
     MoveToProjectComponent,
-],
+  ],
   templateUrl: './task-details.component.html',
   styles: [
     `
@@ -87,7 +87,7 @@ import { toast } from 'ngx-sonner';
     `,
   ],
 })
-export class TaskDetailsComponent implements OnInit,OnChanges {
+export class TaskDetailsComponent implements OnInit, OnChanges {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   taskService = inject(TaskService);
@@ -120,7 +120,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
   isTagSelectorVisible = false;
   selectedTask: Task | null = null;
   selectedTags: Tag[] = [];
-  selectedSubTask:Task | null = null;
+  selectedSubTask: Task | null = null;
 
   priorityOptions = Object.values(TaskPriority);
   allTags = computed(() => this.tagService.allTags$());
@@ -130,10 +130,9 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
   isCommentSectionVisible = false;
 
   constructor(private el: ElementRef) {
-    
-    this.attachmentService.loadAllAllAttachments()
+    this.attachmentService.loadAllAllAttachments();
     effect(() => {
-      console.log("effect call for task details");
+      console.log('effect call for task details');
 
       const allTasks = this.taskService.allTasks$();
 
@@ -158,7 +157,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
               .allAttachments$()
               .find((a) => a.id === updated.attachmentId),
           );
-          
+
           this.attachment = attachmentData();
           /**comments with attachment files */
           const filteredData = this.commentsService
@@ -222,13 +221,12 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['entityId'] || changes['entityType']) {
-      console.log("ng-change-call::", this.entityId, this.entityType);
-      console.log("check attachment",this.attachment);
-      
-      
-    this.parentTask = null;
-    this.taskService.loadAllTasks();
-    this.attachmentService.loadAllAllAttachments();
+      console.log('ng-change-call::', this.entityId, this.entityType);
+      console.log('check attachment', this.attachment);
+
+      this.parentTask = null;
+      this.taskService.loadAllTasks();
+      this.attachmentService.loadAllAllAttachments();
 
       if (this.entityType == 'TASK') {
         this.taskService.loadAllTasks();
@@ -238,7 +236,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
       }
     }
   }
-  
+
   ngOnInit() {
     this.attachmentService.loadAllAllAttachments();
     this.commentsService.loadAllComments();
@@ -551,7 +549,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
         this.updateTaskOrSubTask(event, { dueDate: this.getDateISO(7) });
         break;
       case 'set_date_custom':
-        this.selectedSubTask = task
+        this.selectedSubTask = task;
         this.initialDate.set(task.dueDate ? new Date(task.dueDate) : null);
         this.initialTime.set(task.dueDateTime ?? null);
         this.toggleDateTime(event.originalEvent);
@@ -656,7 +654,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
         if (isSubtask) {
           this.taskService.deleteSubTask(task.parentId!, event.entityId);
         } else {
-          // 
+          //
           setTimeout(() => {
             this.taskService.deleteTask(event.entityId);
           }, 500);
@@ -763,7 +761,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
     };
     console.log('DateTimePiker Event:: ', selection);
     this.updateTaskOrSubTask(event, {
-      ...this.selectedSubTask ??this.task,
+      ...(this.selectedSubTask ?? this.task),
       dueDate: selection.date,
       dueDateTime: selection.time ?? this.task.dueDateTime,
       repeat: selection.repeat,
@@ -1015,7 +1013,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
           this.commentAttachmentId = attachmentId;
 
           this.createComment(text);
-          this.attachmentService.loadAllAllAttachments()
+          this.attachmentService.loadAllAllAttachments();
         },
         error: (err) => {
           console.error('Upload failed:', err);
@@ -1034,7 +1032,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
     this.attachedFile.set(null);
   }
 
-  createComment(commentData:string) {
+  createComment(commentData: string) {
     if (this.commentAttachmentId) {
       const url = this.attachmentService
         .getAttachmentById(this.commentAttachmentId)
@@ -1105,12 +1103,11 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
     this.editingCommentId = null;
   }
 
-  deleteComment(commentID: string,attachmentId:string | null) {
+  deleteComment(commentID: string, attachmentId: string | null) {
     this.commentsService.deleteComment(commentID);
-    if(attachmentId){
-      this.attachmentService.deleteAttachment(attachmentId)
+    if (attachmentId) {
+      this.attachmentService.deleteAttachment(attachmentId);
     }
-
   }
   // deleteAttachment(attachmentId: string,commentId:string) {
   //   const commentData = this.commentsService.allComments$().find(c => c.id === commentId);
@@ -1121,7 +1118,7 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
   //     attachmentId: null
   //   })
   //  }
-    
+
   // }
 
   /**move to another folder */
@@ -1129,13 +1126,12 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
-   const clickedInside = this.el.nativeElement.contains(event.target);
+    const clickedInside = this.el.nativeElement.contains(event.target);
 
     if (!clickedInside) {
       console.log('clicked outside');
       this.showTagInput = false;
     }
-
   }
   // showTagInput = true
 }

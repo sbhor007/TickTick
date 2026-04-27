@@ -232,7 +232,7 @@
 
 /* Each event row */
 .fc .fc-list-event {
-  border: none !important;
+  border: none ;
   background: transparent;
 }
 
