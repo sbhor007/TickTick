@@ -29,100 +29,46 @@ export const routes: Routes = [
             path: 'folder/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.FOLDER },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'project/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.PROJECT },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'ALL/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.ALL },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'TODAY/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.TODAY },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'INBOX/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.INBOX },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'TOMORROW/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.TOMORROW },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'NEXT_SEVEN_DAYS/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.NEXT_SEVEN_DAYS },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'completed/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.COMPLETED },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'tags/:id',
             component: ContextPageComponent,
             data: { entityType: EntityType.TAG_VIEW },
-            children: [
-              {
-                path: ':entityType/:id',
-                component: TaskDetailsComponent,
-              },
-            ],
           },
           {
             path: 'SUMMARY/:id',
