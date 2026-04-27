@@ -225,35 +225,42 @@
 }
 
 /* ===== LIST / AGENDA VIEW ===== */
+/* Root list container */
 .fc .fc-list {
   border: none;
 }
 
+/* Each event row */
 .fc .fc-list-event {
   border: none !important;
-  background: transparent !important;
+  background: transparent;
 }
 
+/* Hover state (FullCalendar applies td hover, not tr) */
 .fc .fc-list-event:hover td {
-  background: transparent !important;
+  background: transparent ;
 }
 
+/* Table cells (IMPORTANT: margin doesn't work on td) */
 .fc .fc-list-event > td {
-  padding: 3px 8px;
+  padding: 8px;
   vertical-align: middle;
 }
 
+/* Hide default dot */
 .fc .fc-list-event-dot {
   display: none;
 }
 
+/* Time column */
 .fc .fc-list-event-time {
-  color: #6b7280 !important;
-  font-size: 0.75rem !important;
+  color: #6b7280 ;
+  font-size: 0.75rem;
   white-space: nowrap;
   min-width: 60px;
 }
 
+/* Title styling (acts like a card) */
 .fc .fc-list-event-title {
   display: block;
   padding: 8px 12px;
@@ -262,13 +269,21 @@
   font-size: 0.875rem;
 }
 
+/* Add spacing between rows (correct way for table layout) */
+.fc .fc-list-table {
+  border-collapse: separate ;
+  border-spacing: 0 6px; /* vertical gap between rows */
+}
+
+/* Day header row */
 .fc .fc-list-day th {
-  background: transparent !important;
-  border-top: 1px solid rgba(255,255,255,0.06) !important;
-  border-bottom: none !important;
+  background: transparent ;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: none;
   padding: 16px 8px 4px;
 }
 
+/* Day header content */
 .fc .fc-list-day-cushion {
   font-size: 0.8rem;
   font-weight: 600;
@@ -281,6 +296,7 @@
   letter-spacing: 0.06em;
 }
 
+/* Empty state */
 .fc .fc-list-empty {
   background: transparent !important;
   color: #52525b;
@@ -288,22 +304,31 @@
 }
 
 /* ===== SCROLLBAR ===== */
-.fc ::-webkit-scrollbar {
+
+/* Firefox */
+.fc {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 transparent;
+}
+
+/* WebKit (Chrome, Edge, Safari) */
+.fc *::-webkit-scrollbar {
   width: 4px;
   height: 4px;
 }
 
-.fc ::-webkit-scrollbar-track {
+.fc *::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.fc ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
-  border-radius: 4px;
+.fc *::-webkit-scrollbar-thumb {
+  background-color: #3f3f46;
+  border-radius: 999px;
+  transition: background-color 0.2s ease;
 }
 
-.fc ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+.fc *::-webkit-scrollbar-thumb:hover {
+  background-color: #52525b;
 }
 
 /* Fix footer toolbar at bottom center */
