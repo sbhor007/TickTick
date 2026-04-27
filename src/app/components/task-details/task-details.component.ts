@@ -93,7 +93,6 @@ export class TaskDetailsComponent implements OnInit,OnChanges {
   taskService = inject(TaskService);
   private contextMenuService = inject(ContextMenuBarService);
   private attachmentService = inject(AttachmentService);
-  private sanitizer = inject(DomSanitizer);
   private trashService = inject(TrashService);
   private tagService = inject(TagsService);
   private injector = inject(Injector);

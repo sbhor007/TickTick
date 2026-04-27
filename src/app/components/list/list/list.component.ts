@@ -21,7 +21,7 @@ import { ConfirmationService, MenuItem } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ContextMenuBarService } from '../../../config/context-menu-bar.service';
 import { TaskService } from '../../../services/task.service';
-import { Task } from '../../../models/task';
+
 
 @Component({
   selector: 'app-list',
@@ -125,7 +125,6 @@ export class ListComponent implements OnInit {
         case 'addList':
           this.activeFolderId = id;
           this.showAddList();
-          // this.reinitializedIds()
           break;
         case 'edit':
           this.activeFolderId = id;

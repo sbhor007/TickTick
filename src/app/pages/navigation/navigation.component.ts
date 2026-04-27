@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from "@angular/router";
 import { TaskService } from '../../services/task.service';
+import { CalenderTasksService } from '../../services/calender-tasks.service';
 
 export interface NavItem {
   name: string;
@@ -15,13 +16,16 @@ export interface NavItem {
 })
 export class NavigationComponent implements OnInit {
   private taskService = inject(TaskService)
+  private calenderTaskService = inject(CalenderTasksService);
 
   constructor(){
     this.taskService.loadAllTasks()
+     this.calenderTaskService.loadAllCalenderTasks()
   }
 
   ngOnInit(): void {
     this.taskService.loadAllTasks()
+     this.calenderTaskService.loadAllCalenderTasks()
   }
 
    navItems: Partial<NavItem[]> = [

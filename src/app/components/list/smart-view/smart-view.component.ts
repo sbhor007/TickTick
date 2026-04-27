@@ -36,7 +36,7 @@ export class SmartViewComponent {
 
     return this.projectService
       .projects$()
-      .filter((p) => p.isSmartView)
+      .filter((p) => p.isSmartView && !p.hidden)
       .map((project) => {
         let count = 0;
 
@@ -74,9 +74,9 @@ export class SmartViewComponent {
               due.setHours(0, 0, 0, 0);
 
               const tomorrow = new Date(today);
-              tomorrow.setDate(today.getDate() + 1); 
+              tomorrow.setDate(today.getDate() + 1);
 
-              return due >= tomorrow && due <= next7DaysEnd; 
+              return due >= tomorrow && due <= next7DaysEnd;
             }).length;
             break;
 
@@ -87,6 +87,8 @@ export class SmartViewComponent {
         return { ...project, count };
       });
   });
+
+  constructor() {}
 
   ngOnInit(): void {
     this.projectService.loadAllProjects();
@@ -132,7 +134,7 @@ export class SmartViewComponent {
             hidden: false,
             showIfNotEmpty: false,
           })
-          .subscribe();
+          .subscribe(() => this.projectService.loadAllProjects());
         break;
 
       case 'hide':
@@ -142,7 +144,7 @@ export class SmartViewComponent {
             hidden: true,
             showIfNotEmpty: false,
           })
-          .subscribe();
+          .subscribe(() => this.projectService.loadAllProjects());
         break;
 
       case 'showIfNotEmpty':
@@ -152,7 +154,7 @@ export class SmartViewComponent {
             hidden: false,
             showIfNotEmpty: true,
           })
-          .subscribe();
+          .subscribe(() => this.projectService.loadAllProjects());
         break;
 
       case 'edit':
@@ -164,5 +166,6 @@ export class SmartViewComponent {
           `[SmartViewComponent] Unhandled action "${action}" for entity "${entityType}"`,
         );
     }
+
   }
 }

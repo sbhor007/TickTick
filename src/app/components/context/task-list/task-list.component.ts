@@ -171,13 +171,13 @@ export class TaskListComponent implements OnInit {
         .allTasks$()
         .filter((t) => t.status === 'PENDING');
     }else if (routerData.entityType === EntityType.TAG_VIEW) {
-      data = this.taskService
-        .allTasks$()
-        .filter((t) =>
-          t.tags?.some((tag) =>
-            tag.name.toLowerCase().includes(routerData.id.toLowerCase()),
-          ),
-        );
+     data = this.taskService
+    .allTasks$()
+    .filter((t) =>
+      t?.tags?.some((tag) =>
+        tag?.name?.toLowerCase().includes(routerData.id?.toLowerCase() ?? '')
+      )
+    );
     }
 
     data = [...data].sort((a, b) => this.sortBy(a, b, sortBy));
