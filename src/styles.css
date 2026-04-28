@@ -405,10 +405,14 @@ body {
   .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;
+    scrollbar-width: thin;
+  scrollbar-color: #3f3f46 transparent;
   }
 
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+    scrollbar-width: thin;
+  scrollbar-color: #3f3f46 transparent;
   }
 }
 

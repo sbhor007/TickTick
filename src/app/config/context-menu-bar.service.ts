@@ -70,7 +70,6 @@ export class ContextMenuBarService {
 
     [EntityType.INBOX]: [
       { label: 'Edit', icon: 'edit', action: 'edit' },
-      { label: 'Show', icon: 'visibility', action: 'show' },
       {
         label: 'Show if Not empty',
         icon: 'visibility',

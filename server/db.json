@@ -423,7 +423,7 @@
       "title": "Setup development environment",
       "description": "test-description ",
       "status": "PENDING",
-      "priority": "MEDIUM",
+      "priority": "LOW",
       "isPinned": false,
       "parentId": null,
       "subtasks": [
@@ -516,7 +516,7 @@
       "isNote": false,
       "dueDate": "2026-04-22T18:30:00.000Z",
       "createdAt": "2026-04-21T08:36:20.462Z",
-      "updatedAt": "2026-04-27T05:25:46.682Z",
+      "updatedAt": "2026-04-27T07:30:44.353Z",
       "completedAt": null
     },
     {
